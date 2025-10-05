@@ -123,7 +123,7 @@ uninstall:
 
 ssh:
 	@echo "$(BLUE)[SSH]$(NC) Connecting via SSH (password: dev)..."
-	@ssh -o StrictHostKeyChecking=no dev@localhost -p 2222 || true
+	@ssh dev-environment
 
 ssh-setup:
 	@echo "$(BLUE)[SSH-SETUP]$(NC) Setting up SSH key authentication..."
@@ -159,7 +159,6 @@ ssh-setup:
 	@echo "🧪 Testing SSH key authentication..."
 	@sleep 2 && ssh dev-environment 'echo "✅ SSH key authentication successful!"' || echo "❌ SSH setup failed - try 'make restart' and test again"
 	@echo "$(GREEN)[SUCCESS]$(NC) SSH key authentication configured!"
-	@echo "$(YELLOW)[VS CODE]$(NC) Connect to 'dev-environment' in VS Code Remote-SSH"
 
 logs:
 	@docker-compose logs -f
