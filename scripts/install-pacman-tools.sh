@@ -15,9 +15,6 @@ tools=(
     "lazygit"
     "docker"
     "docker-compose"
-    "fuse-overlayfs"
-    "slirp4netns"
-    "uidmap"
     "github-cli"
     "gnupg"
     "go"
@@ -25,6 +22,9 @@ tools=(
     "npm"
     "kubectl"
     "helm"
+    "fuse-overlayfs"
+    "slirp4netns"
+    "shadow"
 )
 
 echo "🔄 Installing ${#tools[@]} pacman tools..."
