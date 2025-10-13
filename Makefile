@@ -122,8 +122,8 @@ uninstall:
 	@echo "$(YELLOW)[NOTE]$(NC) Open a new terminal for normal behavior"
 
 ssh:
-	@echo "$(BLUE)[SSH]$(NC) Connecting via SSH (password: dev)..."
-	@ssh dev-environment
+	@echo "$(BLUE)[SSH]$(NC) Connecting via SSH..."
+	@ssh dev-environment || true
 
 ssh-setup:
 	@echo "$(BLUE)[SSH-SETUP]$(NC) Setting up SSH key authentication..."

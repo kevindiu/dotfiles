@@ -37,19 +37,6 @@ services:
     labels:
       - "com.docker.compose.project=dotfiles"
       - "dev.environment.type=development"
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - DAC_OVERRIDE
-      - FOWNER
-      - SETGID
-      - SETUID
-      - SYS_CHROOT
-    read_only: false
-    security_opt:
-      - no-new-privileges:false
-      - apparmor:unconfined
     tmpfs:
       - /tmp:noexec,nosuid,size=100m
       - /run:noexec,nosuid,size=100m
