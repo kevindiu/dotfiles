@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 manjarolinux/base:latest AS base-system
+FROM manjarolinux/base:latest AS base-system
 
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
@@ -34,7 +34,9 @@ RUN pacman -Sy --noconfirm && \
 RUN groupadd --gid $USER_GID $USERNAME && \
     useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /bin/zsh && \
     chmod 750 /home/$USERNAME && \
-    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+    echo "$USERNAME:100000:65536" >> /etc/subuid && \
+    echo "$USERNAME:100000:65536" >> /etc/subgid
 
 USER $USERNAME
 WORKDIR /home/$USERNAME
@@ -66,9 +68,11 @@ RUN chmod +x /tmp/setup-directories.sh && /tmp/setup-directories.sh
 
 USER root
 COPY scripts/start-sshd.sh /tmp/start-sshd.sh
+COPY scripts/start-rootless-docker.sh /tmp/start-rootless-docker.sh
 RUN echo "$USERNAME:$USERNAME" | chpasswd
 RUN install -o root -g root -m 755 /tmp/start-sshd.sh /usr/local/bin/start-sshd.sh && \
-    rm /tmp/start-sshd.sh
+    install -o root -g root -m 755 /tmp/start-rootless-docker.sh /usr/local/bin/start-rootless-docker.sh && \
+    rm /tmp/start-sshd.sh /tmp/start-rootless-docker.sh
 
 EXPOSE 2222
 WORKDIR /workspace

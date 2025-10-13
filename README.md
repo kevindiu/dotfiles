@@ -20,7 +20,7 @@ make shell
 - **Cloud** - AWS CLI with SSO support
 - **Terraform** (via tfenv)
 - **Git** + GitHub CLI + GPG
-- **Docker** + Compose with Docker-in-Docker
+- **Docker** (rootless) + Compose
 - **CLI Tools** - ripgrep, fd, bat, fzf, jq, yq, httpie, lazygit, zip
 
 ### Base System
@@ -36,7 +36,7 @@ make shell
 - 🔑 **VS Code Ready** - Seamless integration with VS Code Remote-SSH
 - 🐹 **Go Development** - Optimized for Go with gopls, delve debugger, and proper module support
 - ☁️ **Cloud Development** - AWS CLI, kubectl, helm, and Terraform pre-configured
-- 🐳 **Container Native** - Docker-in-Docker for building and testing containers
+- 🐳 **Container Native** - Rootless Docker daemon for building and testing containers without privileged access
 - ⚡ **Fast Startup** - Pre-built environment launches in seconds
 
 ## 📋 Commands

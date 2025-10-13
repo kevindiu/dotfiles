@@ -26,6 +26,15 @@ else
     echo "✅ SSH host keys already exist, reusing from persistent storage..."
 fi
 
+if command -v start-rootless-docker.sh >/dev/null 2>&1; then
+    echo "🐳 Starting rootless Docker daemon..."
+    if ! su - dev -c "/usr/local/bin/start-rootless-docker.sh"; then
+        echo "⚠️  Failed to start rootless Docker daemon" >&2
+    fi
+else
+    echo "⚠️  Rootless Docker launcher not found; skipping Docker startup" >&2
+fi
+
 echo "🌐 Starting SSH daemon on port 2222..."
 
 exec /usr/sbin/sshd -D

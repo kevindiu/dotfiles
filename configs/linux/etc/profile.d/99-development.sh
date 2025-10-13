@@ -28,6 +28,8 @@ export CARGO_NET_GIT_FETCH_WITH_CLI=true
 # Docker buildkit optimizations
 export DOCKER_BUILDKIT=1
 export BUILDKIT_PROGRESS=plain
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/${UID}}"
+export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/docker.sock"
 
 # Development tools optimization
 export RIPGREP_CONFIG_PATH=/home/dev/.ripgreprc
