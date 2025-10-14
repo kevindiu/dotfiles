@@ -58,7 +58,7 @@ services:
       - ./configs/linux/etc/security:/etc/security:ro
 
       - security-tools:/home/dev/.security
-      - go-cache:/home/dev/go
+      - go-cache:/home/dev/.go-cache
       - shell-history:/home/dev/.shell_history
       - git-tools:/home/dev/.git_tools
       - aws-config:/home/dev/.aws

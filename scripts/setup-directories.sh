@@ -5,12 +5,27 @@ set -euo pipefail
 echo "📁 Setting up directories and configurations..."
 
 setup_directories() {
-    mkdir -p ~/.vim/undodir ~/.config
+    local go_cache_root="$HOME/.go-cache"
+
+    mkdir -p ~/.vim/undodir ~/.config \
+        "$go_cache_root/pkg/mod" "$go_cache_root/pkg/sumdb" "$go_cache_root/pkg/tool" \
+        "$go_cache_root/build-cache" ~/.cache
 
     if [ ! -L ~/go/src/github.com ]; then
+        mkdir -p ~/go
         mkdir -p ~/go/src
         ln -sf /workspace ~/go/src/github.com
         echo "✅ Created symlink: ~/go/src/github.com -> /workspace"
+    fi
+
+    if [ ! -L ~/go/pkg ]; then
+        ln -sfn "$go_cache_root/pkg" ~/go/pkg
+        echo "✅ Linked Go pkg cache to ~/.go-cache/pkg"
+    fi
+
+    if [ ! -L ~/.cache/go-build ]; then
+        ln -sfn "$go_cache_root/build-cache" ~/.cache/go-build
+        echo "✅ Linked Go build cache to ~/.go-cache/build-cache"
     fi
 }
 

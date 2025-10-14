@@ -14,7 +14,8 @@ init_volume_structure() {
     mkdir -p /mnt/docker-config
     mkdir -p /mnt/npm-cache
     mkdir -p /mnt/vscode-config
-    mkdir -p /mnt/go-cache/{.cache,pkg,src}
+    mkdir -p /mnt/go-cache/pkg/{mod,sumdb,tool}
+    mkdir -p /mnt/go-cache/build-cache
     
     echo "✅ Directory structures created"
 }
