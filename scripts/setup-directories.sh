@@ -7,9 +7,16 @@ echo "📁 Setting up directories and configurations..."
 setup_directories() {
     local go_cache_root="$HOME/.go-cache"
 
+    local vscode_root="$HOME/.vscode"
+    local vscode_server_link="$HOME/.vscode-server"
+    local vscode_data_root="$vscode_root/data"
+    local host_code_config="$HOME/.config/Code"
+
     mkdir -p ~/.vim/undodir ~/.config \
         "$go_cache_root/pkg/mod" "$go_cache_root/pkg/sumdb" "$go_cache_root/pkg/tool" \
-        "$go_cache_root/build-cache" ~/.cache
+        "$go_cache_root/build-cache" ~/.cache \
+        "$vscode_root/extensions" "$vscode_root/bin" \
+        "$vscode_data_root/User" "$vscode_data_root/Machine"
 
     if [ ! -L ~/go/src/github.com ]; then
         mkdir -p ~/go
@@ -26,6 +33,34 @@ setup_directories() {
     if [ ! -L ~/.cache/go-build ]; then
         ln -sfn "$go_cache_root/build-cache" ~/.cache/go-build
         echo "✅ Linked Go build cache to ~/.go-cache/build-cache"
+    fi
+
+    if [ ! -L "$host_code_config" ]; then
+        if [ -d "$host_code_config" ]; then
+            if [ "$(find "$host_code_config" -mindepth 1 -print -quit 2>/dev/null)" ]; then
+                echo "ℹ️  Migrating existing VS Code config into ~/.vscode/data"
+                cp -a "$host_code_config/." "$vscode_data_root/" 2>/dev/null || true
+            fi
+            rm -rf "$host_code_config"
+        else
+            rm -f "$host_code_config"
+        fi
+        ln -sfn "$vscode_data_root" "$host_code_config"
+        echo "✅ Linked VS Code config to ~/.vscode/data"
+    fi
+
+    if [ ! -L "$vscode_server_link" ]; then
+        if [ -d "$vscode_server_link" ]; then
+            if [ "$(find "$vscode_server_link" -mindepth 1 -print -quit 2>/dev/null)" ]; then
+                echo "ℹ️  Migrating existing VS Code server files into ~/.vscode"
+                cp -a "$vscode_server_link/." "$vscode_root/" 2>/dev/null || true
+            fi
+            rm -rf "$vscode_server_link"
+        else
+            rm -f "$vscode_server_link"
+        fi
+        ln -sfn "$vscode_root" "$vscode_server_link"
+        echo "✅ Linked ~/.vscode-server to ~/.vscode"
     fi
 }
 

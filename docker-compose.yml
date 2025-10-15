@@ -62,8 +62,9 @@ services:
       - shell-history:/home/dev/.shell_history
       - git-tools:/home/dev/.git_tools
       - aws-config:/home/dev/.aws
-      - vscode-config:/home/dev/.vscode-server
+      - vscode-config:/home/dev/.vscode
       - npm-cache:/home/dev/.npm
+      
       - /var/run/docker.sock:/var/run/docker.sock
       - docker-config:/home/dev/.docker
     stdin_open: true

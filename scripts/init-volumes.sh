@@ -13,7 +13,8 @@ init_volume_structure() {
     mkdir -p /mnt/aws-config
     mkdir -p /mnt/docker-config
     mkdir -p /mnt/npm-cache
-    mkdir -p /mnt/vscode-config
+    mkdir -p /mnt/vscode-config/{extensions,bin}
+    mkdir -p /mnt/vscode-config/data/{User,Machine}
     mkdir -p /mnt/go-cache/pkg/{mod,sumdb,tool}
     mkdir -p /mnt/go-cache/build-cache
     

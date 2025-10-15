@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 manjarolinux/base:latest AS base-system
+FROM manjarolinux/base:latest AS base-system
 
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
