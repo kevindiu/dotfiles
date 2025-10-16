@@ -154,8 +154,7 @@ ssh-setup:
 	@echo "    Port 2222" >> ~/.ssh/config
 	@echo "    User dev" >> ~/.ssh/config
 	@echo "    IdentityFile ~/.ssh/dev-environment" >> ~/.ssh/config
-	@echo "    StrictHostKeyChecking no" >> ~/.ssh/config
-	@echo "    UserKnownHostsFile /dev/null" >> ~/.ssh/config
+	@echo "    StrictHostKeyChecking accept-new" >> ~/.ssh/config
 	@echo "� Checking SSH key installation..."
 	@if docker exec dev-environment test -f /home/dev/.ssh/authorized_keys; then \
 		echo "✅ SSH key already installed in container"; \

@@ -21,8 +21,11 @@ Plug 'preservim/nerdtree'
 " Git integration
 Plug 'tpope/vim-fugitive'
 
-" Auto completion
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --go-completer' }
+" Auto completion (lightweight LSP client)
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 " Syntax highlighting
 Plug 'sheerun/vim-polyglot'
@@ -32,6 +35,11 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
+
+" LSP settings (automatically configured by vim-lsp-settings)
+let g:lsp_settings_enable_suggestions = 0
+let g:asyncomplete_auto_popup = 1
+let g:asyncomplete_auto_completeopt = 0
 
 " Basic settings
 set number

@@ -35,7 +35,7 @@ RUN --mount=type=cache,target=/var/cache/pacman/pkg \
 RUN groupadd --gid $USER_GID $USERNAME && \
     useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /bin/zsh && \
     chmod 750 /home/$USERNAME && \
-    echo "$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/systemctl, /usr/bin/docker, /usr/bin/dockerd, /usr/bin/mkdir, /usr/bin/chown, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupmod" >> /etc/sudoers
+    echo "$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/mkdir, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupadd, /usr/bin/groupmod" >> /etc/sudoers
 
 USER $USERNAME
 WORKDIR /home/$USERNAME
@@ -77,6 +77,8 @@ COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /tmp/
 RUN chmod +x /tmp/setup-directories.sh && /tmp/setup-directories.sh
 
 USER root
+# Remove elevated permissions after setup is complete, keep only package management
+RUN sed -i "s|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/mkdir, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupadd, /usr/bin/groupmod|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay|" /etc/sudoers
 COPY scripts/start-sshd.sh /tmp/start-sshd.sh
 RUN echo "$USERNAME:$USERNAME" | chpasswd
 RUN install -o root -g root -m 755 /tmp/start-sshd.sh /usr/local/bin/start-sshd.sh && \

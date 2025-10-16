@@ -21,10 +21,6 @@ export NPM_CONFIG_FUND=false
 export CARGO_TARGET_DIR=/tmp/cargo-target
 export CARGO_NET_GIT_FETCH_WITH_CLI=true
 
-# Docker buildkit optimizations
-export DOCKER_BUILDKIT=1
-export BUILDKIT_PROGRESS=plain
-
 # Development tools optimization
 export RIPGREP_CONFIG_PATH=/home/dev/.ripgreprc
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"

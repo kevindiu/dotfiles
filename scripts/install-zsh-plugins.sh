@@ -20,7 +20,7 @@ install_plugin() {
     
     if [ ! -d "$target" ]; then
         echo "🔄 Installing $name..."
-        if git clone --depth 1 --single-branch "$url" "$target"; then
+        if timeout 60 git clone --depth 1 --single-branch "$url" "$target"; then
             echo "✅ $name installed successfully"
         else
             echo "❌ Failed to install $name"
