@@ -85,10 +85,13 @@ dotfiles/
   - `README.md`, `agents.md`, `*.md` files
   - Inline documentation in scripts and configs
 - **Responsibilities**:
-  - User-facing documentation updates
+  - User-facing documentation updates (direct, clear style - no marketing fluff)
   - Code documentation and comments
   - Troubleshooting guides
   - Change log maintenance
+- **Style Guidelines**:
+  - README.md: User-focused, direct, essential information only
+  - Technical docs: Current state reference, actionable procedures
 
 ### 5. **Build & Automation Agent**
 - **Focus**: Build processes, CI/CD, and automation
@@ -186,10 +189,50 @@ When updating documentation:
 
 ### **CRITICAL: Documentation Update Requirements**
 
-**MANDATORY RULE: After making ANY changes to code, configuration, or scripts, you MUST:**
-1. **Assess documentation impact** - Review which documentation files may be affected
-2. **Update ALL relevant documentation** - Ensure documentation reflects the new reality
+**MANDATORY RULE: Whenever the user provides important information - whether or not any files are changed - you MUST:**
+1. **Assess documentation impact** - Review which documentation files may be affected by the new information
+2. **Update ALL relevant documentation** - Ensure documentation reflects the complete current understanding
 3. **Do this automatically** - Don't wait for user to request documentation updates
+
+**Definition of "Important Information":**
+Information that affects how the system should work, be configured, maintained, or used. This includes:
+
+**Technical Requirements & Constraints:**
+- Performance requirements or limitations
+- Security policies, restrictions, or requirements
+- Compatibility requirements or constraints
+- Resource limitations or requirements
+
+**Architecture & Design Decisions:**
+- How components should interact
+- Why certain approaches are preferred or avoided
+- Technology choices and rationale
+- Design patterns or architectural principles to follow
+
+**Operational Information:**
+- How the system should be deployed, built, or maintained
+- Required commands, procedures, or workflows
+- Troubleshooting steps or known issues
+- Configuration requirements or environment setup
+
+**User Preferences & Policies:**
+- Coding standards or style preferences
+- Workflow preferences or development practices  
+- Tool choices and rationale
+- Project-specific conventions or rules
+- Documentation style preferences (e.g., user prefers direct, no-fluff documentation over marketing language)
+
+**Behavioral Specifications:**
+- How features should behave
+- What constitutes correct vs incorrect behavior
+- Expected inputs, outputs, or side effects
+- Error handling requirements
+
+**NOT Important Information:**
+- Casual conversation or greetings
+- Requests for explanation of existing documented features
+- Simple confirmations or acknowledgments
+- Temporary debugging or exploration without lasting impact
 
 **Comprehensive update triggers:**
 - **ANY file changes** → Check if documentation needs updates
