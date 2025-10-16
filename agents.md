@@ -2,6 +2,8 @@
 
 This repository provides a Docker-based development environment for consistent, portable development. This index helps AI agents understand the repository structure and maintenance responsibilities.
 
+**Important**: All documentation in this repository focuses on **current state** only. Do not include historical changes, removed features, or deprecated configurations in any documentation files.
+
 ## 📁 Repository Structure
 
 ```
@@ -122,10 +124,10 @@ dotfiles/
 - Review access patterns
 
 ### Documentation
-- Keep README.md synchronized with changes
-- Update troubleshooting sections
+- Keep README.md synchronized with current state
+- Update troubleshooting sections with current procedures
 - Maintain accurate command references
-- Document configuration changes
+- Focus on current configuration, not historical changes
 
 ## 🚨 Critical Considerations
 
@@ -173,14 +175,14 @@ make rm
 - `security.md` - Security policies and procedures
 - `README.md` - User-facing documentation and usage instructions
 
-## 📝 Change Management
+## 📝 Documentation Standards
 
-When making changes:
-1. Read relevant documentation files first
-2. Test changes in isolated environment
-3. Update related documentation
-4. Consider impact on existing users
-5. Document breaking changes clearly
+When updating documentation:
+1. **Current state only** - Document what exists now, not what was removed or changed
+2. **Clear and actionable** - Focus on procedures and current configuration
+3. **User-focused vs Technical** - README.md for users, other .md files for technical details
+4. **Architecture as reference** - `architecture.md` describes current system design
+5. **Maintenance as procedures** - `maintenance.md` provides current operational steps
 
 ---
 

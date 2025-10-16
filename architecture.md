@@ -29,10 +29,10 @@ graph TB
 ## 🐳 Container Architecture
 
 ### Base System Layer
-- **Image**: `manjarolinux/base:latest`
-- **Platform**: `linux/arm64` (Apple Silicon optimized)
+- **Image**: `manjarolinux/base:latest` (uses latest for automatic security updates)
 - **User**: `dev` (UID: 1001, GID: 1001)
 - **Init System**: Enabled for proper signal handling
+- **Security**: `no-new-privileges:true`, restricted sudo access
 
 ### Multi-Stage Build Process
 
@@ -163,17 +163,17 @@ healthcheck:
 
 ### Environment Variables
 ```bash
-# Build optimization
+# Build optimization (set in Makefile during build)
 DOCKER_BUILDKIT=1
-COMPOSE_DOCKER_CLI_BUILD=1
+BUILDKIT_PROGRESS=plain
 
 # User configuration
 DEV_USER_ID=1001
 DEV_GROUP_ID=1001
 
-# Performance tuning
+# Development environment
 MAKEFLAGS=-j$(nproc)
-NPM_CONFIG_CACHE=/home/dev/.npm
+NODE_OPTIONS="--max-old-space-size=4096"
 ```
 
 ### Build Context
@@ -192,20 +192,19 @@ RUN --mount=type=cache,target=/home/dev/go,uid=1001,gid=1001
 RUN --mount=type=cache,target=/home/dev/.npm,uid=1001,gid=1001
 ```
 
-### ARM64 Optimizations (from .zshrc)
-```bash
-export MAKEFLAGS="-j$(nproc) -march=armv8-a+crypto+crc+aes+sha2"
-export CFLAGS="-march=armv8-a+crypto+crc+aes+sha2 -mtune=apple-m1 -O3 -pipe"
-export CXXFLAGS="-march=armv8-a+crypto+crc+aes+sha2 -mtune=apple-m1 -O3 -pipe"
-export LDFLAGS="-Wl,-O2 -Wl,--as-needed"
-export RUSTFLAGS="-C target-cpu=apple-a14 -C target-feature=+neon,+crypto,+crc"
-```
+### Build Process
+- **Parallel execution**: `ENV MAKEFLAGS=-j$(nproc)`
+- **Parallel builds**: `docker-compose build --parallel`
+- **BuildKit caching**: Aggressive layer caching for faster rebuilds
+- **Error handling**: Build failure detection and reporting
 
-### Resource Limits
+### Security Configuration
 ```yaml
+security_opt:
+  - no-new-privileges:true
 tmpfs:
-  - /tmp:noexec,nosuid,size=100m
-  - /run:noexec,nosuid,size=100m
+  - /tmp:noexec,nosuid,nodev,size=100m
+  - /run:noexec,nosuid,nodev,size=100m
 ```
 
 ### System-Level Performance & Security Tuning

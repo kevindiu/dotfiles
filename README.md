@@ -24,7 +24,7 @@ make shell
 - **CLI Tools** - ripgrep, fd, bat, fzf, jq, yq, httpie, lazygit, zip
 
 ### Base System
-- **Arch Linux** with latest packages
+- **Manjaro Linux** with latest packages
 - **Zsh** with Oh My Zsh (default shell)
 - **Tmux** for terminal multiplexing
 - **Vim** with Go plugins
@@ -33,11 +33,12 @@ make shell
 ### Key Features
 - 🚀 **One Command Setup** - \`make build\` and you're ready to code
 - 💾 **Persistent Data** - Your work, configs, and credentials are saved across restarts
-- 🔑 **Remote Access Ready** - SSH server for remote development access
+- 🔑 **Remote Access Ready** - SSH server with key-based authentication
 - 🐹 **Go Development** - Optimized for Go with gopls, delve debugger, and proper module support
 - ☁️ **Cloud Development** - AWS CLI, kubectl, helm, and Terraform pre-configured
 - 🐳 **Container Native** - Docker-in-Docker for building and testing containers
-- ⚡ **Fast Startup** - Pre-built environment launches in seconds
+- ⚡ **Fast Startup** - Optimized builds with caching and parallel execution
+- 🔒 **Security Hardened** - Restricted privileges and secure SSH configuration
 
 ## 📋 Commands
 
@@ -63,6 +64,7 @@ make ssh             # Connect via SSH
 ### Maintenance
 ```bash
 make clean           # Clean up Docker cache and temporary files
+make build-info      # Show Docker build cache information
 make rm              # Remove everything (⚠️ deletes all your work)
 make help            # Show all available commands
 ```

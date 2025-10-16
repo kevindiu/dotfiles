@@ -11,8 +11,8 @@ This document provides step-by-step maintenance procedures for AI agents respons
 - [ ] Validate SSH access and key functionality
 
 ### Monthly Tasks
-- [ ] Update base image to latest version
-- [ ] Review and update development tools
+- [ ] Review build cache usage with `make build-info`
+- [ ] Update development tools versions
 - [ ] Audit volume usage and cleanup
 - [ ] Security configuration review
 
@@ -103,9 +103,11 @@ make clean && make build
 
 **Multi-stage Build Optimization:**
 ```bash
-# Build with BuildKit for better caching
-export DOCKER_BUILDKIT=1
+# Build with optimized caching (BuildKit enabled in Makefile)
 make build
+
+# Check build cache usage
+make build-info
 
 # Check layer sizes
 docker history dev-environment:latest
@@ -460,6 +462,50 @@ exit
 EOF
 
 echo "✅ All tests passed!"
+```
+
+## ⚙️ Configuration Optimization Procedures
+
+### Identifying Unnecessary Configurations
+
+**Review Process:**
+```bash
+# Check for configuration overrides that may conflict with defaults
+grep -r "export.*=" configs/
+grep -r "ENV.*=" Dockerfile
+grep -r "environment:" docker-compose.yml
+
+# Look for platform-specific settings that may limit compatibility
+grep -i "arm64\|x86\|amd64\|platform" . -R
+```
+
+**Common Optimization Patterns:**
+1. **Remove tool-specific environment overrides** that conflict with tool defaults
+2. **Remove architecture-specific optimizations** that limit cross-platform compatibility  
+3. **Consolidate build settings** to single source of truth (Makefile)
+4. **Use system defaults** where possible instead of hardcoding values
+
+**Configuration Principles:**
+- Use tool defaults instead of hardcoded overrides
+- Avoid architecture-specific settings for cross-platform compatibility
+- Consolidate build settings in single location (Makefile)
+- Prefer system defaults over custom configurations
+
+### Configuration Validation
+
+**After Configuration Changes:**
+```bash
+# Test build process
+make clean && make build
+
+# Verify Go toolchain works
+make shell
+go version
+go mod download  # Should work without proxy errors
+
+# Test development workflow
+git clone https://github.com/golang/example.git /tmp/test
+cd /tmp/test/hello && go run hello.go
 ```
 
 ---
