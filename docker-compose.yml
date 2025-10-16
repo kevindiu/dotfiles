@@ -1,6 +1,5 @@
 services:
   volume-init:
-    platform: linux/arm64
     image: manjarolinux/base:latest
     volumes:
       - ./scripts/init-volumes.sh:/init-volumes.sh:ro
@@ -15,7 +14,6 @@ services:
     command: ["sh", "/init-volumes.sh"]
     
   dev-env:
-    platform: linux/arm64
     depends_on:
       volume-init:
         condition: service_completed_successfully
@@ -38,8 +36,10 @@ services:
       - "com.docker.compose.project=dotfiles"
       - "dev.environment.type=development"
     tmpfs:
-      - /tmp:noexec,nosuid,size=100m
-      - /run:noexec,nosuid,size=100m
+      - /tmp:noexec,nosuid,nodev,size=100m
+      - /run:noexec,nosuid,nodev,size=100m
+    security_opt:
+      - no-new-privileges:true
     ports:
       - "2222:2222"
       - "8080:8080"

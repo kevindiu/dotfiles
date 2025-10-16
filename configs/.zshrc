@@ -1,13 +1,6 @@
 export ZSH="/usr/share/oh-my-zsh"
 export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
-# Enhanced ARM64 optimizations for Apple Silicon development
-export MAKEFLAGS="-j$(nproc) -march=armv8-a+crypto+crc+aes+sha2"
-export CFLAGS="-march=armv8-a+crypto+crc+aes+sha2 -mtune=apple-m1 -O3 -pipe"
-export CXXFLAGS="-march=armv8-a+crypto+crc+aes+sha2 -mtune=apple-m1 -O3 -pipe"
-export LDFLAGS="-Wl,-O2 -Wl,--as-needed"
-export RUSTFLAGS="-C target-cpu=apple-a14 -C target-feature=+neon,+crypto,+crc"
-
 ZSH_THEME="robbyrussell"
 
 plugins=(
@@ -33,8 +26,6 @@ fi
 
 export LANG=en_US.UTF-8
 export EDITOR='vim'
-
-export PATH=$PATH:/usr/local/go/bin:$GOBIN
 
 alias ll='ls -alF'
 alias la='ls -A'

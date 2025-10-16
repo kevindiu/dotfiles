@@ -11,10 +11,6 @@ export EDITOR=vim
 export PAGER=less
 export LESSHISTFILE=-
 
-# Go optimizations for faster builds and downloads
-export GOPROXY=direct
-export GOSUMDB=off
-
 # Node.js optimizations for better performance
 export NODE_OPTIONS="--max-old-space-size=4096"
 export NPM_CONFIG_PROGRESS=false
