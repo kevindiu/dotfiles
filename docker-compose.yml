@@ -11,6 +11,7 @@ services:
       - vscode-config:/mnt/vscode-config
       - npm-cache:/mnt/npm-cache
       - docker-config:/mnt/docker-config
+      - vim-cache:/mnt/vim-cache
     command: ["sh", "/init-volumes.sh"]
     
   dev-env:
@@ -64,6 +65,7 @@ services:
       - aws-config:/home/dev/.aws
       - vscode-config:/home/dev/.vscode
       - npm-cache:/home/dev/.npm
+      - vim-cache:/home/dev/.vim
       
       - /var/run/docker.sock:/var/run/docker.sock
       - docker-config:/home/dev/.docker
@@ -82,6 +84,7 @@ volumes:
   vscode-config:
   npm-cache:
   docker-config:
+  vim-cache:
 
 networks:
   dev-network:

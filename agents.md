@@ -110,7 +110,7 @@ dotfiles/
 ### Container Management
 - Update base image versions (manjarolinux/base:latest)
 - Optimize multi-stage build caching
-- Manage 8 persistent volumes (security-tools, go-cache, shell-history, git-tools, aws-config, vscode-config, npm-cache, docker-config)
+- Manage 9 persistent volumes (security-tools, go-cache, shell-history, git-tools, aws-config, vscode-config, npm-cache, docker-config, vim-cache)
 - Monitor resource usage and system limits
 
 ### Tool Updates
@@ -187,12 +187,30 @@ When updating documentation:
 4. **Architecture as reference** - `architecture.md` describes current system design
 5. **Maintenance as procedures** - `maintenance.md` provides current operational steps
 
-### **CRITICAL: Documentation Update Requirements**
+### **CRITICAL: AUTOMATIC Documentation Update Requirements**
 
-**MANDATORY RULE: Whenever the user provides important information - whether or not any files are changed - you MUST:**
-1. **Assess documentation impact** - Review which documentation files may be affected by the new information
-2. **Update ALL relevant documentation** - Ensure documentation reflects the complete current understanding
-3. **Do this automatically** - Don't wait for user to request documentation updates
+**⚠️ STOP AND CHECK AFTER EVERY TASK: Did any documentation become outdated?**
+
+**MANDATORY RULE - NO EXCEPTIONS: After completing ANY task, you MUST immediately:**
+
+1. **STOP** - Before responding to the user, pause and ask: "What documentation is now outdated?"
+2. **ASSESS** - Identify ALL .md files that need updates based on what just happened
+3. **UPDATE** - Modify the affected documentation files immediately  
+4. **NEVER** wait for user to ask - this must be automatic and immediate
+
+**This applies to EVERY interaction where you:**
+- Make ANY file changes (code, config, scripts)
+- Add or remove features, tools, or capabilities
+- Change system behavior or configuration
+- Learn new user preferences or requirements
+- Implement solutions or fix problems
+- Modify volumes, containers, or infrastructure
+
+**EXAMPLES OF REQUIRED UPDATES:**
+- Added vim-cache volume → Update README.md persistence section + agents.md volume count
+- Changed SSH approach → Update security.md + architecture.md  
+- User prefers direct documentation → Update agents.md style guidelines
+- Fixed build issues → Update maintenance.md troubleshooting
 
 **Definition of "Important Information":**
 Information that affects how the system should work, be configured, maintained, or used. This includes:

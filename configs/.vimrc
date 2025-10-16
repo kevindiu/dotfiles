@@ -108,5 +108,10 @@ set list
 " Auto-reload files changed outside vim
 set autoread
 
+" Use persistent directories
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
+set undodir=~/.vim/undo//
+
 " Persistent undo
 set undofile

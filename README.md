@@ -114,6 +114,7 @@ Your development environment saves:
 - Shell history (zsh, bash, tmux)
 - Go module cache and compiled binaries
 - npm cache and global packages
+- Vim plugins and configuration
 - Editor extensions and settings
 
 ## 🔧 Customization
