@@ -117,12 +117,15 @@ networks:
 
 ### User Security Model
 - **Non-root execution**: Container runs as `dev` user
-- **Sudo access**: Passwordless sudo for development tasks
+- **Temporary privilege escalation**: System setup commands available during build only
+- **Minimal runtime sudo**: Only `pacman` and `yay` for package management
 - **Group memberships**: Docker group for container access
+- **Restricted privileges**: `no-new-privileges:true` prevents escalation
 
 ### SSH Security
 **Configuration** (`configs/linux/etc/ssh/sshd_config`):
 - **Custom port**: 2222 instead of standard 22
+- **Host key verification**: `StrictHostKeyChecking accept-new` (not disabled)
 - **Host keys**: Persistent storage in `/home/dev/.security/ssh-host-keys/`
 - **Authentication**: `AuthorizedKeysFile .ssh/authorized_keys`
 - **Security**: `PermitRootLogin no`, `PermitEmptyPasswords no`

@@ -184,6 +184,31 @@ When updating documentation:
 4. **Architecture as reference** - `architecture.md` describes current system design
 5. **Maintenance as procedures** - `maintenance.md` provides current operational steps
 
+### **CRITICAL: Documentation Update Requirements**
+
+**MANDATORY RULE: After making ANY changes to code, configuration, or scripts, you MUST:**
+1. **Assess documentation impact** - Review which documentation files may be affected
+2. **Update ALL relevant documentation** - Ensure documentation reflects the new reality
+3. **Do this automatically** - Don't wait for user to request documentation updates
+
+**Comprehensive update triggers:**
+- **ANY file changes** → Check if documentation needs updates
+- **Security changes** → Update `security.md` and `architecture.md`
+- **Build process changes** → Update `architecture.md` and `maintenance.md`  
+- **User-facing changes** → Update `README.md`
+- **Tool additions/removals** → Update `architecture.md` and `README.md`
+- **Configuration changes** → Update relevant technical documentation
+- **Script modifications** → Update `maintenance.md` if procedures change
+- **Docker changes** → Update `architecture.md` and possibly `README.md`
+- **Environment variable changes** → Update `architecture.md`
+
+**Documentation Update Process (AUTOMATIC):**
+1. **After completing ANY task** - Always ask: "What documentation is now outdated?"
+2. **Identify ALL affected files** - Don't miss any .md files that need updates
+3. **Update technical accuracy** - Ensure all examples, commands, and descriptions are current
+4. **Update user instructions** - Keep README.md aligned with actual functionality
+5. **Validate completeness** - Ensure documentation tells the complete current story
+
 ---
 
 *This index is maintained by AI agents. Last updated: 2025-01-16*

@@ -37,18 +37,17 @@ user: "1001:1001"  # dev user, not root
 init: true         # Proper init system for signal handling
 
 # Note: No explicit security_opt in current config
-# Consider adding for production:
-# security_opt:
-#   - no-new-privileges:true
-#   - seccomp:default
+# Security hardening (enabled)
+security_opt:
+  - no-new-privileges:true
 ```
 
 **Resource Limits:**
 ```yaml
 # Temporary filesystems with security restrictions
 tmpfs:
-  - /tmp:noexec,nosuid,size=100m     # No execution from /tmp
-  - /run:noexec,nosuid,size=100m     # No execution from /run
+  - /tmp:noexec,nosuid,nodev,size=500m     # No execution from /tmp, increased size
+  - /run:noexec,nosuid,nodev,size=100m     # No execution from /run
 
 # System resource limits via configs/linux/etc/security/limits.d/99-container.conf:
 # - File descriptors: 65536 (soft/hard)
@@ -141,14 +140,19 @@ ssh-keygen -l -f ~/.ssh/authorized_keys  # List fingerprints
 
 ### User Access Control
 
-**Sudo Configuration:**
+**Sudo Configuration (Temporary Privilege Escalation):**
 ```bash
-# Limited sudo access (in container setup)
-dev ALL=(ALL) NOPASSWD: ALL
+# Build-time: Temporary elevated access for system setup
+dev ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/mkdir, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupadd, /usr/bin/groupmod
 
-# Production considerations - restrict sudo commands:
-# dev ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/systemctl, /usr/bin/docker
+# Runtime: Minimal access after setup completion  
+dev ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay
 ```
+
+**Security Benefits:**
+- **Temporary elevation**: System setup commands only available during build
+- **Permanent minimal access**: Only package management in running container
+- **Principle of least privilege**: No persistent system-level sudo access
 
 **File Permissions Audit:**
 ```bash
