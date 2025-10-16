@@ -27,7 +27,7 @@ help:
 	@printf "  \033[0;34mshell\033[0m      Open tmux session with zsh in container\n"
 	@printf "  \033[0;34minstall\033[0m    Install auto-shell to host shell config\n"
 	@printf "  \033[0;34muninstall\033[0m  Remove auto-shell from host shell config\n"
-	@printf "  \033[0;34mssh\033[0m        Connect via SSH (for VS Code)\n"
+	@printf "  \033[0;34mssh\033[0m        Connect via SSH\n"
 	@printf "  \033[0;34mssh-setup\033[0m  Set up SSH key authentication (no password)\n"
 	@printf "  \033[0;34mlogs\033[0m       Show container logs\n"
 	@printf "  \033[0;34mstatus\033[0m     Show container status\n"
