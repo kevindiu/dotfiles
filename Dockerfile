@@ -45,31 +45,32 @@ RUN --mount=type=cache,target=/home/$USERNAME/.cache,uid=$USER_UID,gid=$USER_GID
 
 FROM base-system AS tools
 
-COPY --chown=$USERNAME:$USERNAME scripts/install-*.sh /tmp/
+COPY --chown=$USERNAME:$USERNAME scripts/install-pacman-tools.sh /tmp/
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     --mount=type=cache,target=/home/$USERNAME/.npm,uid=$USER_UID,gid=$USER_GID \
     chmod +x /tmp/install-pacman-tools.sh && \
-    /tmp/install-pacman-tools.sh
+    /tmp/install-pacman-tools.sh && \
+    rm /tmp/install-pacman-tools.sh
 
-# Install AUR tools with caching
+COPY --chown=$USERNAME:$USERNAME scripts/install-aur-tools.sh /tmp/
 RUN --mount=type=cache,target=/home/$USERNAME/.cache/yay,uid=$USER_UID,gid=$USER_GID \
     --mount=type=cache,target=/home/$USERNAME/.cache/makepkg,uid=$USER_UID,gid=$USER_GID \
     chmod +x /tmp/install-aur-tools.sh && \
-    /tmp/install-aur-tools.sh
+    /tmp/install-aur-tools.sh && \
+    rm /tmp/install-aur-tools.sh
 
-# Install Go tools with parallel execution and caching
+COPY --chown=$USERNAME:$USERNAME scripts/install-go-tools.sh /tmp/
 RUN --mount=type=cache,target=/home/$USERNAME/go,uid=$USER_UID,gid=$USER_GID \
     --mount=type=cache,target=/home/$USERNAME/.cache/go-build,uid=$USER_UID,gid=$USER_GID \
     chmod +x /tmp/install-go-tools.sh && \
-    /tmp/install-go-tools.sh
+    /tmp/install-go-tools.sh && \
+    rm /tmp/install-go-tools.sh
 
-# Install zsh plugins with caching
+COPY --chown=$USERNAME:$USERNAME scripts/install-zsh-plugins.sh /tmp/
 RUN --mount=type=cache,target=/home/$USERNAME/.cache/zsh,uid=$USER_UID,gid=$USER_GID \
     chmod +x /tmp/install-zsh-plugins.sh && \
-    /tmp/install-zsh-plugins.sh
-
-# Clean up installation scripts
-RUN rm -f /tmp/install-*.sh
+    /tmp/install-zsh-plugins.sh && \
+    rm /tmp/install-zsh-plugins.sh
 
 FROM tools AS final
 
@@ -77,7 +78,6 @@ COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /tmp/
 RUN chmod +x /tmp/setup-directories.sh && /tmp/setup-directories.sh
 
 USER root
-# Remove elevated permissions after setup is complete, keep only package management
 RUN sed -i "s|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/mkdir, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupadd, /usr/bin/groupmod|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay|" /etc/sudoers
 COPY scripts/start-sshd.sh /tmp/start-sshd.sh
 RUN echo "$USERNAME:$USERNAME" | chpasswd

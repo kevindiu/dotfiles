@@ -30,7 +30,4 @@ sudo pacman -S --noconfirm --needed "${tools[@]}"
 echo "🧹 Cleaning package cache..."
 sudo pacman -Scc --noconfirm || true
 
-echo "🔧 Enabling corepack..."
-sudo corepack enable || echo "⚠️  Failed to enable corepack (non-critical)"
-
 echo "✅ Pacman tools installation completed!"
