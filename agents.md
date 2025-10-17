@@ -21,7 +21,7 @@ dotfiles/
 ├── .gitignore           # Git ignore patterns
 ├── configs/             # Configuration files
 │   ├── .zshrc           # Zsh shell configuration
-│   ├── .vimrc           # Vim editor configuration
+│   ├── nvim/            # Neovim configuration (init.lua)
 │   ├── .tmux.conf       # Tmux multiplexer configuration
 │   └── linux/           # Linux system configurations
 │       └── etc/         # System configuration files
@@ -58,7 +58,7 @@ dotfiles/
 ### 2. **Development Environment Agent**
 - **Focus**: Developer tools, configurations, and workflows
 - **Key Files**:
-  - `configs/.zshrc`, `configs/.vimrc`, `configs/.tmux.conf`
+  - `configs/.zshrc`, `configs/nvim/init.lua`, `configs/.tmux.conf`
   - `scripts/install-*-tools.sh`
   - `scripts/setup-directories.sh`
 - **Responsibilities**:

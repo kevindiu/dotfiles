@@ -6,17 +6,21 @@ echo "📁 Setting up directories and configurations..."
 
 setup_directories() {
     local go_cache_root="$HOME/.go-cache"
+    local nvim_data_root="$HOME/.local/share/nvim"
+    local nvim_state_root="$HOME/.local/state/nvim"
 
     local vscode_root="$HOME/.vscode"
     local vscode_server_link="$HOME/.vscode-server"
     local vscode_data_root="$vscode_root/data"
     local host_code_config="$HOME/.config/Code"
 
-    mkdir -p ~/.vim/undodir ~/.config \
+    mkdir -p ~/.config ~/.config/nvim \
         "$go_cache_root/pkg/mod" "$go_cache_root/pkg/sumdb" "$go_cache_root/pkg/tool" \
         "$go_cache_root/build-cache" ~/.cache \
         "$vscode_root/extensions" "$vscode_root/bin" \
-        "$vscode_data_root/User" "$vscode_data_root/Machine"
+        "$vscode_data_root/User" "$vscode_data_root/Machine" \
+        "$nvim_data_root/backup" "$nvim_data_root/swap" "$nvim_data_root/undo" "$nvim_data_root/site" \
+        "$nvim_state_root"
 
     if [ ! -L ~/go/src/github.com ]; then
         mkdir -p ~/go

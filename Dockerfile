@@ -3,6 +3,8 @@ ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV SHELL=/bin/zsh
 ENV TERM=xterm-256color
+ENV EDITOR=nvim
+ENV VISUAL=nvim
 ENV MAKEFLAGS=-j$(nproc)
 
 ARG USERNAME=dev

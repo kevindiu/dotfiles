@@ -15,10 +15,10 @@ init_volume_structure() {
     mkdir -p /mnt/npm-cache
     mkdir -p /mnt/vscode-config/{extensions,bin}
     mkdir -p /mnt/vscode-config/data/{User,Machine}
+    mkdir -p /mnt/nvim-data/{backup,swap,undo,state,site}
     mkdir -p /mnt/go-cache/pkg/{mod,sumdb,tool}
     mkdir -p /mnt/go-cache/build-cache
     mkdir -p /mnt/go-cache/bin
-    mkdir -p /mnt/vim-cache/{autoload,plugged,undo,backup,swap}
     
     echo "✅ Directory structures created"
 }
@@ -39,7 +39,7 @@ set_volume_ownership() {
     
     # Skip chown when running as dev user - files are already owned correctly
     if [ "$(id -u)" = "0" ]; then
-        chown -R 1001:1001 /mnt/{security-tools,go-cache,shell-history,git-tools,aws-config,vscode-config,npm-cache,docker-config,vim-cache}
+        chown -R 1001:1001 /mnt/{security-tools,go-cache,shell-history,git-tools,aws-config,vscode-config,nvim-data,npm-cache,docker-config}
         echo "✅ Volume ownership set to dev:dev (1001:1001)"
     else
         echo "✅ Running as dev user - ownership already correct"
@@ -64,7 +64,7 @@ set_volume_permissions() {
     echo "🔒 Setting volume permissions..."
     
     # Set permissions for directories and files we can modify
-    chmod -R 755 /mnt/{go-cache,git-tools,aws-config,vscode-config,npm-cache,docker-config} 2>/dev/null || true
+    chmod -R 755 /mnt/{go-cache,git-tools,aws-config,vscode-config,nvim-data,npm-cache,docker-config} 2>/dev/null || true
     
     chmod 755 /mnt/shell-history 2>/dev/null || true
     chmod 644 /mnt/shell-history/{bash_history,zsh_history,tmux_history} 2>/dev/null || true

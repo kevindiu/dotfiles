@@ -10,6 +10,7 @@ tools=(
     "bat"
     "exa"
     "fzf"
+    "neovim"
     "jq"
     "yq"
     "lazygit"
