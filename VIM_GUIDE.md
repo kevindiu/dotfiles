@@ -30,6 +30,13 @@ w / b                # Forward/backward by word
 gg / G               # Top/bottom of file
 Ctrl+f / Ctrl+b      # Page down/up
 /{text}              # Search (n = next, N = previous)
+jj                   # Exit insert mode (alternative to Esc)
+```
+
+### Command Mode
+```vim
+;                    # Enter command mode (easier than :)
+:                    # Repeat last f/F/t/T search
 ```
 
 ### Jump Commands
@@ -92,9 +99,10 @@ Tab / Shift+Tab      # Next/previous tab
 ,dv                  # Go to definition (vertical)
 ,dt                  # Go to definition (tab)
 ,gd                  # Show documentation
-,gi                  # Show type information
 ,gr                  # Find references
 ,ga                  # Switch between file and test
+,gi                  # Organize imports
+,gf                  # Format code manually
 ```
 
 #### Code Completion & Intelligence
@@ -162,6 +170,7 @@ o / O                # New line below/above
 dd                   # Delete line
 yy                   # Copy line
 p / P                # Paste below/above
+,p                   # Paste without auto-indent issues
 u                    # Undo
 Ctrl+r               # Redo
 ```

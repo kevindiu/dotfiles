@@ -68,6 +68,15 @@ let mapleader = ","
 " Exit insert mode with jj
 inoremap jj <Esc>
 
+" Swap ; and : for easier command mode
+nnoremap ; :
+nnoremap : ;
+vnoremap ; :
+vnoremap : ;
+
+" Better paste behavior (no auto-indent)
+nnoremap <leader>p :set paste<CR>o<Esc>"*]p:set nopaste<CR>
+
 " =============================================================================
 " CODE INTELLIGENCE & COMPLETION (CoC.nvim)
 " =============================================================================
@@ -113,12 +122,13 @@ inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-" Manual completion trigger
+" Manual completion trigger with immediate docs
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
 else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
+
 
 " Show documentation for completion items
 inoremap <silent><expr> <C-d> coc#pum#visible() ? CocActionAsync('showSignatureHelp') : "\<C-d>"
@@ -129,6 +139,8 @@ inoremap <silent><expr> <C-d> coc#pum#visible() ? CocActionAsync('showSignatureH
 
 " Go Formatting & Tools
 let g:go_fmt_command = "goimports"
+let g:go_fmt_autosave = 1
+let g:go_imports_autosave = 1
 let g:go_auto_type_info = 1
 
 " Use gopls for all language server features
@@ -221,6 +233,15 @@ set incsearch
 set ignorecase
 set smartcase
 
+" Better search highlighting
+set hlsearch
+hi Search ctermfg=0 ctermbg=11 guifg=Black guibg=Yellow
+hi IncSearch ctermfg=0 ctermbg=9 guifg=Black guibg=Red
+
+" Show matching brackets
+set showmatch
+set matchtime=2
+
 " Completion & Wildmenu
 set wildmenu
 set wildmode=list:longest
@@ -293,6 +314,10 @@ au FileType go nmap <leader>ga <Plug>(go-alternate-edit)
 au FileType go nmap <leader>gah <Plug>(go-alternate-split)
 au FileType go nmap <leader>gav <Plug>(go-alternate-vertical)
 au FileType go nmap <leader>ie <Plug>(go-iferr)
+
+" Import Organization
+au FileType go nmap <leader>gi :GoImports<CR>
+au FileType go nmap <leader>gf :GoFmt<CR>
 
 " Debugging
 au FileType go nmap <leader>db :DlvToggleBreakpoint<CR>
