@@ -4,17 +4,7 @@
   "suggest.floatEnable": true,
   "suggest.detailMaxLength": 80,
   "suggest.labelMaxLength": 40,
-  "hover.floatConfig": {
-    "maxWidth": 80,
-    "maxHeight": 20,
-    "border": true
-  },
-  "signature.floatConfig": {
-    "maxWidth": 80, 
-    "maxHeight": 20,
-    "border": true
-  },
-  "diagnostic.floatConfig": {
+  "float": {
     "maxWidth": 80,
     "maxHeight": 20,
     "border": true

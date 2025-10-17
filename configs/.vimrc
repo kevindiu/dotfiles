@@ -86,7 +86,6 @@ let g:coc_global_extensions = ['coc-go']
 
 " Enable auto-import suggestions and unimported completions
 let g:go_imports_mode = 'gopls'
-let g:go_imports_autosave = 1
 
 " Floating Documentation Settings (configured in coc-settings.json)
 
