@@ -24,11 +24,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
-" Auto completion (lightweight LSP client)
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Modern LSP with completion preview (latest version)
+Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'npm ci'}
 
 " Syntax highlighting
 Plug 'sheerun/vim-polyglot'
@@ -53,16 +50,68 @@ Plug 'pedrohdz/vim-yaml-folds'
 
 call plug#end()
 
-" LSP settings (automatically configured by vim-lsp-settings)
-let g:lsp_settings_enable_suggestions = 0
-let g:asyncomplete_auto_popup = 1
-let g:asyncomplete_auto_completeopt = 0
+" CoC configuration for Go with floating documentation
+let g:coc_global_extensions = ['coc-go']
 
-" vim-go settings
+" Enable floating documentation
+let g:coc_floating_preview = 1
+let g:coc_preview_max_width = 80
+let g:coc_preview_max_height = 20
+
+" Show documentation in floating window automatically
+autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+
+" Completion behavior
+set completeopt=menu,menuone,noinsert
+set pumheight=15
+
+" Enable hover documentation
+set updatetime=300
+set shortmess+=c
+
+" CoC completion settings (latest version with preview)
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use Tab for trigger completion with characters ahead and navigate with docs
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Show documentation when navigating completion
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Auto-show documentation when completion menu is open
+autocmd CompleteChanged * if pumvisible() | call timer_start(100, {-> CocActionAsync('showSignatureHelp')}) | endif
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use <c-space> to trigger completion
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" vim-go settings  
 let g:go_fmt_command = "goimports"
 let g:go_auto_type_info = 1
 let g:go_def_mode = 'gopls'
 let g:go_info_mode = 'gopls'
+let g:go_rename_command = 'gopls'
+let g:go_implements_mode = 'gopls'
 let g:go_highlight_types = 1
 let g:go_highlight_fields = 1
 let g:go_highlight_functions = 1
@@ -72,18 +121,22 @@ let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 let g:go_auto_sameids = 1
 
-" ALE settings for Go and YAML
+" Disable vim-go completion - use LSP only
+let g:go_code_completion_enabled = 0
+let g:go_gopls_enabled = 1
+
+" Keep ALE for YAML linting only
 let g:ale_linters = {
-\   'go': ['gopls', 'golint', 'go vet'],
 \   'yaml': ['yamllint'],
 \}
 let g:ale_fixers = {
-\   'go': ['goimports', 'gofmt'],
 \   'yaml': ['yamlfix', 'remove_trailing_lines', 'trim_whitespace'],
 \}
 let g:ale_fix_on_save = 1
-let g:ale_go_golangci_lint_options = '--fast'
 let g:ale_yaml_yamllint_options = '-d relaxed'
+
+" Disable ALE for Go (using CoC instead)
+let g:ale_pattern_options = {'\.go$': {'ale_enabled': 0}}
 
 " FZF settings
 let g:fzf_preview_window = 'right:50%'
@@ -159,14 +212,20 @@ au FileType go nmap <leader>t <Plug>(go-test)
 au FileType go nmap <leader>tf <Plug>(go-test-func)
 au FileType go nmap <leader>c <Plug>(go-coverage-toggle)
 
-" Go shortcuts - Navigation and information
-au FileType go nmap <leader>ds <Plug>(go-def-split)
-au FileType go nmap <leader>dv <Plug>(go-def-vertical)
-au FileType go nmap <leader>dt <Plug>(go-def-tab)
-au FileType go nmap <leader>gd <Plug>(go-doc)
-au FileType go nmap <leader>gv <Plug>(go-doc-vertical)
-au FileType go nmap <leader>gi <Plug>(go-info)
-au FileType go nmap <leader>gr <Plug>(go-referrers)
+" Go shortcuts - Navigation and information (using CoC)
+au FileType go nmap <leader>ds <Plug>(coc-definition)
+au FileType go nmap <leader>dv :call CocAction('jumpDefinition', 'vsplit')<CR>
+au FileType go nmap <leader>dt :call CocAction('jumpDefinition', 'tabe')<CR>
+au FileType go nnoremap <leader>gd :call CocActionAsync('doHover')<CR>
+au FileType go nmap <leader>gr <Plug>(coc-references)
+au FileType go nmap <leader>rn <Plug>(coc-rename)
+
+" Additional CoC shortcuts with documentation
+au FileType go nnoremap K :call ShowDocumentation()<CR>
+au FileType go nnoremap <leader>h :call CocActionAsync('doHover')<CR>
+
+" Show documentation for completion items  
+inoremap <silent><expr> <C-d> coc#pum#visible() ? CocActionAsync('showSignatureHelp') : "\<C-d>"
 
 " Go shortcuts - Code manipulation
 au FileType go nmap <leader>ga <Plug>(go-alternate-edit)
@@ -178,6 +237,7 @@ au FileType go nmap <leader>ie <Plug>(go-iferr)
 au FileType go nmap <leader>db :DlvToggleBreakpoint<CR>
 au FileType go nmap <leader>dr :DlvDebug<CR>
 au FileType go nmap <leader>dt :DlvTest<CR>
+
 
 " NERDTree settings
 map <C-n> :NERDTreeToggle<CR>

@@ -97,6 +97,19 @@ Tab / Shift+Tab      # Next/previous tab
 ,ga                  # Switch between file and test
 ```
 
+#### Code Completion & Intelligence
+```vim
+# Auto-completion (triggers automatically while typing):
+Tab / Shift+Tab      # Navigate completion menu
+Enter               # Accept completion
+Ctrl+Space          # Manual completion trigger
+Esc                 # Cancel completion
+
+# Code intelligence:
+:LspStatus          # Check language server status
+:LspInstallServer go # Install/reinstall gopls
+```
+
 #### Code Generation
 ```vim
 ,ie                  # Insert "if err != nil" block
