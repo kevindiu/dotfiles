@@ -11,7 +11,7 @@ services:
       - vscode-config:/mnt/vscode-config
       - npm-cache:/mnt/npm-cache
       - docker-config:/mnt/docker-config
-      - vim-cache:/mnt/vim-cache
+      - nvim-cache:/mnt/nvim-cache
     command: ["sh", "/init-volumes.sh"]
     
   dev-env:
@@ -48,10 +48,9 @@ services:
       - "9000:9000"
     volumes:
       - ./workspace:/workspace
-      - ./configs/.vimrc:/home/dev/.vimrc:ro
+      - ./configs/init.lua:/home/dev/.config/nvim/init.lua:ro
       - ./configs/.zshrc:/home/dev/.zshrc:ro
       - ./configs/.tmux.conf:/home/dev/.tmux.conf:ro
-      - ./configs/coc-settings.json:/home/dev/.vim/coc-settings.json:ro
       - ./configs/linux/etc/ssh/sshd_config:/etc/ssh/sshd_config:ro
       - ./configs/linux/etc/sysctl.d/99-optimized.conf:/etc/sysctl.d/99-optimized.conf:ro
       - ./configs/linux/etc/profile.d:/etc/profile.d:ro
@@ -66,7 +65,7 @@ services:
       - aws-config:/home/dev/.aws
       - vscode-config:/home/dev/.vscode
       - npm-cache:/home/dev/.npm
-      - vim-cache:/home/dev/.vim
+      - nvim-cache:/home/dev/.local/share/nvim
       
       - /var/run/docker.sock:/var/run/docker.sock
       - docker-config:/home/dev/.docker
@@ -85,7 +84,7 @@ volumes:
   vscode-config:
   npm-cache:
   docker-config:
-  vim-cache:
+  nvim-cache:
 
 networks:
   dev-network:

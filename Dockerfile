@@ -22,7 +22,6 @@ RUN --mount=type=cache,target=/var/cache/pacman/pkg \
         git \
         curl \
         wget \
-        vim \
         zsh \
         tmux \
         openssh \

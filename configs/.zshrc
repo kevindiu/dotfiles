@@ -26,6 +26,11 @@ fi
 
 export LANG=en_US.UTF-8
 
+export GOROOT=/usr/lib/go
+export GOPATH=$HOME/go
+export GOBIN=$HOME/go/bin
+export PATH=$PATH:$GOBIN
+
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
@@ -35,7 +40,8 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-alias vi='vim'
+alias vi='nvim'
+alias vim='nvim'
 
 alias gs='git status'
 alias ga='git add'

@@ -12,7 +12,7 @@ setup_directories() {
     local vscode_data_root="$vscode_root/data"
     local host_code_config="$HOME/.config/Code"
 
-    mkdir -p ~/.vim/undodir ~/.config \
+    mkdir -p ~/.config/nvim \
         "$go_cache_root/pkg/mod" "$go_cache_root/pkg/sumdb" "$go_cache_root/pkg/tool" \
         "$go_cache_root/build-cache" ~/.cache \
         "$vscode_root/extensions" "$vscode_root/bin" \

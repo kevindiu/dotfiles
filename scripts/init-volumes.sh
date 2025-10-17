@@ -18,7 +18,7 @@ init_volume_structure() {
     mkdir -p /mnt/go-cache/pkg/{mod,sumdb,tool}
     mkdir -p /mnt/go-cache/build-cache
     mkdir -p /mnt/go-cache/bin
-    mkdir -p /mnt/vim-cache/{autoload,plugged,undo,backup,swap}
+    mkdir -p /mnt/nvim-cache/{lazy,undo,backup,swap}
     
     echo "✅ Directory structures created"
 }
@@ -39,7 +39,7 @@ set_volume_ownership() {
     
     # Skip chown when running as dev user - files are already owned correctly
     if [ "$(id -u)" = "0" ]; then
-        chown -R 1001:1001 /mnt/{security-tools,go-cache,shell-history,git-tools,aws-config,vscode-config,npm-cache,docker-config,vim-cache}
+        chown -R 1001:1001 /mnt/{security-tools,go-cache,shell-history,git-tools,aws-config,vscode-config,npm-cache,docker-config,nvim-cache}
         echo "✅ Volume ownership set to dev:dev (1001:1001)"
     else
         echo "✅ Running as dev user - ownership already correct"
