@@ -120,7 +120,7 @@ Your development environment saves:
 ## 🔧 Customization
 
 - **Shell config**: Edit \`configs/.zshrc\`
-- **Neovim config**: Edit \`configs/init.lua\` (see \`NEOVIM_GUIDE.md\` for usage)
+- **Neovim config**: Edit \`configs/nvim/init.lua\` (see \`NEOVIM_GUIDE.md\` for usage)
 - **Tmux config**: Edit \`configs/.tmux.conf\` (see \`TMUX_GUIDE.md\` for usage)
 - **Add tools**: Modify \`scripts/install-*-tools.sh\`
 
