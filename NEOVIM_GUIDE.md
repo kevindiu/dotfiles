@@ -105,7 +105,7 @@ K                    # Show documentation (LSP hover)
 ,gd / ,h             # Show documentation (alternative bindings)
 ,ds                  # Go to definition
 ,gr                  # Find all references (Telescope)
-,gI                  # Find implementations (Telescope)
+,gi                  # Find implementations (Telescope)
 ,gt                  # Find type definitions (Telescope)
 ,gs                  # Document symbols (current file)
 ,gw                  # Workspace symbols (project-wide search)
