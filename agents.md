@@ -92,6 +92,7 @@ dotfiles/
 - **Style Guidelines**:
   - README.md: User-focused, direct, essential information only
   - Technical docs: Current state reference, actionable procedures
+  - **User guides (VIM_GUIDE.md, TMUX_GUIDE.md): Focus on HOW TO USE features, not configuration details or implementation**
 
 ### 5. **Build & Automation Agent**
 - **Focus**: Build processes, CI/CD, and automation
@@ -194,8 +195,8 @@ When updating documentation:
 **MANDATORY DOCUMENTATION UPDATE CHECKLIST:**
 ☐ **Did I change any configuration files?** → Update relevant guides  
 ☐ **Did I add/remove tools or features?** → Update README.md + guides
-☐ **Did I modify Vim settings?** → Update VIM_GUIDE.md  
-☐ **Did I change tmux config?** → Update TMUX_GUIDE.md
+☐ **Did I modify Vim settings?** → Update VIM_GUIDE.md (focus on usage, not config details)
+☐ **Did I change tmux config?** → Update TMUX_GUIDE.md (focus on usage, not config details)
 ☐ **Did I add new capabilities?** → Update all relevant documentation
 ☐ **Did I learn new user preferences?** → Update agents.md
 
@@ -244,6 +245,7 @@ Information that affects how the system should work, be configured, maintained, 
 - Tool choices and rationale
 - Project-specific conventions or rules
 - Documentation style preferences (e.g., user prefers direct, no-fluff documentation over marketing language)
+- **User guide content preferences: Focus on HOW TO USE features, not configuration implementation details**
 
 **Behavioral Specifications:**
 - How features should behave

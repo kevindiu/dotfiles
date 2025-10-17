@@ -99,15 +99,17 @@ Tab / Shift+Tab      # Next/previous tab
 
 #### Code Completion & Intelligence
 ```vim
-# Auto-completion (triggers automatically while typing):
-Tab / Shift+Tab      # Navigate completion menu
+# Auto-completion with live documentation preview:
+Tab / Shift+Tab      # Navigate completion menu (shows docs automatically)
 Enter               # Accept completion
 Ctrl+Space          # Manual completion trigger
+Ctrl+d              # Show detailed documentation for current item
 Esc                 # Cancel completion
 
-# Code intelligence:
-:LspStatus          # Check language server status
-:LspInstallServer go # Install/reinstall gopls
+# Code intelligence powered by CoC.nvim + gopls:
+:CocInfo            # Check CoC status and configuration
+:CocList extensions # Show installed extensions
+:CocRestart         # Restart language server if needed
 ```
 
 #### Code Generation
@@ -319,12 +321,14 @@ vim deployment.yaml
 :ba                  # Open all buffers in windows
 ```
 
-### Configuration
+### Configuration & Maintenance
 ```vim
 :PlugInstall         # Install plugins
-:PlugUpdate          # Update plugins
+:PlugUpdate          # Update plugins  
 :PlugClean           # Remove unused plugins
 :GoUpdateBinaries    # Update Go tools
+:CocUpdate           # Update CoC extensions
+:CocInstall coc-go   # Reinstall Go extension if needed
 ```
 
 ## Pro Tips
