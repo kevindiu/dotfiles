@@ -81,17 +81,14 @@ nnoremap <leader>p :set paste<CR>o<Esc>"*]p:set nopaste<CR>
 " CODE INTELLIGENCE & COMPLETION (CoC.nvim)
 " =============================================================================
 
-" CoC Extensions
+" CoC Extensions (auto-installed)
 let g:coc_global_extensions = ['coc-go']
 
 " Enable auto-import suggestions and unimported completions
 let g:go_imports_mode = 'gopls'
 let g:go_imports_autosave = 1
 
-" Floating Documentation Settings
-let g:coc_floating_preview = 1
-let g:coc_preview_max_width = 80
-let g:coc_preview_max_height = 20
+" Floating Documentation Settings (configured in coc-settings.json)
 
 " Completion Behavior
 set completeopt=menu,menuone,noinsert

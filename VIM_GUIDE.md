@@ -39,6 +39,10 @@ jj                   # Exit insert mode (alternative to Esc)
 :                    # Repeat last f/F/t/T search
 ```
 
+### Visual Enhancements
+- **Matching brackets** - Highlights `()`, `{}`, `[]` pairs automatically
+- **Better search highlighting** - Yellow background for matches, red for current match
+
 ### Jump Commands
 ```vim
 *                    # Find word under cursor
@@ -98,7 +102,7 @@ Tab / Shift+Tab      # Next/previous tab
 ,ds                  # Go to definition (split)
 ,dv                  # Go to definition (vertical)
 ,dt                  # Go to definition (tab)
-,gd                  # Show documentation
+,gd                  # Show documentation (floating popup)
 ,gr                  # Find references
 ,ga                  # Switch between file and test
 ,gi                  # Organize imports
