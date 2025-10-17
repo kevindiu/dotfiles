@@ -27,14 +27,14 @@ make shell
 - **Manjaro Linux** with latest packages
 - **Zsh** with Oh My Zsh (default shell)
 - **Tmux** for terminal multiplexing
-- **Vim** with Go plugins
+- **Vim** with comprehensive Go development setup
 - **SSH** server for remote access
 
 ### Key Features
 - 🚀 **One Command Setup** - \`make build\` and you're ready to code
 - 💾 **Persistent Data** - Your work, configs, and credentials are saved across restarts
 - 🔑 **Remote Access Ready** - SSH server with key-based authentication
-- 🐹 **Go Development** - Optimized for Go with gopls, delve debugger, and proper module support
+- 🐹 **Go Development** - Full IDE experience with gopls, delve debugger, syntax highlighting, auto-formatting, and comprehensive keybindings
 - ☁️ **Cloud Development** - AWS CLI, kubectl, helm, and Terraform pre-configured
 - 🐳 **Container Native** - Docker-in-Docker for building and testing containers
 - ⚡ **Fast Startup** - Optimized builds with caching and parallel execution
