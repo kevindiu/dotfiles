@@ -259,6 +259,14 @@ vim.api.nvim_create_autocmd('FileType', {
         },
       },
     })
+    
+    -- Auto-format on save (includes import organization)
+    vim.api.nvim_create_autocmd('BufWritePre', {
+      buffer = 0,
+      callback = function()
+        vim.lsp.buf.format({ async = false })
+      end,
+    })
   end,
 })
 
@@ -374,16 +382,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
     
     -- Navigation
     vim.keymap.set('n', '<leader>ds', vim.lsp.buf.definition, opts)
-    vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<leader>gr', '<cmd>Telescope lsp_references<cr>', opts)
+    vim.keymap.set('n', '<leader>gi', '<cmd>Telescope lsp_implementations<cr>', opts)
+    vim.keymap.set('n', '<leader>gt', '<cmd>Telescope lsp_type_definitions<cr>', opts)
+    vim.keymap.set('n', '<leader>gs', '<cmd>Telescope lsp_document_symbols<cr>', opts)
+    vim.keymap.set('n', '<leader>gw', '<cmd>Telescope lsp_dynamic_workspace_symbols<cr>', opts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
     
     -- Code actions
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
     
-    -- Formatting
-    vim.keymap.set('n', '<leader>gf', function()
-      vim.lsp.buf.format({ async = true })
-    end, opts)
     
     -- Diagnostics / Errors
     vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
@@ -408,8 +416,6 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set('n', '<leader>t', ':term go test<CR>', opts)
     vim.keymap.set('n', '<leader>tf', ':term go test -run ', opts)
     
-    -- Import organization using goimports
-    vim.keymap.set('n', '<leader>gi', ':!goimports -w %<CR><CR>', opts)
   end,
 })
 
@@ -462,6 +468,11 @@ vim.keymap.set('n', '<leader>gl', ':Git log --oneline<CR>')
 
 -- Clear search highlighting
 vim.keymap.set('n', '<leader>/', ':nohlsearch<CR>')
+
+-- Navigation history
+vim.keymap.set('n', '<leader><leader>', '<C-o>')  -- Quick go back
+vim.keymap.set('n', '<leader>.', '<C-i>')         -- Quick go forward
+vim.keymap.set('n', '<leader>jl', ':jumps<CR>')   -- Show jump list
 
 -- TreeSitter commands
 vim.keymap.set('n', '<leader>ts', ':TSInstallInfo<CR>')

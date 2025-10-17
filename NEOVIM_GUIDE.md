@@ -104,11 +104,22 @@ Tab / Shift+Tab      # Next/previous tab
 K                    # Show documentation (LSP hover)
 ,gd / ,h             # Show documentation (alternative bindings)
 ,ds                  # Go to definition
-,gr                  # Find references
+,gr                  # Find all references (Telescope)
+,gI                  # Find implementations (Telescope)
+,gt                  # Find type definitions (Telescope)
+,gs                  # Document symbols (current file)
+,gw                  # Workspace symbols (project-wide search)
 ,rn                  # Rename symbol
 ,ca                  # Code actions
-,gf                  # Format code (LSP)
-,gi                  # Organize imports (goimports)
+```
+
+#### Navigation History
+```vim
+,,                   # Go back to previous location
+,.                   # Go forward to next location
+,jl                  # Show jump list (navigation history)
+Ctrl+o               # Standard go back
+Ctrl+i               # Standard go forward
 ```
 
 #### Error Handling & Diagnostics
