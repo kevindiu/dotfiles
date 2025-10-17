@@ -120,8 +120,8 @@ Your development environment saves:
 ## 🔧 Customization
 
 - **Shell config**: Edit \`configs/.zshrc\`
-- **Vim config**: Edit \`configs/.vimrc\`
-- **Tmux config**: Edit \`configs/.tmux.conf\`
+- **Vim config**: Edit \`configs/.vimrc\` (see \`VIM_GUIDE.md\` for usage)
+- **Tmux config**: Edit \`configs/.tmux.conf\` (see \`TMUX_GUIDE.md\` for usage)
 - **Add tools**: Modify \`scripts/install-*-tools.sh\`
 
 ## 🐛 Troubleshooting
