@@ -47,6 +47,10 @@ Plug 'tpope/vim-commentary'
 " Debugging support
 Plug 'sebdah/vim-delve'
 
+" YAML support
+Plug 'stephpy/vim-yaml'
+Plug 'pedrohdz/vim-yaml-folds'
+
 call plug#end()
 
 " LSP settings (automatically configured by vim-lsp-settings)
@@ -68,15 +72,18 @@ let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 let g:go_auto_sameids = 1
 
-" ALE settings for Go
+" ALE settings for Go and YAML
 let g:ale_linters = {
 \   'go': ['gopls', 'golint', 'go vet'],
+\   'yaml': ['yamllint'],
 \}
 let g:ale_fixers = {
 \   'go': ['goimports', 'gofmt'],
+\   'yaml': ['yamlfix', 'remove_trailing_lines', 'trim_whitespace'],
 \}
 let g:ale_fix_on_save = 1
 let g:ale_go_golangci_lint_options = '--fast'
+let g:ale_yaml_yamllint_options = '-d relaxed'
 
 " FZF settings
 let g:fzf_preview_window = 'right:50%'
@@ -135,6 +142,15 @@ au FileType go set noexpandtab
 au FileType go set shiftwidth=4
 au FileType go set softtabstop=4
 au FileType go set tabstop=4
+
+" YAML specific settings
+au FileType yaml set expandtab
+au FileType yaml set shiftwidth=2
+au FileType yaml set softtabstop=2
+au FileType yaml set tabstop=2
+au FileType yaml set autoindent
+au FileType yaml set cursorline
+au FileType yaml set cursorcolumn
 
 " Go shortcuts - Development workflow
 au FileType go nmap <leader>r <Plug>(go-run)

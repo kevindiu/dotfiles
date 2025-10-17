@@ -1,6 +1,6 @@
-# Vim Guide for Go Development
+# Vim Guide for Go Development & YAML Editing
 
-Complete guide for using Vim as your primary Go development editor.
+Complete guide for using Vim as your primary Go development editor and for editing YAML files (Kubernetes manifests, Docker Compose, etc.).
 
 ## Quick Start
 
@@ -8,6 +8,7 @@ Open Vim and start coding:
 ```bash
 make shell          # Enter development environment
 vim main.go         # Open your Go file
+vim deployment.yaml # Open Kubernetes YAML file
 ```
 
 ## Vim Modes
@@ -72,9 +73,11 @@ Ctrl+w w             # Switch to next window
 Tab / Shift+Tab      # Next/previous tab
 ```
 
-## Go Development Shortcuts
+## Language-Specific Features
 
-### Build & Test
+### Go Development Shortcuts
+
+#### Build & Test
 ```vim
 ,r                   # Run Go program
 ,b                   # Build Go program
@@ -94,17 +97,46 @@ Tab / Shift+Tab      # Next/previous tab
 ,ga                  # Switch between file and test
 ```
 
-### Code Generation
+#### Code Generation
 ```vim
 ,ie                  # Insert "if err != nil" block
 ```
 
-### Debugging
+#### Debugging
 ```vim
 ,db                  # Toggle breakpoint
 ,dr                  # Start debugging
 ,dt                  # Debug tests
 ```
+
+### YAML Editing Features
+
+#### Auto-Formatting & Linting
+- **2-space indentation** - Automatic YAML-standard spacing
+- **Auto-format on save** - Fixes whitespace and trailing lines
+- **yamllint integration** - Real-time syntax checking
+- **Cursor guides** - Visual line and column indicators for alignment
+
+#### YAML-Specific Navigation
+```vim
+zc                   # Fold YAML section
+zo                   # Unfold YAML section
+zR                   # Unfold all sections
+zM                   # Fold all sections
+```
+
+#### Indentation Management
+```vim
+>>                   # Indent line (2 spaces)
+<<                   # Un-indent line (2 spaces)
+=                    # Auto-indent selected text
+gg=G                 # Auto-indent entire file
+```
+
+#### YAML Validation
+- Syntax errors highlighted automatically
+- Invalid indentation marked with warnings
+- Missing required fields flagged
 
 ## Text Editing
 
@@ -167,9 +199,11 @@ n / N                # Next/previous match
 - `~` Yellow = Modified lines  
 - `-` Red = Removed lines
 
-## Go Development Workflows
+## Development Workflows
 
-### Starting a New Project
+### Go Development
+
+#### Starting a New Project
 ```vim
 ,f                   # Find/create main.go
 i                    # Enter insert mode
@@ -178,7 +212,7 @@ i                    # Enter insert mode
 ,r                   # Run to test
 ```
 
-### Test-Driven Development
+#### Test-Driven Development
 ```vim
 ,f                   # Open your Go file
 ,ga                  # Switch to test file
@@ -190,19 +224,67 @@ i                    # Implement feature
 ,tf                  # Test again
 ```
 
-### Debugging Workflow
+#### Debugging Workflow
 ```vim
 ,db                  # Set breakpoint on current line
 ,dr                  # Start debugger
 # Use debugger commands to step through
 ```
 
-### Code Exploration
+#### Code Exploration
 ```vim
 # On any function/type:
 ,gd                  # Read documentation
 ,ds                  # Jump to definition
 ,gr                  # See all usages
+```
+
+### YAML Development
+
+#### Kubernetes Manifest Editing
+```vim
+,f                   # Find deployment.yaml
+i                    # Edit manifest
+# Auto-indentation and linting active
+:w                   # Save (auto-formats)
+```
+
+#### Working with Large YAML Files
+```vim
+# Navigate large Kubernetes manifests:
+zM                   # Fold all sections
+/apiVersion          # Search for specific sections
+zR                   # Unfold all when needed
+
+# Quick indentation fixes:
+gg=G                 # Auto-indent entire file
+V                    # Select lines
+=                    # Fix indentation for selection
+```
+
+#### Multi-File YAML Management
+```vim
+# Open related YAML files:
+,f                   # deployment.yaml
+,vs                  # Split vertically
+,f                   # service.yaml
+,hs                  # Split horizontally  
+,f                   # configmap.yaml
+
+# Result: All related K8s resources visible simultaneously
+```
+
+#### YAML Validation Workflow
+```vim
+# Open YAML file - automatic linting active
+vim deployment.yaml
+
+# Fix highlighted syntax errors:
+# - Red underlines = syntax errors
+# - Yellow warnings = style issues
+# - Cursor guides help with alignment
+
+:w                   # Save triggers auto-format
 ```
 
 ## Useful Commands

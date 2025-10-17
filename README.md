@@ -16,7 +16,7 @@ make shell
 ### Development Tools
 - **Go** (latest) + tools (gopls, dlv)
 - **Node.js** + npm 
-- **Kubernetes** - kubectl, helm, k9s
+- **Kubernetes** - kubectl, helm, k9s, kubectx, stern
 - **Cloud** - AWS CLI with SSO support
 - **Terraform** (via tfenv)
 - **Git** + GitHub CLI + GPG
@@ -27,7 +27,7 @@ make shell
 - **Manjaro Linux** with latest packages
 - **Zsh** with Oh My Zsh (default shell)
 - **Tmux** for terminal multiplexing
-- **Vim** with comprehensive Go development setup
+- **Vim** with comprehensive Go development and YAML editing setup
 - **SSH** server for remote access
 
 ### Key Features

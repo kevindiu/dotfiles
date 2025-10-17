@@ -115,7 +115,7 @@ dotfiles/
 
 ### Tool Updates
 - Update Go tools (gopls, delve debugger)
-- Refresh pacman packages (25 tools: ripgrep, fd, bat, go, nodejs, kubectl, helm, etc.)
+- Refresh pacman packages (28 tools: ripgrep, fd, bat, go, nodejs, kubectl, helm, kubectx, stern, yamllint, etc.)
 - Update AUR packages (tfenv, aws-cli-bin, k9s, oh-my-zsh-git)
 - Update zsh plugins (autosuggestions, syntax-highlighting)
 - Maintain editor configurations (vim-go, YouCompleteMe, NERDTree)
@@ -187,16 +187,21 @@ When updating documentation:
 4. **Architecture as reference** - `architecture.md` describes current system design
 5. **Maintenance as procedures** - `maintenance.md` provides current operational steps
 
-### **CRITICAL: AUTOMATIC Documentation Update Requirements**
+### **🚨 CRITICAL: AUTOMATIC Documentation Update Requirements**
 
-**⚠️ STOP AND CHECK AFTER EVERY TASK: Did any documentation become outdated?**
+**❗ BEFORE EVERY RESPONSE: Execute this checklist immediately after making ANY changes:**
 
-**MANDATORY RULE - NO EXCEPTIONS: After completing ANY task, you MUST immediately:**
+**MANDATORY DOCUMENTATION UPDATE CHECKLIST:**
+☐ **Did I change any configuration files?** → Update relevant guides  
+☐ **Did I add/remove tools or features?** → Update README.md + guides
+☐ **Did I modify Vim settings?** → Update VIM_GUIDE.md  
+☐ **Did I change tmux config?** → Update TMUX_GUIDE.md
+☐ **Did I add new capabilities?** → Update all relevant documentation
+☐ **Did I learn new user preferences?** → Update agents.md
 
-1. **STOP** - Before responding to the user, pause and ask: "What documentation is now outdated?"
-2. **ASSESS** - Identify ALL .md files that need updates based on what just happened
-3. **UPDATE** - Modify the affected documentation files immediately  
-4. **NEVER** wait for user to ask - this must be automatic and immediate
+**RULE: Complete this checklist BEFORE responding to user - NO EXCEPTIONS**
+
+If ANY checkbox is checked, you MUST update the corresponding documentation immediately.
 
 **This applies to EVERY interaction where you:**
 - Make ANY file changes (code, config, scripts)

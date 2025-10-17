@@ -22,6 +22,9 @@ tools=(
     "npm"
     "kubectl"
     "helm"
+    "kubectx"
+    "stern"
+    "yamllint"
 )
 
 echo "🔄 Installing ${#tools[@]} pacman tools..."
