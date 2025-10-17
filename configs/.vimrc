@@ -84,6 +84,10 @@ nnoremap <leader>p :set paste<CR>o<Esc>"*]p:set nopaste<CR>
 " CoC Extensions
 let g:coc_global_extensions = ['coc-go']
 
+" Enable auto-import suggestions and unimported completions
+let g:go_imports_mode = 'gopls'
+let g:go_imports_autosave = 1
+
 " Floating Documentation Settings
 let g:coc_floating_preview = 1
 let g:coc_preview_max_width = 80
@@ -149,6 +153,11 @@ let g:go_info_mode = 'gopls'
 let g:go_rename_command = 'gopls'
 let g:go_implements_mode = 'gopls'
 let g:go_gopls_enabled = 1
+
+" Disable vim-go documentation (use CoC floating windows instead)
+let g:go_doc_popup_window = 0
+let g:go_doc_balloon = 0
+let g:go_doc_keywordprg_enabled = 0
 
 " Syntax Highlighting
 let g:go_highlight_types = 1
@@ -304,10 +313,13 @@ au FileType go nmap <leader>dtab :call CocAction('jumpDefinition', 'tabe')<CR>
 au FileType go nmap <leader>gr <Plug>(coc-references)
 au FileType go nmap <leader>rn <Plug>(coc-rename)
 
-" Documentation & Help
-au FileType go nnoremap K :call ShowDocumentation()<CR>
-au FileType go nnoremap <leader>gd :call CocActionAsync('doHover')<CR>
-au FileType go nnoremap <leader>h :call CocActionAsync('doHover')<CR>
+" Documentation & Help (floating popup)
+au FileType go nnoremap <buffer> K :call CocActionAsync('doHover')<CR>
+au FileType go nnoremap <buffer> <leader>gd :call CocActionAsync('doHover')<CR>
+au FileType go nnoremap <buffer> <leader>h :call CocActionAsync('doHover')<CR>
+
+" Ensure K mapping overrides vim-go after plugin loads
+au BufEnter *.go nnoremap <buffer> K :call CocActionAsync('doHover')<CR>
 
 " Code Manipulation
 au FileType go nmap <leader>ga <Plug>(go-alternate-edit)

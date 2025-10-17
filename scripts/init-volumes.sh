@@ -17,6 +17,7 @@ init_volume_structure() {
     mkdir -p /mnt/vscode-config/data/{User,Machine}
     mkdir -p /mnt/go-cache/pkg/{mod,sumdb,tool}
     mkdir -p /mnt/go-cache/build-cache
+    mkdir -p /mnt/go-cache/bin
     mkdir -p /mnt/vim-cache/{autoload,plugged,undo,backup,swap}
     
     echo "✅ Directory structures created"

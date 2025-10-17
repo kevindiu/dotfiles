@@ -35,6 +35,31 @@ setup_directories() {
         echo "✅ Linked Go build cache to ~/.go-cache/build-cache"
     fi
 
+    # Setup Go bin symlink for persistent binaries
+    local go_bin_default="$HOME/go/bin"
+    local go_bin_persistent="$go_cache_root/bin"
+    
+    mkdir -p "$go_bin_persistent"
+    
+    # Always ensure proper symlink setup
+    if [ -e "$go_bin_default" ] && [ ! -L "$go_bin_default" ]; then
+        # Move existing binaries if directory exists
+        if [ -d "$go_bin_default" ]; then
+            echo "📦 Moving existing Go binaries to persistent storage..."
+            cp -r "$go_bin_default"/* "$go_bin_persistent"/ 2>/dev/null || true
+        fi
+        rm -rf "$go_bin_default"
+    fi
+    
+    # Ensure parent directory exists
+    mkdir -p "$(dirname "$go_bin_default")"
+    
+    # Create or refresh symlink
+    if [ ! -L "$go_bin_default" ] || [ "$(readlink "$go_bin_default")" != "$go_bin_persistent" ]; then
+        ln -sf "$go_bin_persistent" "$go_bin_default"
+        echo "✅ Linked Go bin to ~/.go-cache/bin"
+    fi
+
     if [ ! -L "$host_code_config" ]; then
         if [ -d "$host_code_config" ]; then
             if [ "$(find "$host_code_config" -mindepth 1 -print -quit 2>/dev/null)" ]; then
