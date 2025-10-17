@@ -44,7 +44,7 @@ Ctrl+a s            # List and switch sessions
 
 ### Window Management
 ```bash
-Ctrl+a c            # Create new window
+Ctrl+a c            # Create new window (same directory)
 Ctrl+a ,            # Rename window
 Ctrl+a n            # Next window
 Ctrl+a p            # Previous window
@@ -55,8 +55,8 @@ Alt+Left/Right      # Quick window switching
 
 ### Pane Management (Split Windows)
 ```bash
-Ctrl+a |            # Split vertically
-Ctrl+a -            # Split horizontally
+Ctrl+a |            # Split vertically (same directory)
+Ctrl+a -            # Split horizontally (same directory)
 Ctrl+a h/j/k/l      # Navigate panes (vim-style)
 Ctrl+a H/J/K/L      # Resize panes
 Ctrl+a x            # Kill pane

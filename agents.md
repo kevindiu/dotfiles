@@ -173,11 +173,10 @@ make rm
 
 ## 🔗 Related Files
 
-- `architecture.md` - Detailed system design and component relationships
-- `maintenance.md` - Step-by-step maintenance procedures
-- `development.md` - Development workflows and best practices
-- `security.md` - Security policies and procedures
 - `README.md` - User-facing documentation and usage instructions
+- `VIM_GUIDE.md` - How to use Vim for Go development
+- `TMUX_GUIDE.md` - How to use tmux for terminal multiplexing
+- `CLAUDE.md` - Claude Code configuration (references this file)
 
 ## 📝 Documentation Standards
 
@@ -188,94 +187,41 @@ When updating documentation:
 4. **Architecture as reference** - `architecture.md` describes current system design
 5. **Maintenance as procedures** - `maintenance.md` provides current operational steps
 
-### **🚨 CRITICAL: AUTOMATIC Documentation Update Requirements**
+### **Documentation Update Requirements**
 
-**❗ BEFORE EVERY RESPONSE: Execute this checklist immediately after making ANY changes:**
+**Update documentation when:**
+- Configuration files change
+- Features added/removed
+- User preferences learned
+- System behavior modified
 
-**MANDATORY DOCUMENTATION UPDATE CHECKLIST:**
-☐ **Did I change any configuration files?** → Update relevant guides  
-☐ **Did I add/remove tools or features?** → Update README.md + guides
-☐ **Did I modify Vim settings?** → Update VIM_GUIDE.md (focus on usage, not config details)
-☐ **Did I change tmux config?** → Update TMUX_GUIDE.md (focus on usage, not config details)
-☐ **Did I add new capabilities?** → Update all relevant documentation
-☐ **Did I learn new user preferences?** → Update agents.md
+**Key files to update:**
+- README.md (user-facing changes)
+- VIM_GUIDE.md / TMUX_GUIDE.md (usage changes)
+- agents.md (preferences/requirements)
 
-**RULE: Complete this checklist BEFORE responding to user - NO EXCEPTIONS**
+**User Preferences:**
+- **Direct, no-fluff responses** - Skip marketing language and unnecessary elaboration
+- **User-focused documentation** - Clear, actionable information only
+- **Concise answers** - Answer what's asked, nothing more
+- **User guides focus on HOW TO USE** - Not configuration details or implementation
+- **Current state only** - Document what exists now, not historical changes
+- **Code changes should NOT show historical context** - Just make the changes without explaining what was removed or changed
+- **No unnecessary comments in code** - Don't add comments during modifications unless specifically requested
 
-If ANY checkbox is checked, you MUST update the corresponding documentation immediately.
+**Development Environment Focus:**
+- **Go development** - Primary programming language with full IDE experience
+- **YAML editing** - Kubernetes manifests, Docker Compose files
+- **Cloud-native development** - kubectl, helm, k9s, kubectx, stern
+- **Container-based workflow** - Docker development environment
+- **Vim as main editor** - Fully configured with gopls, CoC.nvim, live documentation preview
 
-**This applies to EVERY interaction where you:**
-- Make ANY file changes (code, config, scripts)
-- Add or remove features, tools, or capabilities
-- Change system behavior or configuration
-- Learn new user preferences or requirements
-- Implement solutions or fix problems
-- Modify volumes, containers, or infrastructure
-
-**EXAMPLES OF REQUIRED UPDATES:**
-- Added vim-cache volume → Update README.md persistence section + agents.md volume count
-- Changed SSH approach → Update security.md + architecture.md  
-- User prefers direct documentation → Update agents.md style guidelines
-- Fixed build issues → Update maintenance.md troubleshooting
-
-**Definition of "Important Information":**
-Information that affects how the system should work, be configured, maintained, or used. This includes:
-
-**Technical Requirements & Constraints:**
-- Performance requirements or limitations
-- Security policies, restrictions, or requirements
-- Compatibility requirements or constraints
-- Resource limitations or requirements
-
-**Architecture & Design Decisions:**
-- How components should interact
-- Why certain approaches are preferred or avoided
-- Technology choices and rationale
-- Design patterns or architectural principles to follow
-
-**Operational Information:**
-- How the system should be deployed, built, or maintained
-- Required commands, procedures, or workflows
-- Troubleshooting steps or known issues
-- Configuration requirements or environment setup
-
-**User Preferences & Policies:**
-- Coding standards or style preferences
-- Workflow preferences or development practices  
-- Tool choices and rationale
-- Project-specific conventions or rules
-- Documentation style preferences (e.g., user prefers direct, no-fluff documentation over marketing language)
-- **User guide content preferences: Focus on HOW TO USE features, not configuration implementation details**
-
-**Behavioral Specifications:**
-- How features should behave
-- What constitutes correct vs incorrect behavior
-- Expected inputs, outputs, or side effects
-- Error handling requirements
-
-**NOT Important Information:**
-- Casual conversation or greetings
-- Requests for explanation of existing documented features
-- Simple confirmations or acknowledgments
-- Temporary debugging or exploration without lasting impact
-
-**Comprehensive update triggers:**
-- **ANY file changes** → Check if documentation needs updates
-- **Security changes** → Update `security.md` and `architecture.md`
-- **Build process changes** → Update `architecture.md` and `maintenance.md`  
-- **User-facing changes** → Update `README.md`
-- **Tool additions/removals** → Update `architecture.md` and `README.md`
-- **Configuration changes** → Update relevant technical documentation
-- **Script modifications** → Update `maintenance.md` if procedures change
-- **Docker changes** → Update `architecture.md` and possibly `README.md`
-- **Environment variable changes** → Update `architecture.md`
-
-**Documentation Update Process (AUTOMATIC):**
-1. **After completing ANY task** - Always ask: "What documentation is now outdated?"
-2. **Identify ALL affected files** - Don't miss any .md files that need updates
-3. **Update technical accuracy** - Ensure all examples, commands, and descriptions are current
-4. **Update user instructions** - Keep README.md aligned with actual functionality
-5. **Validate completeness** - Ensure documentation tells the complete current story
+**Development Workflows:**
+- Use `,f` (fuzzy finder) for file navigation
+- Use `,bg` for buffer switching  
+- Use `,ga` to switch between Go files and tests
+- `make build` / `make shell` for container management
+- 9 persistent volumes preserve data across rebuilds
 
 ---
 
