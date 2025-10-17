@@ -27,14 +27,14 @@ make shell
 - **Manjaro Linux** with latest packages
 - **Zsh** with Oh My Zsh (default shell)
 - **Tmux** for terminal multiplexing
-- **Vim** with comprehensive Go development and YAML editing setup
+- **Neovim** with modern LSP, TreeSitter syntax highlighting, and comprehensive Go development setup
 - **SSH** server for remote access
 
 ### Key Features
 - 🚀 **One Command Setup** - \`make build\` and you're ready to code
 - 💾 **Persistent Data** - Your work, configs, and credentials are saved across restarts
 - 🔑 **Remote Access Ready** - SSH server with key-based authentication
-- 🐹 **Go Development** - Full IDE experience with gopls, delve debugger, syntax highlighting, auto-formatting, and comprehensive keybindings
+- 🐹 **Go Development** - Modern IDE experience with native LSP, TreeSitter syntax highlighting, error diagnostics, and comprehensive keybindings
 - ☁️ **Cloud Development** - AWS CLI, kubectl, helm, and Terraform pre-configured
 - 🐳 **Container Native** - Docker-in-Docker for building and testing containers
 - ⚡ **Fast Startup** - Optimized builds with caching and parallel execution
@@ -114,13 +114,13 @@ Your development environment saves:
 - Shell history (zsh, bash, tmux)
 - Go module cache and compiled binaries
 - npm cache and global packages
-- Vim plugins and configuration
+- Neovim plugins and configuration
 - Editor extensions and settings
 
 ## 🔧 Customization
 
 - **Shell config**: Edit \`configs/.zshrc\`
-- **Vim config**: Edit \`configs/.vimrc\` (see \`VIM_GUIDE.md\` for usage)
+- **Neovim config**: Edit \`configs/init.lua\` (see \`NEOVIM_GUIDE.md\` for usage)
 - **Tmux config**: Edit \`configs/.tmux.conf\` (see \`TMUX_GUIDE.md\` for usage)
 - **Add tools**: Modify \`scripts/install-*-tools.sh\`
 

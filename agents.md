@@ -21,7 +21,7 @@ dotfiles/
 ├── .gitignore           # Git ignore patterns
 ├── configs/             # Configuration files
 │   ├── .zshrc           # Zsh shell configuration
-│   ├── .vimrc           # Vim editor configuration
+│   ├── init.lua         # Neovim editor configuration
 │   ├── .tmux.conf       # Tmux multiplexer configuration
 │   └── linux/           # Linux system configurations
 │       └── etc/         # System configuration files
@@ -58,7 +58,7 @@ dotfiles/
 ### 2. **Development Environment Agent**
 - **Focus**: Developer tools, configurations, and workflows
 - **Key Files**:
-  - `configs/.zshrc`, `configs/.vimrc`, `configs/.tmux.conf`
+  - `configs/.zshrc`, `configs/init.lua`, `configs/.tmux.conf`
   - `scripts/install-*-tools.sh`
   - `scripts/setup-directories.sh`
 - **Responsibilities**:
@@ -92,7 +92,7 @@ dotfiles/
 - **Style Guidelines**:
   - README.md: User-focused, direct, essential information only
   - Technical docs: Current state reference, actionable procedures
-  - **User guides (VIM_GUIDE.md, TMUX_GUIDE.md): Focus on HOW TO USE features, not configuration details or implementation**
+  - **User guides (NEOVIM_GUIDE.md, TMUX_GUIDE.md): Focus on HOW TO USE features, not configuration details or implementation**
 
 ### 5. **Build & Automation Agent**
 - **Focus**: Build processes, CI/CD, and automation
@@ -111,15 +111,15 @@ dotfiles/
 ### Container Management
 - Update base image versions (manjarolinux/base:latest)
 - Optimize multi-stage build caching
-- Manage 9 persistent volumes (security-tools, go-cache, shell-history, git-tools, aws-config, vscode-config, npm-cache, docker-config, vim-cache)
+- Manage 9 persistent volumes (security-tools, go-cache, shell-history, git-tools, aws-config, vscode-config, npm-cache, docker-config, nvim-cache)
 - Monitor resource usage and system limits
 
 ### Tool Updates
 - Update Go tools (gopls, delve debugger)
 - Refresh pacman packages (28 tools: ripgrep, fd, bat, go, nodejs, kubectl, helm, kubectx, stern, yamllint, etc.)
-- Update AUR packages (tfenv, aws-cli-bin, k9s, oh-my-zsh-git)
+- Update AUR packages (neovim-nightly-bin, tfenv, aws-cli-bin, k9s, oh-my-zsh-git)
 - Update zsh plugins (autosuggestions, syntax-highlighting)
-- Maintain editor configurations (vim-go, YouCompleteMe, NERDTree)
+- Maintain editor configurations (native LSP, TreeSitter, Telescope, Lazy.nvim)
 
 ### Security Updates
 - Review and update SSH configurations
@@ -174,7 +174,7 @@ make rm
 ## 🔗 Related Files
 
 - `README.md` - User-facing documentation and usage instructions
-- `VIM_GUIDE.md` - How to use Vim for Go development
+- `NEOVIM_GUIDE.md` - How to use Neovim for Go development
 - `TMUX_GUIDE.md` - How to use tmux for terminal multiplexing
 - `CLAUDE.md` - Claude Code configuration (references this file)
 
@@ -197,7 +197,7 @@ When updating documentation:
 
 **Key files to update:**
 - README.md (user-facing changes)
-- VIM_GUIDE.md / TMUX_GUIDE.md (usage changes)
+- NEOVIM_GUIDE.md / TMUX_GUIDE.md (usage changes)
 - agents.md (preferences/requirements)
 
 **User Preferences:**
@@ -214,12 +214,13 @@ When updating documentation:
 - **YAML editing** - Kubernetes manifests, Docker Compose files
 - **Cloud-native development** - kubectl, helm, k9s, kubectx, stern
 - **Container-based workflow** - Docker development environment
-- **Vim as main editor** - Fully configured with gopls, CoC.nvim, live documentation preview
+- **Neovim as main editor** - Modern setup with native LSP, TreeSitter syntax highlighting, Telescope fuzzy finder
 
 **Development Workflows:**
-- Use `,f` (fuzzy finder) for file navigation
-- Use `,bg` for buffer switching  
-- Use `,ga` to switch between Go files and tests
+- Use `,f` (Telescope file finder) for file navigation
+- Use `,bg` for buffer switching (Telescope)
+- Use `,rg` for project-wide text search (Telescope live_grep)
+- Use `,e` and `]d`/`[d` for error navigation (native LSP diagnostics)
 - `make build` / `make shell` for container management
 - 9 persistent volumes preserve data across rebuilds
 
