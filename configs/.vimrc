@@ -65,6 +65,9 @@ filetype plugin indent on
 " Set leader key early
 let mapleader = ","
 
+" Exit insert mode with jj
+inoremap jj <Esc>
+
 " =============================================================================
 " CODE INTELLIGENCE & COMPLETION (CoC.nvim)
 " =============================================================================
