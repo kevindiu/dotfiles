@@ -409,15 +409,3 @@ Esc                  # Normal mode
 ```
 
 This Neovim setup provides a modern IDE experience with native LSP support, TreeSitter syntax highlighting, and Telescope fuzzy finding. The configuration emphasizes built-in Neovim features over external plugins for better performance and reliability.
-
-## Migration from Vim
-
-### Key Differences from Vim
-- **Native LSP** instead of CoC.nvim
-- **TreeSitter** instead of traditional syntax highlighting  
-- **Telescope** instead of FZF (though both work)
-- **Lazy.nvim** instead of vim-plug
-- **Modern colorscheme** with true color support
-
-### Familiar Keybindings Preserved
-All your muscle memory is preserved - same keybindings, same leader key (`,`), same navigation patterns.
