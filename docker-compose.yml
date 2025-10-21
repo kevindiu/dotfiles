@@ -1,6 +1,5 @@
 services:
   volume-init:
-    platform: linux/arm64
     image: manjarolinux/base:latest
     volumes:
       - ./scripts/init-volumes.sh:/init-volumes.sh:ro
@@ -12,10 +11,10 @@ services:
       - vscode-config:/mnt/vscode-config
       - npm-cache:/mnt/npm-cache
       - docker-config:/mnt/docker-config
+      - nvim-cache:/mnt/nvim-cache
     command: ["sh", "/init-volumes.sh"]
     
   dev-env:
-    platform: linux/arm64
     depends_on:
       volume-init:
         condition: service_completed_successfully
@@ -38,8 +37,10 @@ services:
       - "com.docker.compose.project=dotfiles"
       - "dev.environment.type=development"
     tmpfs:
-      - /tmp:noexec,nosuid,size=100m
-      - /run:noexec,nosuid,size=100m
+      - /tmp:noexec,nosuid,nodev,size=500m
+      - /run:noexec,nosuid,nodev,size=100m
+    security_opt:
+      - no-new-privileges:true
     ports:
       - "2222:2222"
       - "8080:8080"
@@ -47,7 +48,7 @@ services:
       - "9000:9000"
     volumes:
       - ./workspace:/workspace
-      - ./configs/.vimrc:/home/dev/.vimrc:ro
+      - ./configs/nvim/init.lua:/home/dev/.config/nvim/init.lua:ro
       - ./configs/.zshrc:/home/dev/.zshrc:ro
       - ./configs/.tmux.conf:/home/dev/.tmux.conf:ro
       - ./configs/linux/etc/ssh/sshd_config:/etc/ssh/sshd_config:ro
@@ -64,6 +65,7 @@ services:
       - aws-config:/home/dev/.aws
       - vscode-config:/home/dev/.vscode
       - npm-cache:/home/dev/.npm
+      - nvim-cache:/home/dev/.local/share/nvim
       
       - /var/run/docker.sock:/var/run/docker.sock
       - docker-config:/home/dev/.docker
@@ -82,6 +84,7 @@ volumes:
   vscode-config:
   npm-cache:
   docker-config:
+  nvim-cache:
 
 networks:
   dev-network:

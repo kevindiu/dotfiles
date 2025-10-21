@@ -31,14 +31,23 @@ help:
 	@printf "  \033[0;34mssh-setup\033[0m  Set up SSH key authentication (no password)\n"
 	@printf "  \033[0;34mlogs\033[0m       Show container logs\n"
 	@printf "  \033[0;34mstatus\033[0m     Show container status\n"
+	@printf "  \033[0;34mbuild-info\033[0m Show build cache information\n"
 	@echo ""
 
 build:
 	@echo "$(BLUE)[BUILD]$(NC) Building development environment..."
-	@export DOCKER_BUILDKIT=1 && export COMPOSE_DOCKER_CLI_BUILD=1 && docker-compose build
+	@echo "$(YELLOW)[INFO]$(NC) Using BuildKit for optimized builds..."
+	@export DOCKER_BUILDKIT=1 && \
+	 export BUILDKIT_PROGRESS=plain && \
+	 docker-compose build --parallel || { \
+		echo "$(RED)[ERROR]$(NC) Build failed. Check logs above."; \
+		exit 1; \
+	}
+	@echo "$(GREEN)[BUILD SUCCESS]$(NC) Starting services..."
 	@$(MAKE) start
 	@echo "$(GREEN)[SUCCESS]$(NC) Environment ready!"
-	@echo "SSH: ssh dev@localhost -p 2222 (password: dev)"
+	@echo "$(YELLOW)[NOTE]$(NC) SSH access: ssh dev@localhost -p 2222 (password: dev)"
+	@echo "$(YELLOW)[TIP]$(NC) Run 'make ssh-setup' for passwordless SSH access"
 
 start:
 	@echo "$(BLUE)[START]$(NC) Starting containers..."
@@ -145,8 +154,7 @@ ssh-setup:
 	@echo "    Port 2222" >> ~/.ssh/config
 	@echo "    User dev" >> ~/.ssh/config
 	@echo "    IdentityFile ~/.ssh/dev-environment" >> ~/.ssh/config
-	@echo "    StrictHostKeyChecking no" >> ~/.ssh/config
-	@echo "    UserKnownHostsFile /dev/null" >> ~/.ssh/config
+	@echo "    StrictHostKeyChecking accept-new" >> ~/.ssh/config
 	@echo "� Checking SSH key installation..."
 	@if docker exec dev-environment test -f /home/dev/.ssh/authorized_keys; then \
 		echo "✅ SSH key already installed in container"; \
@@ -169,3 +177,15 @@ status:
 	@echo ""
 	@echo "$(BLUE)[VOLUMES]$(NC) Persistent volumes:"
 	@docker volume ls | grep dotfiles || echo "No dotfiles volumes found"
+
+build-info:
+	@echo "$(BLUE)[BUILD INFO]$(NC) Docker build cache information:"
+	@echo ""
+	@echo "$(YELLOW)[CACHE USAGE]$(NC)"
+	@docker system df
+	@echo ""
+	@echo "$(YELLOW)[BUILD CACHE]$(NC)"
+	@docker buildx du 2>/dev/null || echo "BuildKit cache info not available"
+	@echo ""
+	@echo "$(YELLOW)[IMAGE INFO]$(NC)"
+	@docker images | grep -E "(dotfiles|dev-environment|manjarolinux)" || echo "No related images found"

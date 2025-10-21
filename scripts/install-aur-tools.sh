@@ -5,6 +5,7 @@ set -euo pipefail
 echo "📦 Installing AUR tools..."
 
 aur_tools=(
+    "neovim-nightly-bin"
     "tfenv"
     "aws-cli-bin"
     "k9s"

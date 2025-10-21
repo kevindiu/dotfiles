@@ -16,7 +16,7 @@ make shell
 ### Development Tools
 - **Go** (latest) + tools (gopls, dlv)
 - **Node.js** + npm 
-- **Kubernetes** - kubectl, helm, k9s
+- **Kubernetes** - kubectl, helm, k9s, kubectx, stern
 - **Cloud** - AWS CLI with SSO support
 - **Terraform** (via tfenv)
 - **Git** + GitHub CLI + GPG
@@ -24,20 +24,21 @@ make shell
 - **CLI Tools** - ripgrep, fd, bat, fzf, jq, yq, httpie, lazygit, zip
 
 ### Base System
-- **Arch Linux** with latest packages
+- **Manjaro Linux** with latest packages
 - **Zsh** with Oh My Zsh (default shell)
 - **Tmux** for terminal multiplexing
-- **Vim** with Go plugins
+- **Neovim** with modern LSP, TreeSitter syntax highlighting, and comprehensive Go development setup
 - **SSH** server for remote access
 
 ### Key Features
 - 🚀 **One Command Setup** - \`make build\` and you're ready to code
 - 💾 **Persistent Data** - Your work, configs, and credentials are saved across restarts
-- 🔑 **Remote Access Ready** - SSH server for remote development access
-- 🐹 **Go Development** - Optimized for Go with gopls, delve debugger, and proper module support
+- 🔑 **Remote Access Ready** - SSH server with key-based authentication
+- 🐹 **Go Development** - Modern IDE experience with native LSP, TreeSitter syntax highlighting, error diagnostics, and comprehensive keybindings
 - ☁️ **Cloud Development** - AWS CLI, kubectl, helm, and Terraform pre-configured
 - 🐳 **Container Native** - Docker-in-Docker for building and testing containers
-- ⚡ **Fast Startup** - Pre-built environment launches in seconds
+- ⚡ **Fast Startup** - Optimized builds with caching and parallel execution
+- 🔒 **Security Hardened** - Restricted privileges and secure SSH configuration
 
 ## 📋 Commands
 
@@ -63,6 +64,7 @@ make ssh             # Connect via SSH
 ### Maintenance
 ```bash
 make clean           # Clean up Docker cache and temporary files
+make build-info      # Show Docker build cache information
 make rm              # Remove everything (⚠️ deletes all your work)
 make help            # Show all available commands
 ```
@@ -112,13 +114,14 @@ Your development environment saves:
 - Shell history (zsh, bash, tmux)
 - Go module cache and compiled binaries
 - npm cache and global packages
+- Neovim plugins and configuration
 - Editor extensions and settings
 
 ## 🔧 Customization
 
 - **Shell config**: Edit \`configs/.zshrc\`
-- **Vim config**: Edit \`configs/.vimrc\`
-- **Tmux config**: Edit \`configs/.tmux.conf\`
+- **Neovim config**: Edit \`configs/nvim/init.lua\` (see \`NEOVIM_GUIDE.md\` for usage)
+- **Tmux config**: Edit \`configs/.tmux.conf\` (see \`TMUX_GUIDE.md\` for usage)
 - **Add tools**: Modify \`scripts/install-*-tools.sh\`
 
 ## 🐛 Troubleshooting

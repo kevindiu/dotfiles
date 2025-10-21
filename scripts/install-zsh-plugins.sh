@@ -6,26 +6,52 @@ echo "🐚 Installing zsh plugins..."
 
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
+# Ensure plugins directory exists
 mkdir -p "$ZSH_CUSTOM/plugins"
 
-{
-    if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-        echo "🔄 Installing zsh-autosuggestions..."
-        git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-        echo "✅ zsh-autosuggestions installed"
-    else
-        echo "✅ zsh-autosuggestions already installed"
-    fi
-} &
-{
-    if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-        echo "🔄 Installing zsh-syntax-highlighting..."
-        git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-        echo "✅ zsh-syntax-highlighting installed"
-    else
-        echo "✅ zsh-syntax-highlighting already installed"
-    fi
-} &
+# Configure git for faster cloning
+git config --global advice.detachedHead false
 
-wait
-echo "✅ Zsh plugins installation completed!"
+# Plugin installation function
+install_plugin() {
+    local name="$1"
+    local url="$2"
+    local target="$ZSH_CUSTOM/plugins/$name"
+    
+    if [ ! -d "$target" ]; then
+        echo "🔄 Installing $name..."
+        if timeout 60 git clone --depth 1 --single-branch "$url" "$target"; then
+            echo "✅ $name installed successfully"
+        else
+            echo "❌ Failed to install $name"
+            return 1
+        fi
+    else
+        echo "✅ $name already installed"
+    fi
+}
+
+# Track background processes
+pids=()
+
+# Install plugins in parallel
+install_plugin "zsh-autosuggestions" "https://github.com/zsh-users/zsh-autosuggestions" &
+pids+=($!)
+
+install_plugin "zsh-syntax-highlighting" "https://github.com/zsh-users/zsh-syntax-highlighting.git" &
+pids+=($!)
+
+# Wait for all installations to complete
+failed=0
+for pid in "${pids[@]}"; do
+    if ! wait "$pid"; then
+        ((failed++))
+    fi
+done
+
+if [ $failed -eq 0 ]; then
+    echo "🎉 All zsh plugins installed successfully!"
+else
+    echo "⚠️  $failed zsh plugins failed to install"
+    exit 1
+fi
