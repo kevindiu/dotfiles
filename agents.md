@@ -1,229 +1,77 @@
 # AI Agent Index for Dotfiles Repository
 
-This repository provides a Docker-based development environment for consistent, portable development. This index helps AI agents understand the repository structure and maintenance responsibilities.
+This repository delivers a Docker-based development environment with persistent tooling for Go and cloud-native work. Use this index to jump to the agent playbooks that outline current responsibilities and procedures.
 
-**Important**: All documentation in this repository focuses on **current state** only. Do not include historical changes, removed features, or deprecated configurations in any documentation files.
+**Important**: Document the **current state** only. Do not describe historical behaviour, deprecated settings, or removed features.
+**Important**: Update the corresponding documentation immediately after every code or configuration change.
+
+## How to Use This Index
+- Start with the repository structure for high-level context
+- Open the role-specific playbook that matches your responsibilities
+- Review shared references (README, guides, scripts) before making changes
+- Update the relevant playbook whenever configs or workflows change
+
+## Agent Playbooks
+- [System Administrator Agent](docs/agents/system-administrator.md)
+- [Development Environment Agent](docs/agents/development-environment.md)
+- [Security Agent](docs/agents/security.md)
+- [Documentation Agent](docs/agents/documentation.md)
+- [Build & Automation Agent](docs/agents/build-automation.md)
+
+## Shared References
+- `README.md` — user onboarding and daily usage
+- `docs/NEOVIM_GUIDE.md` — Neovim usage instructions
+- `docs/TMUX_GUIDE.md` — tmux usage instructions
+- `Dockerfile`, `docker-compose.yml`, `Makefile`, `.env`
+- `scripts/` — automation entrypoints
+- `configs/` — shell, editor, tmux, and Linux system configs
 
 ## 📁 Repository Structure
 
 ```
 dotfiles/
+├── README.md              # User documentation
 ├── agents.md              # This file - AI agent index
-├── architecture.md        # System design documentation
-├── maintenance.md         # Operational procedures
-├── development.md         # Development workflows  
-├── security.md           # Security considerations
-├── README.md             # User documentation
-├── Makefile              # Build and management commands
-├── Dockerfile            # Container image definition
-├── docker-compose.yml    # Service orchestration
-├── .env                  # Environment configuration
-├── .gitignore           # Git ignore patterns
-├── configs/             # Configuration files
-│   ├── .zshrc           # Zsh shell configuration
-│   ├── nvim/            # Neovim configuration
-│   │   └── init.lua     # Main Neovim config file
-│   ├── .tmux.conf       # Tmux multiplexer configuration
-│   └── linux/           # Linux system configurations
-│       └── etc/         # System configuration files
-│           ├── ssh/sshd_config      # SSH daemon config
-│           ├── profile.d/99-development.sh  # Environment variables
-│           ├── sysctl.d/99-optimized.conf   # Kernel parameters
+├── docs/
+│   ├── NEOVIM_GUIDE.md    # Neovim usage guide
+│   ├── TMUX_GUIDE.md      # tmux usage guide
+│   ├── architecture.md    # System design documentation
+│   ├── maintenance.md     # Operational procedures
+│   ├── development.md     # Development workflows  
+│   ├── security.md        # Security considerations
+│   └── agents/            # Role-specific playbooks
+├── Makefile               # Build and management commands
+├── Dockerfile             # Container image definition
+├── docker-compose.yml     # Service orchestration
+├── .env                   # Environment configuration
+├── .gitignore             # Git ignore patterns
+├── configs/               # Configuration files
+│   ├── .zshrc             # Zsh shell configuration
+│   ├── nvim/              # Neovim configuration
+│   │   └── init.lua       # Main Neovim config file
+│   ├── .tmux.conf         # Tmux multiplexer configuration
+│   └── linux/             # Linux system configurations
+│       └── etc/           # System configuration files
+│           ├── ssh/sshd_config                 # SSH daemon config
+│           ├── profile.d/99-development.sh     # Environment variables
+│           ├── sysctl.d/99-optimized.conf      # Kernel parameters
 │           ├── security/limits.d/99-container.conf  # Resource limits
-│           ├── locale.conf          # Locale settings
-│           └── timezone             # Timezone config
-└── scripts/             # Automation scripts
-    ├── init-volumes.sh          # Volume initialization
-    ├── install-pacman-tools.sh  # System package installation
-    ├── install-aur-tools.sh     # AUR package installation
-    ├── install-go-tools.sh      # Go development tools
-    ├── install-zsh-plugins.sh   # Zsh plugin setup
-    ├── setup-directories.sh     # Directory structure setup
-    └── start-sshd.sh           # SSH daemon startup
+│           ├── locale.conf                     # Locale settings
+│           └── timezone                        # Timezone config
+└── scripts/               # Automation scripts
+    ├── init-volumes.sh
+    ├── install-pacman-tools.sh
+    ├── install-aur-tools.sh
+    ├── install-go-tools.sh
+    ├── install-zsh-plugins.sh
+    ├── setup-directories.sh
+    └── start-sshd.sh
 ```
 
-## 🤖 AI Agent Roles & Responsibilities
-
-### 1. **System Administrator Agent**
-- **Focus**: Infrastructure, containers, and system-level maintenance
-- **Key Files**: 
-  - `Dockerfile`, `docker-compose.yml`
-  - `scripts/init-volumes.sh`, `scripts/start-sshd.sh`
-  - `configs/linux/etc/`
-- **Responsibilities**:
-  - Container image optimization
-  - Volume management and persistence
-  - System security hardening
-  - Performance tuning
-
-### 2. **Development Environment Agent**
-- **Focus**: Developer tools, configurations, and workflows
-- **Key Files**:
-  - `configs/.zshrc`, `configs/nvim/init.lua`, `configs/.tmux.conf`
-  - `scripts/install-*-tools.sh`
-  - `scripts/setup-directories.sh`
-- **Responsibilities**:
-  - Tool installation and configuration
-  - Shell environment optimization
-  - Editor and IDE integration
-  - Development workflow enhancement
-
-### 3. **Security Agent**
-- **Focus**: Access control, authentication, and secure practices
-- **Key Files**:
-  - `configs/linux/etc/ssh/sshd_config`
-  - `scripts/start-sshd.sh`
-  - Volume permission configurations
-- **Responsibilities**:
-  - SSH configuration and key management
-  - User permissions and access control
-  - Security vulnerability assessment
-  - Compliance with security best practices
-
-### 4. **Documentation Agent**
-- **Focus**: Maintaining accurate and helpful documentation
-- **Key Files**:
-  - `README.md`, `agents.md`, `*.md` files
-  - Inline documentation in scripts and configs
-- **Responsibilities**:
-  - User-facing documentation updates (direct, clear style - no marketing fluff)
-  - Code documentation and comments
-  - Troubleshooting guides
-  - Change log maintenance
-- **Style Guidelines**:
-  - README.md: User-focused, direct, essential information only
-  - Technical docs: Current state reference, actionable procedures
-  - **User guides (NEOVIM_GUIDE.md, TMUX_GUIDE.md): Focus on HOW TO USE features, not configuration details or implementation**
-
-### 5. **Build & Automation Agent**
-- **Focus**: Build processes, CI/CD, and automation
-- **Key Files**:
-  - `Makefile`
-  - All `scripts/` files
-  - `.gitignore`, `.env`
-- **Responsibilities**:
-  - Build optimization and caching
-  - Automation script maintenance
-  - Dependency management
-  - Performance monitoring
-
-## 🔧 Common Maintenance Tasks
-
-### Container Management
-- Update base image versions (manjarolinux/base:latest)
-- Optimize multi-stage build caching
-- Manage 9 persistent volumes (security-tools, go-cache, shell-history, git-tools, aws-config, vscode-config, npm-cache, docker-config, nvim-cache)
-- Monitor resource usage and system limits
-
-### Tool Updates
-- Update Go tools (gopls, delve debugger)
-- Refresh pacman packages (28 tools: ripgrep, fd, bat, go, nodejs, kubectl, helm, kubectx, stern, yamllint, etc.)
-- Update AUR packages (neovim-nightly-bin, tfenv, aws-cli-bin, k9s, oh-my-zsh-git)
-- Update zsh plugins (autosuggestions, syntax-highlighting)
-- Maintain editor configurations (native LSP, TreeSitter, Telescope, Lazy.nvim)
-
-### Security Updates
-- Review and update SSH configurations
-- Audit user permissions
-- Update security-related packages
-- Review access patterns
-
-### Documentation
-- Keep README.md synchronized with current state
-- Update troubleshooting sections with current procedures
-- Maintain accurate command references
-- Focus on current configuration, not historical changes
-
-## 🚨 Critical Considerations
-
-### Data Persistence
-- Never modify volume initialization without backup procedures
-- Ensure persistent data remains accessible across updates
-- Test volume mounting and permissions thoroughly
-
-### Breaking Changes
-- Always test changes in isolated environments
-- Document any breaking changes in README.md
-- Provide migration paths for existing users
-- Consider backward compatibility
-
-### Security
-- Never commit secrets or credentials
-- Maintain principle of least privilege
-- Regular security audits of configurations
-- Keep SSH and access configurations secure
-
-## 📋 Quick Reference Commands
-
-```bash
-# Build and start environment
-make build
-
-# Enter development shell
-make shell
-
-# SSH setup for VS Code
-make ssh-setup
-
-# Clean and rebuild
-make clean && make build
-
-# Remove everything (dangerous)
-make rm
-```
-
-## 🔗 Related Files
-
-- `README.md` - User-facing documentation and usage instructions
-- `NEOVIM_GUIDE.md` - How to use Neovim for Go development
-- `TMUX_GUIDE.md` - How to use tmux for terminal multiplexing
-- `CLAUDE.md` - Claude Code configuration (references this file)
-
-## 📝 Documentation Standards
-
-When updating documentation:
-1. **Current state only** - Document what exists now, not what was removed or changed
-2. **Clear and actionable** - Focus on procedures and current configuration
-3. **User-focused vs Technical** - README.md for users, other .md files for technical details
-4. **Architecture as reference** - `architecture.md` describes current system design
-5. **Maintenance as procedures** - `maintenance.md` provides current operational steps
-
-### **Documentation Update Requirements**
-
-**Update documentation when:**
-- Configuration files change
-- Features added/removed
-- User preferences learned
-- System behavior modified
-
-**Key files to update:**
-- README.md (user-facing changes)
-- NEOVIM_GUIDE.md / TMUX_GUIDE.md (usage changes)
-- agents.md (preferences/requirements)
-
-**User Preferences:**
-- **Direct, no-fluff responses** - Skip marketing language and unnecessary elaboration
-- **User-focused documentation** - Clear, actionable information only
-- **Concise answers** - Answer what's asked, nothing more
-- **User guides focus on HOW TO USE** - Not configuration details or implementation
-- **Current state only** - Document what exists now, not historical changes
-- **Code changes should NOT show historical context** - Just make the changes without explaining what was removed or changed
-- **No unnecessary comments in code** - Don't add comments during modifications unless specifically requested
-
-**Development Environment Focus:**
-- **Go development** - Primary programming language with full IDE experience
-- **YAML editing** - Kubernetes manifests, Docker Compose files
-- **Cloud-native development** - kubectl, helm, k9s, kubectx, stern
-- **Container-based workflow** - Docker development environment
-- **Neovim as main editor** - Modern setup with native LSP, TreeSitter syntax highlighting, Telescope fuzzy finder
-
-**Development Workflows:**
-- Use `,f` (Telescope file finder) for file navigation
-- Use `,bg` for buffer switching (Telescope)
-- Use `,rg` for project-wide text search (Telescope live_grep)
-- Use `,e` and `]d`/`[d` for error navigation (native LSP diagnostics)
-- `make build` / `make shell` for container management
-- 9 persistent volumes preserve data across rebuilds
+## Notes
+- `workspace/` holds user projects and is not tracked in git
+- Persistent volumes: security-tools, go-cache, shell-history, git-tools, aws-config, vscode-config, npm-cache, docker-config, nvim-cache
+- Make targets provide the primary entrypoints (`make build`, `make shell`, `make ssh-setup`)
 
 ---
 
