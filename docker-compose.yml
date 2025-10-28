@@ -22,6 +22,7 @@ services:
       context: .
       args:
         - BUILD_DATE=${BUILD_DATE:-}
+    image: dotfiles-dev-env
     container_name: dev-environment
     env_file:
       - .env

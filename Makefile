@@ -1,4 +1,4 @@
-.PHONY: help build start stop restart clean logs shell ssh status rm install uninstall
+.PHONY: help build start stop restart clean logs shell ssh status rm install uninstall scan
 
 BLUE := \033[0;34m
 GREEN := \033[0;32m
@@ -32,6 +32,7 @@ help:
 	@printf "  \033[0;34mlogs\033[0m       Show container logs\n"
 	@printf "  \033[0;34mstatus\033[0m     Show container status\n"
 	@printf "  \033[0;34mbuild-info\033[0m Show build cache information\n"
+	@printf "  \033[0;34mscan\033[0m       Scan container image with Trivy\n"
 	@echo ""
 
 build:
@@ -189,3 +190,10 @@ build-info:
 	@echo ""
 	@echo "$(YELLOW)[IMAGE INFO]$(NC)"
 	@docker images | grep -E "(dotfiles|dev-environment|manjarolinux)" || echo "No related images found"
+
+scan:
+	@echo "$(BLUE)[SCAN]$(NC) Scanning image with Trivy..."
+	@docker run --rm \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $$HOME/.cache/trivy:/root/.cache \
+		aquasec/trivy:latest image dotfiles-dev-env
