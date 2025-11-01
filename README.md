@@ -64,6 +64,7 @@ make ssh             # Connect via SSH
 ### Maintenance
 ```bash
 make clean           # Clean up Docker cache and temporary files
+make rebuild         # Rebuild image with fresh dependencies (forces package updates)
 make build-info      # Show Docker build cache information
 make rm              # Remove everything (⚠️ deletes all your work)
 make help            # Show all available commands

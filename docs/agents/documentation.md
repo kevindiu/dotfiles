@@ -11,8 +11,7 @@ Maintains clear, current, actionable documentation across the repository.
 - `README.md`
 - `docs/NEOVIM_GUIDE.md`
 - `docs/TMUX_GUIDE.md`
-- `agents.md` and role-specific agent docs
-- Any `*.md` under `docs/` added for architecture, maintenance, or security procedures
+- `agents.md` and role-specific agent docs under `docs/agents/`
 
 ## Responsibilities
 - Keep documentation synchronized with the current codebase; no historical notes

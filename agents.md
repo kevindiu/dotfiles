@@ -35,10 +35,6 @@ dotfiles/
 ├── docs/
 │   ├── NEOVIM_GUIDE.md    # Neovim usage guide
 │   ├── TMUX_GUIDE.md      # tmux usage guide
-│   ├── architecture.md    # System design documentation
-│   ├── maintenance.md     # Operational procedures
-│   ├── development.md     # Development workflows  
-│   ├── security.md        # Security considerations
 │   └── agents/            # Role-specific playbooks
 ├── Makefile               # Build and management commands
 ├── Dockerfile             # Container image definition
@@ -75,4 +71,4 @@ dotfiles/
 
 ---
 
-*This index is maintained by AI agents. Last updated: 2025-01-16*
+*This index is maintained by AI agents. Last updated: 2025-11-02*

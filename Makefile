@@ -1,4 +1,4 @@
-.PHONY: help build start stop restart clean logs shell ssh status rm install uninstall scan
+.PHONY: help build rebuild start stop restart clean logs shell ssh status rm install uninstall scan update
 
 BLUE := \033[0;34m
 GREEN := \033[0;32m
@@ -21,6 +21,7 @@ help:
 	@echo ""
 	@printf "\033[1;33mMaintenance:\033[0m\n"
 	@printf "  \033[0;34mclean\033[0m          Clean cache and temporary data\n"
+	@printf "  \033[0;34mrebuild\033[0m        Rebuild image with fresh dependencies\n"
 	@printf "  \033[0;34mrm\033[0m             Remove everything including volumes\n"
 	@echo ""
 	@printf "\033[1;33mAccess:\033[0m\n"
@@ -178,6 +179,17 @@ status:
 	@echo ""
 	@echo "$(BLUE)[VOLUMES]$(NC) Persistent volumes:"
 	@docker volume ls | grep dotfiles || echo "No dotfiles volumes found"
+
+rebuild:
+	@echo "$(BLUE)[REBUILD]$(NC) Rebuilding environment with fresh dependencies..."
+	@export DOCKER_BUILDKIT=1 && \
+	 export BUILDKIT_PROGRESS=plain && \
+	 BUILD_DATE=$(shell date -u +%Y%m%d%H%M%S) docker-compose build --pull || { \
+		echo "$(RED)[ERROR]$(NC) Rebuild failed. Check logs above."; \
+		exit 1; \
+	}
+	@$(MAKE) start
+	@echo "$(GREEN)[SUCCESS]$(NC) Environment rebuilt with latest base packages!"
 
 build-info:
 	@echo "$(BLUE)[BUILD INFO]$(NC) Docker build cache information:"
