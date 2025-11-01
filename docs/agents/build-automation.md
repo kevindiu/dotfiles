@@ -10,8 +10,8 @@ Owns build pipelines, automation scripts, and dependency lifecycle.
 ## Key Files
 - `Makefile`
 - All files in `scripts/`
-- `.env`
-- `.gitignore`
+- `Dockerfile`
+- `docker-compose.yml`
 
 ## Responsibilities
 - Keep make targets accurate and fast (`build`, `start`, `shell`, `ssh-setup`, etc.)
@@ -27,11 +27,13 @@ Owns build pipelines, automation scripts, and dependency lifecycle.
 - Review `.gitignore` and `.dockerignore` to ensure caches and workspace folders stay out of version control and images
 
 ## Quick Reference Commands
-- `make build` – build and start the environment
-- `make shell` – enter the container with tmux + zsh
-- `make ssh-setup` – prepare passwordless SSH access
-- `make clean` – prune container and builder cache (non-destructive)
-- `make rm` – remove containers and volumes (destructive; confirm before running)
+- Treat `README.md > Commands` as the definitive syntax list (`make build`, `make shell`, `make ssh-setup`, `make clean`, `make rm`); keep that section current after every change.
+- Highlight new or deprecated targets in `make help` so users discover them without reading the Makefile.
+
+### Destructive Operations
+- Treat `make rm` as a last resort; announce the data loss impact (volumes + workspace) in team comms before running it.
+- Coordinate with the System Administrator Agent when changing behaviour of `make clean`, `make rebuild`, or `make rm`, since volume handling lives in their remit.
+- Update `README.md > Maintenance` immediately if the command semantics change.
 
 ## Breaking Changes Checklist
 - Test high-impact changes in isolated environments before merging

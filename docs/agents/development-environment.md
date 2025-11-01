@@ -39,37 +39,21 @@ Owner for developer tooling, editor experience, and daily workflows.
 ## Daily Workflows
 
 ### Environment Entry
-- `make build` to build images and start services on first run or after dependency changes.
-- `make shell` to attach via `docker exec`; the session auto-opens tmux.
-- `make ssh-setup` followed by `ssh dev-environment` for remote access with staged keys.
-- `make stop` / `make start` to pause or resume the stack without rebuilding.
+- Use `README.md` sections **Quick Start** and **Daily Usage** as the canonical command reference (`make build`, `make shell`, `make start/stop`, `make ssh-setup`).
+- Confirm `make shell` still auto-attaches to tmux; record deviations in `README.md` immediately.
 
 ### Workspace Layout
-- Host `./workspace` mounts to `/workspace`; Go projects inside follow `/workspace/<org>/<repo>`.
-- `scripts/setup-directories.sh` manages symlinks so Go code appears under `~/go/src/github.com`.
-- Persistent caches live in `~/.go-cache`, `~/.vscode`, and other volume-backed directories; verify the links remain intact after upgrades.
+- Host `./workspace` mounts to `/workspace`; keep Go project layout guidance in sync with `README.md > What Gets Persisted`.
+- `scripts/setup-directories.sh` must uphold symlinks into `~/go/src/github.com`; validate after changes to Go tooling or volume paths.
 
 ### Editor & Terminal Workflows
-- Neovim launches via `nvim` (aliases provided); ensure leader bindings such as `,f`, `,bg`, `,rg`, `,r`, `,b`, `,t`, and `,tf` remain accurate.
-- Go files should format on save through `gopls`; YAML defaults to two spaces with guides.
-- tmux prefix is `Ctrl+a`; maintain key bindings for splits (`|`, `-`) and pane navigation (`h/j/k/l`).
-- zsh provides autosuggestions, syntax highlighting, and auto-start tmux; watch `configs/.zshrc` when adjusting plugins.
+- Neovim (`nvim`) leader bindings should mirror `docs/NEOVIM_GUIDE.md`; audit after plugin or keymap changes.
+- Ensure tmux prefix/key bindings, mouse support, and history persistence align with `docs/TMUX_GUIDE.md`.
+- zsh features (autosuggestions, tmux auto-start) remain defined in `configs/.zshrc`; note adjustments in the README tips section as needed.
 
 ### Common Tasks
-- Running Go tests:
-  ```bash
-  make shell
-  cd /workspace/myproject
-  go test ./...
-  ```
-- Building an application image from within the environment:
-  ```bash
-  make shell
-  docker build -t my-image .
-  ```
-- Kubernetes tooling (kubectl, helm, k9s) ships in the image; ensure kubeconfig setup steps remain documented in `README.md`.
-- Temporary tooling installs can use `sudo pacman -S --noconfirm <package>` but should be captured in install scripts for persistence.
+- Keep Go/Kubernetes workflows documented once in `README.md > Tips`; use this playbook only to flag automation or cache considerations.
+- Capture any temporary package installs in the relevant `scripts/install-*-tools.sh` before release and mirror expectations in the README.
 
 ### Clean Up
-- Encourage users to exit tmux panes with `exit`, detach via `Ctrl+a d`, and rely on `make clean` for pruning unused Docker resources.
-- `make rm` removes containers and volumes; update documentation when defaults or prompts change.
+- Keep cleanup behaviour (`make clean`, `make rebuild`) documented in `README.md > Maintenance`; ensure destructive commands reference Build & Automation guidelines before altering behaviour.

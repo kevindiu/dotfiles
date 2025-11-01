@@ -23,35 +23,24 @@ Guardian of access control, authentication, and secure operations.
 ## Security Posture
 
 ### Access Control
-- SSH listens on port `2222` and accepts only the `dev` user; confirm `AllowUsers dev` stays enforced.
-- Keep password authentication disabled and rely exclusively on public key auth; `make ssh-setup` must populate keys and host aliases with `StrictHostKeyChecking accept-new`.
-- Host keys belong in `/home/dev/.security/ssh-host-keys`; regenerate only when missing.
+- SSH only accepts the `dev` user on port 2222; keep `AllowUsers dev` and password auth disabled. `make ssh-setup` must provision keys and `StrictHostKeyChecking accept-new`. Host keys live at `/home/dev/.security/ssh-host-keys`; regenerate only when empty.
 
 ### Container Hardening
-- Maintain non-root execution with UID/GID sourced from `.env`.
-- Ensure `security_opt: no-new-privileges:true` remains in `docker-compose.yml`.
-- Validate tmpfs mounts for `/tmp` and `/run` keep `noexec,nosuid,nodev`, and review sudoers clean-up steps in the Dockerfile.
+- Preserve non-root execution (UID/GID from `.env`), `security_opt: no-new-privileges:true`, and hardened tmpfs mounts (`/tmp`, `/run` with `noexec,nosuid,nodev`). Confirm sudoers cleanup stays in the final Docker layer.
 
 ### Secrets & Credentials
-- Sensitive data resides in persistent volumes: `/home/dev/.security`, `/home/dev/.git_tools`, `/home/dev/.aws`.
-- `scripts/init-volumes.sh` must apply `chmod 700/600` as appropriate; re-test after edits.
-- Never accept storing secrets in the repository; rely on volumes at runtime only.
+- Sensitive volumes: `/home/dev/.security`, `/home/dev/.git_tools`, `/home/dev/.aws`—the full map is in the System Administrator playbook. `scripts/init-volumes.sh` must leave files at `700/600`. Never move secrets into the repository.
 
 ### Package Security
-- Trigger `make build` to pick up pacman/yay security updates; confirm versions for OpenSSH, kubectl, helm, AWS CLI, and other critical tools.
-- Review upstream release notes before bumping major versions and capture required follow-up testing.
-- Document regressions or mitigations when security patches alter expected workflows.
+- Use `make build` to pick up pacman/yay updates; verify key tools (OpenSSH, kubectl, helm, AWS CLI) post-upgrade. Capture release notes and regressions so the README or playbooks can flag follow-up actions.
 
 ### Network & Monitoring
-- Keep the Docker bridge subnet `172.20.0.0/16` and exposed ports (2222, 8080, 3000, 9000) documented; request host firewall rules if additional hardening is needed.
-- Watch container logs (`docker-compose logs dev-env`) for repeated authentication failures.
-- Confirm `MaxAuthTries` and `LoginGraceTime` remain in `configs/linux/etc/ssh/sshd_config`.
-- Use `docker stats dev-environment` or equivalent monitoring to detect anomalous usage patterns.
+- Keep the bridge subnet `172.20.0.0/16` and exposed ports (2222, 8080, 3000, 9000) accurate in the docs. Review `docker-compose logs dev-env` for auth noise, ensure `MaxAuthTries`/`LoginGraceTime` stay in `sshd_config`, and watch `docker stats dev-environment` for unusual resource spikes.
 
 ### Incident Response
-- Revoke compromised keys by removing them from `/home/dev/.security/ssh/authorized_keys` and rerunning `make ssh-setup`.
-- For suspected volume compromise, stop containers, back up required data, delete the specific volume, and re-run `docker-compose up volume-init`.
-- On critical vulnerabilities, rebuild immediately with patched dependencies and document the change in this playbook.
+- Remove compromised keys from `/home/dev/.security/ssh/authorized_keys`, rerun `make ssh-setup`, and note the action here.
+- For a suspect volume, stop containers, back up required data, delete the specific volume, and rerun `docker-compose up volume-init`.
+- Ship emergency rebuilds immediately when critical CVEs land and document the change.
 
 ## Security Procedures
 - Verify `scripts/start-sshd.sh` regenerates host keys only when missing and stores them in `/home/dev/.security/ssh-host-keys`

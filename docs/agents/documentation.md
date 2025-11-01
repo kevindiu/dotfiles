@@ -19,6 +19,7 @@ Maintains clear, current, actionable documentation across the repository.
 - Maintain troubleshooting steps that reflect present-day behaviour
 - Ensure writing style stays direct, user-focused, and free of marketing fluff
 - Align inline comments with repository guidance (add only when truly helpful)
+- Make `README.md` the canonical user reference; other docs should link back instead of duplicating content
 
 ## Documentation Standards
 1. Document current state only—remove references to deprecated features
