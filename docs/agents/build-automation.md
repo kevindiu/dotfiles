@@ -11,6 +11,7 @@
 - Before editing, review `README.md` command descriptions and current `make help` output.
 - After edits, run affected targets, then refresh `README.md > Commands` and `README.md > Maintenance`.
 - Confirm `docker-compose up volume-init` still precedes targets that rely on initialized volumes.
+- Keep `rebuild` using `--pull --no-cache` so package layers refresh during security updates; document any deviation.
 - Ensure `.env` defaults (UID/GID, cache paths) remain in sync with compose and scripts.
 
 ## Guardrails

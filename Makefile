@@ -184,7 +184,7 @@ rebuild:
 	@echo "$(BLUE)[REBUILD]$(NC) Rebuilding environment with fresh dependencies..."
 	@export DOCKER_BUILDKIT=1 && \
 	 export BUILDKIT_PROGRESS=plain && \
-	 BUILD_DATE=$(shell date -u +%Y%m%d%H%M%S) docker-compose build --pull || { \
+	 docker-compose build --pull --no-cache || { \
 		echo "$(RED)[ERROR]$(NC) Rebuild failed. Check logs above."; \
 		exit 1; \
 	}

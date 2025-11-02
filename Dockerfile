@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
-    pacman -Sy --noconfirm && \
+    pacman -Syyu --noconfirm && \
     pacman -S --noconfirm \
         base-devel \
         git \
@@ -40,7 +40,7 @@ USER $USERNAME
 WORKDIR /home/$USERNAME
 
 RUN --mount=type=cache,target=/home/$USERNAME/.cache,uid=$USER_UID,gid=$USER_GID \
-    yay -Sy --noconfirm
+    yay -Syu --noconfirm --needed
 
 FROM base-system AS tools
 
