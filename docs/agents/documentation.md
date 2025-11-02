@@ -1,35 +1,25 @@
 # Documentation Agent
 
-Maintains clear, current, actionable documentation across the repository.
+**Scope**: Keep all documentation current, concise, and aligned with repository behaviour.
 
-## Focus
-- User-facing documentation (`README.md`) and technical references
-- Guide alignment for Neovim, tmux, and any workflow docs
-- In-line script and config notes when essential
+## Duties
+- Treat `README.md` as the canonical user guide; other docs should link back instead of duplicating content.
+- Sync specialized guides (`docs/NEOVIM_GUIDE.md`, `docs/TMUX_GUIDE.md`, agent playbooks) whenever tooling or workflows change.
+- Maintain troubleshooting, upgrade notes, and `agents.md` so they describe the present state only.
 
-## Key Files
+## Routine Checks
+- When configs or scripts change, update `README.md` first, then adjust dependent guides.
+- Prune obsolete sections immediately; rely on git history for archival reference.
+- Verify `agents.md` links resolve and reflect current responsibilities after every documentation edit.
+- Run markdown lint or spellcheck if available to keep style consistent and direct.
+
+## Guardrails
+- Do not duplicate command syntax across documents—link to the canonical section instead.
+- Avoid marketing language; stick to actionable steps, current behaviour, and required context.
+- Coordinate with the owning agent before major rewrites of their playbooks.
+
+## References
 - `README.md`
-- `docs/NEOVIM_GUIDE.md`
-- `docs/TMUX_GUIDE.md`
-- `agents.md` and role-specific agent docs under `docs/agents/`
-
-## Responsibilities
-- Keep documentation synchronized with the current codebase; no historical notes
-- Update guides whenever configs, keybindings, or workflows change
-- Maintain troubleshooting steps that reflect present-day behaviour
-- Ensure writing style stays direct, user-focused, and free of marketing fluff
-- Align inline comments with repository guidance (add only when truly helpful)
-- Make `README.md` the canonical user reference; other docs should link back instead of duplicating content
-
-## Documentation Standards
-1. Document current state only—remove references to deprecated features
-2. Focus on actionable procedures and concrete steps
-3. Use `README.md` for user onboarding, move deep technical detail into specialized docs
-4. Keep guides centered on usage, not implementation specifics
-5. Note breaking changes or migrations in `README.md` when applicable
-
-## Update Triggers
-- Configuration or script changes that affect user interaction
-- New features or removed capabilities
-- Learned user preferences that influence defaults or workflows
-- Security or access changes requiring user action
+- `agents.md`
+- `docs/NEOVIM_GUIDE.md`, `docs/TMUX_GUIDE.md`
+- `docs/agents/`

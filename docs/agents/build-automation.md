@@ -1,42 +1,25 @@
 # Build & Automation Agent
 
-Owns build pipelines, automation scripts, and dependency lifecycle.
+**Scope**: Maintain Makefile targets and automation scripts so builds stay fast, deterministic, and safe.
 
-## Focus
-- Docker build orchestration and caching
-- Automation scripts across `scripts/`
-- Development workflows exposed via `Makefile`
+## Duties
+- Keep `make` targets behaving exactly as described in `README.md > Commands`.
+- Maintain scripts under `scripts/` for installs, volume prep, and helper workflows; surface caching or performance regressions early.
+- Coordinate breaking automation changes with the System Administrator and Documentation agents.
 
-## Key Files
+## Routine Checks
+- Before editing, review `README.md` command descriptions and current `make help` output.
+- After edits, run affected targets, then refresh `README.md > Commands` and `README.md > Maintenance`.
+- Confirm `docker-compose up volume-init` still precedes targets that rely on initialized volumes.
+- Ensure `.env` defaults (UID/GID, cache paths) remain in sync with compose and scripts.
+
+## Guardrails
+- Flag destructive actions (`make rm`, volume pruning) to the System Administrator agent before release.
+- Document any new sudo or network requirements in both scripts and README.
+- Every new target must expose clear help text and be discoverable via `make help`.
+
+## References
 - `Makefile`
-- All files in `scripts/`
-- `Dockerfile`
-- `docker-compose.yml`
-
-## Responsibilities
-- Keep make targets accurate and fast (`build`, `start`, `shell`, `ssh-setup`, etc.)
-- Maintain automation scripts for package installs, directory setup, and SSH provisioning
-- Monitor Docker build cache usage and prune when needed
-- Track dependency updates and coordinate with other agents before applying breaking changes
-- Ensure cleanup commands (`make clean`, `make rm`) clearly communicate impact
-
-## Operational Notes
-- Use BuildKit (`DOCKER_BUILDKIT=1`) and parallel compose builds to minimize build time
-- Validate the `volume-init` job completes before running dependent targets
-- Keep `.env` values in sync with expected user/group IDs for correct volume ownership
-- Review `.gitignore` and `.dockerignore` to ensure caches and workspace folders stay out of version control and images
-
-## Quick Reference Commands
-- Treat `README.md > Commands` as the definitive syntax list (`make build`, `make shell`, `make ssh-setup`, `make clean`, `make rm`); keep that section current after every change.
-- Highlight new or deprecated targets in `make help` so users discover them without reading the Makefile.
-
-### Destructive Operations
-- Treat `make rm` as a last resort; announce the data loss impact (volumes + workspace) in team comms before running it.
-- Coordinate with the System Administrator Agent when changing behaviour of `make clean`, `make rebuild`, or `make rm`, since volume handling lives in their remit.
-- Update `README.md > Maintenance` immediately if the command semantics change.
-
-## Breaking Changes Checklist
-- Test high-impact changes in isolated environments before merging
-- Document breaking changes and migration steps in `README.md`
-- Coordinate volume or cache format changes with the System Administrator Agent
-- Maintain backward compatibility where feasible; otherwise provide clear upgrade paths
+- `scripts/`
+- `README.md > Commands`, `README.md > Maintenance`
+- `.env`, `.dockerignore`, `.gitignore`
