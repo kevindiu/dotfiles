@@ -16,19 +16,15 @@ RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
+    pacman -U https://archlinux.org/packages/community/any/lutris/download && \
     pacman -Syyu --noconfirm && \
     pacman -S --noconfirm \
         base-devel \
         git \
         curl \
         wget \
-        zsh \
-        tmux \
-        openssh \
         sudo \
-        which \
-        yay \
-        ca-certificates && \
+        yay && \
     pacman -Scc --noconfirm
 
 RUN groupadd --gid $USER_GID $USERNAME && \
@@ -39,21 +35,16 @@ RUN groupadd --gid $USER_GID $USERNAME && \
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
-RUN --mount=type=cache,target=/home/$USERNAME/.cache,uid=$USER_UID,gid=$USER_GID \
-    yay -Syu --noconfirm --needed
-
 FROM base-system AS tools
 
 COPY --chown=$USERNAME:$USERNAME scripts/install-pacman-tools.sh /tmp/
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
-    --mount=type=cache,target=/home/$USERNAME/.npm,uid=$USER_UID,gid=$USER_GID \
     chmod +x /tmp/install-pacman-tools.sh && \
     /tmp/install-pacman-tools.sh && \
     rm /tmp/install-pacman-tools.sh
 
 COPY --chown=$USERNAME:$USERNAME scripts/install-aur-tools.sh /tmp/
 RUN --mount=type=cache,target=/home/$USERNAME/.cache/yay,uid=$USER_UID,gid=$USER_GID \
-    --mount=type=cache,target=/home/$USERNAME/.cache/makepkg,uid=$USER_UID,gid=$USER_GID \
     chmod +x /tmp/install-aur-tools.sh && \
     /tmp/install-aur-tools.sh && \
     rm /tmp/install-aur-tools.sh
