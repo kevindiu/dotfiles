@@ -16,7 +16,6 @@ RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
-    pacman -U https://archlinux.org/packages/community/any/lutris/download && \
     pacman -Syyu --noconfirm && \
     pacman -S --noconfirm \
         base-devel \
