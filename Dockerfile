@@ -19,10 +19,6 @@ RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     pacman -Syyu --noconfirm && \
     pacman -S --noconfirm \
         base-devel \
-        git \
-        curl \
-        wget \
-        sudo \
         yay && \
     pacman -Scc --noconfirm
 
