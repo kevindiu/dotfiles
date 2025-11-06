@@ -64,7 +64,7 @@ services:
       - shell-history:/home/dev/.shell_history
       - git-tools:/home/dev/.git_tools
       - aws-config:/home/dev/.aws
-      - vscode-config:/home/dev/.vscode
+      - vscode-config:/home/dev/.vscode-server
       - npm-cache:/home/dev/.npm
       - nvim-cache:/home/dev/.local/share/nvim
       
