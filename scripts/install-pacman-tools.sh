@@ -19,7 +19,6 @@ tools=(
     "github-cli"
     "openssh"
     "gnupg"
-    "go"
     "kubectl"
     "nodejs"
     "npm"

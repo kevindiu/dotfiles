@@ -12,6 +12,7 @@ aur_tools=(
     "aws-cli-bin"
     "k9s"
     "oh-my-zsh-git"
+    "go-bin"
 )
 
 for tool in "${aur_tools[@]}"; do
