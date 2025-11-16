@@ -79,17 +79,25 @@ make ssh-setup       # Handles everything automatically
 Then connect: `ssh dev-environment`
 
 ### Option 2: Manual Setup
-1. Add to `~/.ssh/config`:
+If you prefer to configure things manually, keep in mind that password authentication is disabled. Set up a key pair and copy it into the container:
+
+1. Ensure you have an SSH key (or create one): `ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519`
+2. Install the public key into the container:
+   ```bash
+   cat ~/.ssh/id_ed25519.pub | docker exec -i dev-environment sh -c 'mkdir -p /home/dev/.ssh && cat >> /home/dev/.ssh/authorized_keys && chmod 700 /home/dev/.ssh && chmod 600 /home/dev/.ssh/authorized_keys'
+   ```
+3. Add to `~/.ssh/config`:
    ```
    Host dev-environment
      HostName localhost
      Port 2222
      User dev
+     IdentityFile ~/.ssh/id_ed25519
+     StrictHostKeyChecking accept-new
    ```
-2. Connect: `ssh dev-environment`
-3. Password: `dev`
+4. Connect: `ssh dev-environment`
 
-The automatic setup creates SSH keys for passwordless access and handles all configuration.
+The automatic setup creates SSH keys for passwordless access and handles all configuration for you.
 
 ### Use Cases
 - Remote development from another machine

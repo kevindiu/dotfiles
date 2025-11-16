@@ -4,6 +4,9 @@ set -euo pipefail
 
 echo "🚀 Initializing Docker volumes..."
 
+DEV_UID="${DEV_USER_ID:-1001}"
+DEV_GID="${DEV_GROUP_ID:-1001}"
+
 init_volume_structure() {
     echo "📁 Creating directory structures..."
     
@@ -39,8 +42,8 @@ set_volume_ownership() {
     
     # Skip chown when running as dev user - files are already owned correctly
     if [ "$(id -u)" = "0" ]; then
-        chown -R 1001:1001 /mnt/{security-tools,go-cache,shell-history,git-tools,aws-config,vscode-config,npm-cache,docker-config,nvim-cache}
-        echo "✅ Volume ownership set to dev:dev (1001:1001)"
+        chown -R "$DEV_UID:$DEV_GID" /mnt/{security-tools,go-cache,shell-history,git-tools,aws-config,vscode-config,npm-cache,docker-config,nvim-cache}
+        echo "✅ Volume ownership set to dev:dev (${DEV_UID}:${DEV_GID})"
     else
         echo "✅ Running as dev user - ownership already correct"
     fi
