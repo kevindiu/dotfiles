@@ -5,7 +5,7 @@ A complete, ready-to-use development environment that runs in Docker. Perfect fo
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/kevindiu-kinto/dotfiles.git
+git clone https://github.com/kevindiu/dotfiles.git
 cd dotfiles
 make build
 make shell
