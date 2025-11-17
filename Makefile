@@ -22,6 +22,7 @@ help:
 	@printf "\033[1;33mMaintenance:\033[0m\n"
 	@printf "  \033[0;34mclean\033[0m          Clean cache and temporary data\n"
 	@printf "  \033[0;34mrebuild\033[0m        Rebuild image with fresh dependencies\n"
+	@printf "  \033[0;34mupdate\033[0m         Update pacman + AUR packages in the container\n"
 	@printf "  \033[0;34mrm\033[0m             Remove everything including volumes\n"
 	@echo ""
 	@printf "\033[1;33mAccess:\033[0m\n"
@@ -209,3 +210,19 @@ scan:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $$HOME/.cache/trivy:/root/.cache \
 		aquasec/trivy:latest image dotfiles-dev-env
+
+update:
+	@echo "$(BLUE)[UPDATE]$(NC) Ensuring development container is running..."
+	@docker-compose up -d dev-env >/dev/null
+	@echo "$(BLUE)[UPDATE]$(NC) Updating system packages via pacman..."
+	@docker exec -u root dev-environment bash -lc "pacman -Syyu --noconfirm"
+	@echo "$(BLUE)[UPDATE]$(NC) Preparing temporary sudo wrapper for AUR updates..."
+	@docker exec dev-environment bash -lc "mkdir -p /home/dev/.local/bin"
+	@docker cp scripts/sudo-wrapper.sh dev-environment:/home/dev/.local/bin/sudo-wrapper.sh
+	@docker exec -u root dev-environment bash -lc "chown dev:dev /home/dev/.local/bin/sudo-wrapper.sh && chmod +x /home/dev/.local/bin/sudo-wrapper.sh"
+	@echo "$(BLUE)[UPDATE]$(NC) Updating AUR packages via yay..."
+	@docker exec dev-environment bash -lc "YAY_SUDO=/home/dev/.local/bin/sudo-wrapper.sh yay -Sua --noconfirm --needed --answerdiff None --answerclean None"
+	@docker exec dev-environment bash -lc "rm -f /home/dev/.local/bin/sudo-wrapper.sh"
+	@echo "$(BLUE)[UPDATE]$(NC) Cleaning package cache..."
+	@docker exec -u root dev-environment bash -lc "pacman -Scc --noconfirm || true"
+	@echo "$(GREEN)[SUCCESS]$(NC) Container packages updated. Restart with 'make restart' if needed."

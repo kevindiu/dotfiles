@@ -65,6 +65,7 @@ make ssh             # Connect via SSH
 ```bash
 make clean           # Clean up Docker cache and temporary files
 make rebuild         # Rebuild image with fresh dependencies (forces package updates)
+make update          # Update pacman + AUR packages inside the running container
 make build-info      # Show Docker build cache information
 make rm              # Remove everything (⚠️ deletes all your work)
 make help            # Show all available commands
@@ -109,6 +110,7 @@ The automatic setup creates SSH keys for passwordless access and handles all con
 
 - **First time**: Run \`make build\` to set everything up
 - **Daily use**: Just \`make shell\` to start coding
+- **Stay updated**: Run \`make update\` to refresh pacman + AUR packages inside the container
 - **Remote access**: Use `make ssh-setup` once for passwordless SSH access
 - **Auto-entry**: Run \`make install\` to automatically enter the container when you open a terminal
 - **Persistent data**: Your code, Git config, AWS credentials, and shell history are saved between sessions

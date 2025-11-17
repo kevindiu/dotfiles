@@ -61,7 +61,8 @@ dotfiles/
     ├── install-go-tools.sh
     ├── install-zsh-plugins.sh
     ├── setup-directories.sh
-    └── start-sshd.sh
+    ├── start-sshd.sh
+    └── sudo-wrapper.sh
 ```
 
 ## Notes
