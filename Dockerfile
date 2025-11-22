@@ -59,8 +59,8 @@ RUN --mount=type=cache,target=/home/$USERNAME/.cache/zsh,uid=$USER_UID,gid=$USER
 
 FROM tools AS final
 
-COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /tmp/
-RUN chmod +x /tmp/setup-directories.sh && /tmp/setup-directories.sh
+COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /usr/local/bin/setup-directories.sh
+RUN chmod +x /usr/local/bin/setup-directories.sh && /usr/local/bin/setup-directories.sh
 
 USER root
 RUN sed -i "s|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/mkdir, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupadd, /usr/bin/groupmod|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay|" /etc/sudoers
