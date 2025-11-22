@@ -10,6 +10,7 @@
 ## Routine Checks
 - After config or script edits, run `make shell` to confirm tmux auto-start, Neovim keymaps (`,f`, `,bg`, `,rg`, diagnostics, Go helpers), and zsh plugins.
 - Verify `scripts/setup-directories.sh` continues to wire Go cache, VS Code server, and workspace symlinks correctly.
+- `scripts/start-sshd.sh` re-runs `setup-directories.sh` on every container boot and prepares the SSH runtime directories, so keep it idempotent and fast.
 - Update `README.md > Quick Start`, `README.md > Tips`, and both editor guides whenever behaviour changes.
 - Promote temporary tooling into the relevant install script before release.
 
