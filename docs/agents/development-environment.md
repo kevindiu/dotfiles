@@ -24,3 +24,8 @@
 - `scripts/install-pacman-tools.sh`, `scripts/install-aur-tools.sh`, `scripts/install-go-tools.sh`, `scripts/install-zsh-plugins.sh`, `scripts/setup-directories.sh`
 - `README.md > Quick Start`, `README.md > Tips`
 - `docs/NEOVIM_GUIDE.md`, `docs/TMUX_GUIDE.md`
+
+## AI Agent & External Tooling
+- **Access**: External AI agents (e.g., Antigravity, Cursor) should connect via SSH (`ssh dev@localhost -p 2222`). Ensure `make ssh-setup` has been run.
+- **Persistence**: The environment persists `.vscode`, `.vscode-server`, `.vscode-server-insiders`, and `.vscode-remote` directories. This allows agents to install extensions and save settings that survive container restarts.
+

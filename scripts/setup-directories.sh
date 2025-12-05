@@ -9,6 +9,8 @@ setup_directories() {
 
     local vscode_root="$HOME/.vscode"
     local vscode_server_link="$HOME/.vscode-server"
+    local vscode_server_insiders_link="$HOME/.vscode-server-insiders"
+    local vscode_remote_link="$HOME/.vscode-remote"
     local vscode_data_root="$vscode_root/data"
     local host_code_config="$HOME/.config/Code"
 
@@ -86,6 +88,34 @@ setup_directories() {
         fi
         ln -sfn "$vscode_root" "$vscode_server_link"
         echo "✅ Linked ~/.vscode-server to ~/.vscode"
+    fi
+
+    if [ ! -L "$vscode_server_insiders_link" ]; then
+        if [ -d "$vscode_server_insiders_link" ]; then
+            if [ "$(find "$vscode_server_insiders_link" -mindepth 1 -print -quit 2>/dev/null)" ]; then
+                echo "ℹ️  Migrating existing VS Code Insiders server files into ~/.vscode"
+                cp -a "$vscode_server_insiders_link/." "$vscode_root/" 2>/dev/null || true
+            fi
+            rm -rf "$vscode_server_insiders_link"
+        else
+            rm -f "$vscode_server_insiders_link"
+        fi
+        ln -sfn "$vscode_root" "$vscode_server_insiders_link"
+        echo "✅ Linked ~/.vscode-server-insiders to ~/.vscode"
+    fi
+
+    if [ ! -L "$vscode_remote_link" ]; then
+        if [ -d "$vscode_remote_link" ]; then
+            if [ "$(find "$vscode_remote_link" -mindepth 1 -print -quit 2>/dev/null)" ]; then
+                echo "ℹ️  Migrating existing VS Code Remote files into ~/.vscode"
+                cp -a "$vscode_remote_link/." "$vscode_root/" 2>/dev/null || true
+            fi
+            rm -rf "$vscode_remote_link"
+        else
+            rm -f "$vscode_remote_link"
+        fi
+        ln -sfn "$vscode_root" "$vscode_remote_link"
+        echo "✅ Linked ~/.vscode-remote to ~/.vscode"
     fi
 }
 
