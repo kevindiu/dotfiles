@@ -14,8 +14,9 @@ services:
       - npm-cache:/mnt/npm-cache
       - docker-config:/mnt/docker-config
       - nvim-cache:/mnt/nvim-cache
-    command: ["sh", "/init-volumes.sh"]
-    
+      - antigravity-cache:/mnt/antigravity-cache
+    command: [ "sh", "/init-volumes.sh" ]
+
   dev-env:
     depends_on:
       volume-init:
@@ -31,7 +32,7 @@ services:
     user: "${DEV_USER_ID:-1001}:${DEV_GROUP_ID:-1001}"
     init: true
     healthcheck:
-      test: ["CMD", "pgrep", "sshd"]
+      test: [ "CMD", "pgrep", "sshd" ]
       interval: 30s
       timeout: 10s
       start_period: 5s
@@ -69,7 +70,8 @@ services:
       - vscode-config:/home/dev/.vscode
       - npm-cache:/home/dev/.npm
       - nvim-cache:/home/dev/.local/share/nvim
-      
+      - antigravity-cache:/home/dev/.antigravity-server
+
       - /var/run/docker.sock:/var/run/docker.sock
       - docker-config:/home/dev/.docker
     stdin_open: true
@@ -88,6 +90,8 @@ volumes:
   npm-cache:
   docker-config:
   nvim-cache:
+  antigravity-cache:
+
 
 networks:
   dev-network:
