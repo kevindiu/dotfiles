@@ -18,7 +18,8 @@ setup_directories() {
         "$go_cache_root/pkg/mod" "$go_cache_root/pkg/sumdb" "$go_cache_root/pkg/tool" \
         "$go_cache_root/build-cache" ~/.cache \
         "$vscode_root/extensions" "$vscode_root/bin" \
-        "$vscode_data_root/User" "$vscode_data_root/Machine"
+        "$vscode_data_root/User" "$vscode_data_root/Machine" \
+        "$HOME/.go-tmp"
 
     if [ ! -L ~/go/src/github.com ]; then
         mkdir -p ~/go
