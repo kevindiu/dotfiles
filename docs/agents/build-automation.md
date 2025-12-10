@@ -6,6 +6,7 @@
 - Keep `make` targets behaving exactly as described in `README.md > Commands`.
 - Maintain scripts under `scripts/` for installs, volume prep, and helper workflows; surface caching or performance regressions early.
 - Coordinate breaking automation changes with the System Administrator and Documentation agents.
+- Maintain `make backup` and `make restore` targets, ensuring they correctly capture the `workspace` and `/home/dev` volumes.
 
 ## Routine Checks
 - Before editing, review `README.md` command descriptions and current `make help` output.
@@ -13,6 +14,7 @@
 - Confirm `docker-compose up volume-init` still precedes targets that rely on initialized volumes.
 - Keep `rebuild` using `--pull --no-cache` so package layers refresh during security updates; document any deviation.
 - Ensure `.env` defaults (UID/GID, cache paths) remain in sync with compose and scripts.
+- Ensure the `HEALTHCHECK` instruction in `Dockerfile` remains optimized and doesn't flap.
 
 ## Guardrails
 - Flag destructive actions (`make rm`, volume pruning) to the System Administrator agent before release.

@@ -1,9 +1,9 @@
 FROM manjarolinux/base:latest AS base-system
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
-ENV SHELL=/bin/zsh
-ENV TERM=xterm-256color
-ENV MAKEFLAGS=-j$(nproc)
+ENV LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    SHELL=/bin/zsh \
+    TERM=xterm-256color \
+    MAKEFLAGS=-j$(nproc)
 
 ARG USERNAME=dev
 ARG USER_UID=${DEV_USER_ID:-1001}
@@ -14,18 +14,17 @@ RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     sed -i 's/#ParallelDownloads = 5/ParallelDownloads = 20/' /etc/pacman.conf && \
     sed -i 's/#Color/Color/' /etc/pacman.conf && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen
-RUN --mount=type=cache,target=/var/cache/pacman/pkg \
+    locale-gen && \
     pacman -Syyu --noconfirm && \
     pacman -S --noconfirm \
-        base-devel \
-        yay && \
-    pacman -Scc --noconfirm
-
-RUN groupadd --gid $USER_GID $USERNAME && \
+    base-devel \
+    yay && \
+    pacman -Scc --noconfirm && \
+    groupadd --gid $USER_GID $USERNAME && \
     useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /bin/zsh && \
     chmod 750 /home/$USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/mkdir, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupadd, /usr/bin/groupmod" >> /etc/sudoers
+
 
 USER $USERNAME
 WORKDIR /home/$USERNAME
@@ -59,8 +58,8 @@ RUN --mount=type=cache,target=/home/$USERNAME/.cache/zsh,uid=$USER_UID,gid=$USER
 
 FROM tools AS final
 
-COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /tmp/
-RUN chmod +x /tmp/setup-directories.sh && /tmp/setup-directories.sh
+COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /usr/local/bin/setup-directories.sh
+RUN chmod +x /usr/local/bin/setup-directories.sh && /usr/local/bin/setup-directories.sh
 
 USER root
 RUN sed -i "s|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/mkdir, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupadd, /usr/bin/groupmod|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay|" /etc/sudoers
@@ -72,3 +71,8 @@ RUN install -o root -g root -m 755 /tmp/start-sshd.sh /usr/local/bin/start-sshd.
 EXPOSE 2222
 WORKDIR /workspace
 CMD ["/usr/local/bin/start-sshd.sh"]
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD pgrep sshd || exit 1
+
+

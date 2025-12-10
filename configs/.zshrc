@@ -30,6 +30,7 @@ export GOROOT=/usr/lib/go
 export GOPATH=$HOME/go
 export GOBIN=$HOME/go/bin
 export PATH=$PATH:$GOBIN
+export GOTMPDIR=$HOME/.go-tmp
 
 alias ll='ls -alF'
 alias la='ls -A'

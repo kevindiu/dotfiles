@@ -36,7 +36,13 @@ help:
 	@printf "  \033[0;34mbuild-info\033[0m Show build cache information\n"
 	@printf "  \033[0;34mscan\033[0m       Scan container image with Trivy\n"
 	@echo ""
+	@echo ""
+	@printf "\033[1;33mBackup/Restore:\033[0m\n"
+	@printf "  \033[0;34mbackup\033[0m     Backup workspace and persistent volumes to ./backups\n"
+	@printf "  \033[0;34mrestore\033[0m    Restore from a backup file\n"
+	@echo ""
 
+build:
 build:
 	@echo "$(BLUE)[BUILD]$(NC) Building development environment..."
 	@echo "$(YELLOW)[INFO]$(NC) Using BuildKit for optimized builds..."
@@ -226,3 +232,12 @@ update:
 	@echo "$(BLUE)[UPDATE]$(NC) Cleaning package cache..."
 	@docker exec -u root dev-environment bash -lc "pacman -Scc --noconfirm || true"
 	@echo "$(GREEN)[SUCCESS]$(NC) Container packages updated. Restart with 'make restart' if needed."
+
+backup:
+	@echo "$(BLUE)[BACKUP]$(NC) Backing up environment..."
+	@mkdir -p backups
+	@docker run --rm --volumes-from dev-environment -v $$(pwd)/backups:/backup alpine tar czf /backup/backup-$$(date +%Y%m%d-%H%M%S).tar.gz /home/dev /workspace || echo "$(RED)[ERROR]$(NC) Backup failed. Is the container running?"
+	@echo "$(GREEN)[SUCCESS]$(NC) Backup created in ./backups/"
+
+restore:
+	@echo "$(RED)[WARNING]$(NC) Restore functionality is a placeholder. Manually extract the tarball to restore."

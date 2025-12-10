@@ -14,12 +14,38 @@ services:
       - npm-cache:/mnt/npm-cache
       - docker-config:/mnt/docker-config
       - nvim-cache:/mnt/nvim-cache
-    command: ["sh", "/init-volumes.sh"]
-    
+      - antigravity-cache:/mnt/antigravity-cache
+    command: [ "sh", "/init-volumes.sh" ]
+
+  docker-proxy:
+    image: tecnativa/docker-socket-proxy:latest
+    container_name: docker-proxy
+    privileged: true
+    environment:
+      - CONTAINERS=1
+      - IMAGES=1
+      - NETWORKS=1
+      - VOLUMES=1
+      - BUILD=1
+      - EXEC=1
+      - SWARM=0
+      - NODES=0
+      - PLUGINS=0
+      - SYSTEM=0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    networks:
+      - dev-network
+
   dev-env:
     depends_on:
       volume-init:
         condition: service_completed_successfully
+      docker-proxy:
+        condition: service_started
+    environment:
+      - DOCKER_HOST=tcp://docker-proxy:2375
     build:
       context: .
       args:
@@ -31,7 +57,7 @@ services:
     user: "${DEV_USER_ID:-1001}:${DEV_GROUP_ID:-1001}"
     init: true
     healthcheck:
-      test: ["CMD", "pgrep", "sshd"]
+      test: [ "CMD", "pgrep", "sshd" ]
       interval: 30s
       timeout: 10s
       start_period: 5s
@@ -69,9 +95,10 @@ services:
       - vscode-config:/home/dev/.vscode
       - npm-cache:/home/dev/.npm
       - nvim-cache:/home/dev/.local/share/nvim
-      
-      - /var/run/docker.sock:/var/run/docker.sock
+      - antigravity-cache:/home/dev/.antigravity-server
+
       - docker-config:/home/dev/.docker
+
     stdin_open: true
     tty: true
     restart: unless-stopped
@@ -88,6 +115,8 @@ volumes:
   npm-cache:
   docker-config:
   nvim-cache:
+  antigravity-cache:
+
 
 networks:
   dev-network:

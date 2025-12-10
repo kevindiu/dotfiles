@@ -28,6 +28,7 @@ tools=(
     "yamllint"
     "tmux"
     "zsh"
+    "wget"
 )
 
 echo "🔄 Installing ${#tools[@]} pacman tools..."

@@ -5,6 +5,7 @@
 ## Duties
 - Enforce SSH policy: user `dev` only, port 2222, pubkey auth, host keys persisted in `/home/dev/.security/ssh-host-keys`.
 - Guard permissions for sensitive volumes (`/home/dev/.security`, `/home/dev/.git_tools`, `/home/dev/.aws`) via `scripts/init-volumes.sh`.
+- Monitor the security implications of persistent IDE extensions in `.vscode-server-insiders` and `.vscode-remote`.
 - Track security-impacting package updates (OpenSSH, kubectl, helm, AWS CLI, etc.) and coordinate rebuilds.
 - Monitor container capabilities and hardening (`security_opt: no-new-privileges:true`, tmpfs flags, sudo cleanup).
 

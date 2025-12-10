@@ -10,6 +10,7 @@
 ## Routine Checks
 - After config or script edits, run `make shell` to confirm tmux auto-start, Neovim keymaps (`,f`, `,bg`, `,rg`, diagnostics, Go helpers), and zsh plugins.
 - Verify `scripts/setup-directories.sh` continues to wire Go cache, VS Code server, and workspace symlinks correctly.
+- `scripts/start-sshd.sh` re-runs `setup-directories.sh` on every container boot and prepares the SSH runtime directories, so keep it idempotent and fast.
 - Update `README.md > Quick Start`, `README.md > Tips`, and both editor guides whenever behaviour changes.
 - Promote temporary tooling into the relevant install script before release.
 
@@ -23,3 +24,8 @@
 - `scripts/install-pacman-tools.sh`, `scripts/install-aur-tools.sh`, `scripts/install-go-tools.sh`, `scripts/install-zsh-plugins.sh`, `scripts/setup-directories.sh`
 - `README.md > Quick Start`, `README.md > Tips`
 - `docs/NEOVIM_GUIDE.md`, `docs/TMUX_GUIDE.md`
+
+## AI Agent & External Tooling
+- **Access**: External AI agents (e.g., Antigravity, Cursor) should connect via SSH (`ssh dev@localhost -p 2222`). Ensure `make ssh-setup` has been run.
+- **Persistence**: The environment persists `.vscode`, `.vscode-server`, `.vscode-server-insiders`, and `.vscode-remote` directories. This allows agents to install extensions and save settings that survive container restarts.
+
