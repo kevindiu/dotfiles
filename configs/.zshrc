@@ -83,7 +83,7 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 
-if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]]; then 
+if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]]; then 
     echo "🚀 Starting new tmux session"
     exec tmux new-session
 fi

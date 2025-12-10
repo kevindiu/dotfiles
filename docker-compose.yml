@@ -60,7 +60,7 @@ services:
       test: [ "CMD", "pgrep", "sshd" ]
       interval: 30s
       timeout: 10s
-      start_period: 5s
+      start_period: 15s
       retries: 3
     labels:
       - "com.docker.compose.project=dotfiles"
