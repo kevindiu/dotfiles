@@ -1,28 +1,17 @@
 # Build & Automation Agent
 
-**Scope**: Maintain Makefile targets and automation scripts so builds stay fast, deterministic, and safe.
+**Scope**: Makefile targets, build scripts, and Determinism.
 
 ## Duties
-- Keep `make` targets behaving exactly as described in `README.md > Commands`.
-- Maintain scripts under `scripts/` for installs, volume prep, and helper workflows; surface caching or performance regressions early.
-- Coordinate breaking automation changes with the System Administrator and Documentation agents.
-- Maintain `make backup` and `make restore` targets, ensuring they correctly capture the `workspace` and `/home/dev` volumes.
+- **Makefile**: Maintain user-facing commands (`build`, `shell`, `ssh`, `rebuild`).
+- **Scripts**: Ensure `scripts/` are efficient and robust.
+- **CI/CD**: Maintain reproducible builds via `Dockerfile`.
 
 ## Routine Checks
-- Before editing, review `README.md` command descriptions and current `make help` output.
-- After edits, run affected targets, then refresh `README.md > Commands` and `README.md > Maintenance`.
-- Confirm `docker-compose up volume-init` still precedes targets that rely on initialized volumes.
-- Keep `rebuild` using `--pull --no-cache` so package layers refresh during security updates; document any deviation.
-- Ensure `.env` defaults (UID/GID, cache paths) remain in sync with compose and scripts.
-- Ensure the `HEALTHCHECK` instruction in `Dockerfile` remains optimized and doesn't flap.
-
-## Guardrails
-- Flag destructive actions (`make rm`, volume pruning) to the System Administrator agent before release.
-- Document any new sudo or network requirements in both scripts and README.
-- Every new target must expose clear help text and be discoverable via `make help`.
+- **Health**: Ensure `make build` works from a clean state (`make rm`).
+- **Cache**: specific build args (`--no-cache`) for security updates.
 
 ## References
 - `Makefile`
 - `scripts/`
-- `README.md > Commands`, `README.md > Maintenance`
-- `.env`, `.dockerignore`, `.gitignore`
+- `Dockerfile`
