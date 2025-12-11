@@ -15,6 +15,7 @@ services:
       - docker-config:/mnt/docker-config
       - nvim-cache:/mnt/nvim-cache
       - antigravity-cache:/mnt/antigravity-cache
+      - gemini-cache:/mnt/gemini-cache
     command: [ "sh", "/init-volumes.sh" ]
 
   docker-proxy:
@@ -95,7 +96,8 @@ services:
       - vscode-config:/home/dev/.vscode
       - npm-cache:/home/dev/.npm
       - nvim-cache:/home/dev/.local/share/nvim
-      - antigravity-cache:/home/dev/.antigravity-server
+      - antigravity-cache:/home/dev/.antigravity
+      - gemini-cache:/home/dev/.gemini
 
       - docker-config:/home/dev/.docker
 
@@ -116,6 +118,7 @@ volumes:
   docker-config:
   nvim-cache:
   antigravity-cache:
+  gemini-cache:
 
 
 networks:
