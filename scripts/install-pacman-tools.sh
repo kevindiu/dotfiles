@@ -4,6 +4,8 @@ set -euo pipefail
 
 echo "📦 Installing pacman tools..."
 
+# Core tools from official repositories (stable, fast updates)
+# We prefer official packages over AUR where possible for build speed and reliability.
 tools=(
     "ripgrep"
     "fd"
@@ -29,6 +31,8 @@ tools=(
     "tmux"
     "zsh"
     "wget"
+    "starship"
+    "zoxide"
 )
 
 echo "🔄 Installing ${#tools[@]} pacman tools..."

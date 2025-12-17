@@ -1,17 +1,9 @@
-# Build & Automation Agent
+# Build & Automation
 
-**Scope**: Makefile targets, build scripts, and Determinism.
+**Scope**: Makefile, Scripts, Dockerfile.
 
-## Duties
-- **Makefile**: Maintain user-facing commands (`build`, `shell`, `ssh`, `rebuild`).
-- **Scripts**: Ensure `scripts/` are efficient and robust.
-- **CI/CD**: Maintain reproducible builds via `Dockerfile`.
-
-## Routine Checks
-- **Health**: Ensure `make build` works from a clean state (`make rm`).
+## Rules
+- **Makefile**: Must support `build`, `shell`, `ssh` (port 2222), `rebuild`.
+- **Scripts**: Must be idempotent and robust (set -euo pipefail).
 - **Cache**: specific build args (`--no-cache`) for security updates.
-
-## References
-- `Makefile`
-- `scripts/`
-- `Dockerfile`
+- **Health**: `make build` must work from clean state (`make rm`).

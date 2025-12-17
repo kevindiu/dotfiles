@@ -9,7 +9,6 @@ go_tools=(
     "github.com/go-delve/delve/cmd/dlv@latest"
 )
 
-# Function to install a single Go tool
 install_go_tool() {
     local tool="$1"
     echo "🔄 Installing $tool..."
@@ -21,16 +20,13 @@ install_go_tool() {
     fi
 }
 
-# Track background processes
 pids=()
 
-# Install tools in parallel
 for tool in "${go_tools[@]}"; do
     install_go_tool "$tool" &
     pids+=($!)
 done
 
-# Wait for all installations to complete
 failed=0
 for pid in "${pids[@]}"; do
     if ! wait "$pid"; then

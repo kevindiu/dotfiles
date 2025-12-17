@@ -1,20 +1,9 @@
-# Development Environment Agent
+# Development Environment
 
-**Scope**: Shell, editor, and workflow tooling consistency.
+**Scope**: Shell, Neovim, Tools.
 
-## Duties
-- **Configs**: Maintain `configs/.zshrc`, `configs/.tmux.conf`, and `configs/nvim/init.lua` ensuring parity with user guides.
-- **Installers**: Keep `scripts/install-*.sh` idempotent.
-- **Go Experience**: Maintain working LSP, dlv, and keybindings.
-- **Persistence**: Ensure `.vscode*` and AI agent directories (`~/.antigravity`, `~/.gemini`) are mounted to persistent volumes.
-
-## Routine Checks
-- **Tmux / Zsh**: Verify auto-start and plugin loading.
-- **Neovim**: Verify LSP attachment (`,f` formatting, diagnostics).
-- **Scripts**: Run `scripts/setup-directories.sh` to correct symlinks if home dir structure drifts.
-
-## References
-- `configs/`
-- `scripts/`
-- `docs/NEOVIM_GUIDE.md`, `docs/TMUX_GUIDE.md`
-- `README.md`
+## Rules
+- **Parity**: `configs/` must match user guides.
+- **Neovim**: Maintain LSP (gopls), DAP (dlv), and lazy bootstrapping.
+- **Persistence**: `~/.vscode*`, `~/.antigravity`, `~/.gemini` must be persistent.
+- **Symlinks**: Run `scripts/setup-directories.sh` to fix drift.

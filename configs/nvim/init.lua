@@ -32,6 +32,7 @@ if not vim.uv.fs_stat(lazypath) then
     os.exit(1)
   end
 end
+# Prepend lazy to runtime path to ensure it loads before other plugins
 vim.opt.rtp:prepend(lazypath)
 
 -- =============================================================================
@@ -232,6 +233,51 @@ require("lazy").setup({
       vim.cmd[[colorscheme tokyonight]]
     end,
   },
+  -- Debugging (DAP)
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "leoluz/nvim-dap-go",
+      "nvim-neotest/nvim-nio",
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      require("dap-go").setup()
+      dapui.setup()
+      
+      dap.listeners.before.attach.dapui_config = function() dapui.open() end
+      dap.listeners.before.launch.dapui_config = function() dapui.open() end
+      dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+      dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+    end,
+  },
+
+  -- Testing
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-neotest/neotest-go",
+    },
+    config = function()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-go"),
+        },
+      })
+    end,
+  },
+
+  -- Diagnostics
+  {
+    "folke/trouble.nvim",
+    opts = {},
+  },
 })
 
 -- =============================================================================
@@ -248,8 +294,9 @@ vim.api.nvim_create_autocmd('FileType', {
       root_dir = vim.fs.root(0, {'go.mod', '.git'}),
       settings = {
         gopls = {
-          completeUnimported = true,
-          usePlaceholders = true,
+          -- Enable advanced static analysis features
+          completeUnimported = true,    -- Auto-import on completion
+          usePlaceholders = true,       -- Add placeholders for function parameters
           analyses = {
             unusedparams = true,
             shadow = true,
@@ -477,3 +524,26 @@ vim.keymap.set('n', '<leader>jl', ':jumps<CR>')   -- Show jump list
 -- TreeSitter commands
 vim.keymap.set('n', '<leader>ts', ':TSInstallInfo<CR>')
 vim.keymap.set('n', '<leader>tu', ':TSUpdate<CR>')
+
+-- =============================================================================
+-- DEBUGGING & TESTING KEYBINDINGS
+-- =============================================================================
+
+-- Debugging
+vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
+vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
+vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
+vim.keymap.set('n', '<F12>', function() require('dap').step_out() end)
+vim.keymap.set('n', '<leader>db', function() require('dap').toggle_breakpoint() end)
+vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end)
+
+-- Testing
+vim.keymap.set('n', '<leader>tt', function() require("neotest").run.run() end)              -- Run nearest test
+vim.keymap.set('n', '<leader>tl', function() require("neotest").run.run_last() end)         -- Run last test
+vim.keymap.set('n', '<leader>tf', function() require("neotest").run.run(vim.fn.expand("%")) end) -- Run file
+vim.keymap.set('n', '<leader>ts', function() require("neotest").summary.toggle() end)       -- Toggle summary
+
+-- Trouble (Diagnostics)
+vim.keymap.set('n', '<leader>xx', function() require("trouble").toggle() end)
+vim.keymap.set('n', '<leader>xw', function() require("trouble").toggle("workspace_diagnostics") end)
+vim.keymap.set('n', '<leader>xd', function() require("trouble").toggle("document_diagnostics") end)

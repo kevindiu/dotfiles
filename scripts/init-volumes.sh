@@ -10,20 +10,29 @@ DEV_GID="${DEV_GROUP_ID:-1001}"
 init_volume_structure() {
     echo "📁 Creating directory structures..."
     
-    mkdir -p /mnt/shell-history
-    mkdir -p /mnt/git-tools/{gh,git-credentials,git-config}
-    mkdir -p /mnt/security-tools/{ssh,gnupg,ssh-host-keys}
-    mkdir -p /mnt/aws-config
-    mkdir -p /mnt/docker-config
-    mkdir -p /mnt/npm-cache
-    mkdir -p /mnt/vscode-config/{extensions,bin}
-    mkdir -p /mnt/vscode-config/data/{User,Machine}
-    mkdir -p /mnt/go-cache/pkg/{mod,sumdb,tool}
-    mkdir -p /mnt/go-cache/build-cache
-    mkdir -p /mnt/go-cache/bin
-    mkdir -p /mnt/nvim-cache/{lazy,undo,backup,swap}
-    mkdir -p /mnt/antigravity-cache
-    mkdir -p /mnt/gemini-cache
+    local dirs=(
+        "/mnt/shell-history"
+        "/mnt/git-tools/"{gh,git-credentials,git-config}
+        "/mnt/security-tools/"{ssh,gnupg,ssh-host-keys}
+        "/mnt/aws-config"
+        "/mnt/docker-config"
+        "/mnt/npm-cache"
+        "/mnt/vscode-config/"{extensions,bin}
+        "/mnt/vscode-config/data/"{User,Machine}
+        "/mnt/go-cache/pkg/"{mod,sumdb,tool}
+        "/mnt/go-cache/"{build-cache,bin}
+        "/mnt/nvim-cache/"{lazy,undo,backup,swap}
+        "/mnt/antigravity-cache"
+        "/mnt/gemini-cache"
+    )
+
+    for dir in "${dirs[@]}"; do
+        # Use simple mkdir since brace expansion happens before loop in zsh/bash 
+        # but here we rely on the expansion in the array definition if using bash/zsh properly.
+        # However, safest in sh is to simple expanding.
+        # Let's keep it simple: direct expansion works in the array declaration in bash.
+        mkdir -p $dir
+    done
     
     echo "✅ Directory structures created"
 }

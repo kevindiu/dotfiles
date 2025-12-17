@@ -40,6 +40,8 @@ adjust_docker_permissions() {
         return
     fi
 
+    # If the socket isn't mounted, we can't do anything.
+    # This happens during build time or if the user forgot the volume mount.
     if [ ! -S /var/run/docker.sock ]; then
         echo "ℹ️  Docker socket not mounted; skipping permission fix"
         return
@@ -88,6 +90,12 @@ if [ ! -f "$SSH_KEYS_DIR/ssh_host_rsa_key" ]; then
 else
     echo "✅ SSH host keys already exist, reusing from persistent storage..."
 fi
+
+# 600 Permission is mandatory. SSHD will refuse to start if keys are world-readable.
+# This fixes issues where keys mounted from host might have loose permissions (755).
+echo "🔒 Enforcing strict permissions on SSH host keys..."
+chmod 600 "$SSH_KEYS_DIR"/ssh_host_*_key
+echo "✅ SSH host key permissions verified"
 
 run_dev_home_setup
 

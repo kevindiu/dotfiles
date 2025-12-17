@@ -1,7 +1,7 @@
 export ZSH="/usr/share/oh-my-zsh"
 export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
-ZSH_THEME="robbyrussell"
+ZSH_THEME=""
 
 plugins=(
     git
@@ -14,6 +14,12 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+
+# Initialize Starship prompt
+eval "$(starship init zsh)"
+
+# Initialize Zoxide (smart cd)
+eval "$(zoxide init zsh)"
 
 # GitHub CLI completion
 if command -v gh &> /dev/null; then

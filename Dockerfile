@@ -56,6 +56,11 @@ RUN --mount=type=cache,target=/home/$USERNAME/.cache/zsh,uid=$USER_UID,gid=$USER
     /tmp/install-zsh-plugins.sh && \
     rm /tmp/install-zsh-plugins.sh
 
+COPY --chown=$USERNAME:$USERNAME scripts/install-tmux-plugins.sh /tmp/
+RUN chmod +x /tmp/install-tmux-plugins.sh && \
+    /tmp/install-tmux-plugins.sh && \
+    rm /tmp/install-tmux-plugins.sh
+
 FROM tools AS final
 
 COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /usr/local/bin/setup-directories.sh
@@ -72,7 +77,7 @@ EXPOSE 2222
 WORKDIR /workspace
 CMD ["/usr/local/bin/start-sshd.sh"]
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
     CMD pgrep sshd || exit 1
 
 
