@@ -1,6 +1,6 @@
 # AI Agent Index
 
-> **Rule**: Update all documents immediately after changes. Do not describe history.
+> **Rule**: Update all documents immediately after changes. Do not describe history. While updating the documents, please ensure you read documentation.md to understand the rules.
 
 ## Project Context
 This is a **Containerized Development Environment** built on Manjaro Linux (Arch).

@@ -68,6 +68,11 @@ RUN chmod +x /usr/local/bin/setup-directories.sh && /usr/local/bin/setup-directo
 
 USER root
 RUN sed -i "s|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/bin/mkdir, /usr/bin/chmod, /usr/bin/usermod, /usr/bin/groupadd, /usr/bin/groupmod|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay|" /etc/sudoers
+
+# Embed sudo-wrapper for runtime updates (must do as root)
+COPY scripts/sudo-wrapper.sh /usr/local/bin/sudo-wrapper
+RUN chmod 755 /usr/local/bin/sudo-wrapper
+
 COPY scripts/start-sshd.sh /tmp/start-sshd.sh
 RUN echo "$USERNAME:$USERNAME" | chpasswd
 RUN install -o root -g root -m 755 /tmp/start-sshd.sh /usr/local/bin/start-sshd.sh && \

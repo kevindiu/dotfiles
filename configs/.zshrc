@@ -22,8 +22,14 @@ eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 
 # GitHub CLI completion
+# GitHub CLI completion (Cached for speed)
+GH_COMPLETION="$HOME/.cache/gh-completion.zsh"
 if command -v gh &> /dev/null; then
-    eval "$(gh completion -s zsh)"
+    if [ ! -f "$GH_COMPLETION" ] || [ $(date +%s -r "$GH_COMPLETION") -lt $(date +%s -r $(which gh)) ]; then
+        mkdir -p "$(dirname "$GH_COMPLETION")"
+        gh completion -s zsh > "$GH_COMPLETION" 2>/dev/null
+    fi
+    source "$GH_COMPLETION"
 fi
 
 if [ -z "$SSH_AUTH_SOCK" ]; then
@@ -72,22 +78,6 @@ alias dc='docker-compose'
 mkcd() {
     mkdir -p "$@" && cd "$_";
 }
-
-HISTSIZE=10000
-SAVEHIST=10000
-HISTFILE=/home/dev/.shell_history/zsh_history
-
-mkdir -p "$(dirname "$HISTFILE")"
-
-setopt HIST_VERIFY
-setopt SHARE_HISTORY
-setopt APPEND_HISTORY
-setopt INC_APPEND_HISTORY
-setopt HIST_IGNORE_DUPS
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_IGNORE_SPACE
-setopt HIST_FIND_NO_DUPS
-setopt HIST_SAVE_NO_DUPS
 
 if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]]; then 
     echo "🚀 Starting new tmux session"

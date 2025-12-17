@@ -47,6 +47,7 @@ services:
         condition: service_started
     environment:
       - DOCKER_HOST=tcp://docker-proxy:2375
+      - SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
     build:
       context: .
       args:
@@ -78,7 +79,7 @@ services:
       - "9000:9000"
     volumes:
       - ./workspace:/workspace
-      - ./configs/nvim/init.lua:/home/dev/.config/nvim/init.lua:ro
+      - ./configs/nvim:/home/dev/.config/nvim:ro
       - ./configs/.zshrc:/home/dev/.zshrc:ro
       - ./configs/.tmux.conf:/home/dev/.tmux.conf:ro
       - ./configs/linux/etc/ssh/sshd_config:/etc/ssh/sshd_config:ro
@@ -87,6 +88,8 @@ services:
       - ./configs/linux/etc/locale.conf:/etc/locale.conf:ro
       - ./configs/linux/etc/timezone:/etc/timezone:ro
       - ./configs/linux/etc/security:/etc/security:ro
+
+      - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock # Forward SSH Agent
 
       - security-tools:/home/dev/.security
       - go-cache:/home/dev/.go-cache
