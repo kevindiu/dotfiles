@@ -44,5 +44,6 @@ ssh dev-environment
 ## Configuration
 
 - **Zsh**: `configs/.zshrc`
-- **Neovim**: `configs/nvim/init.lua`
-- **Tmux**: `configs/.tmux.conf` (Safe mode: `touch ~/.no_auto_tmux` to disable auto-start)
+- **Configs**: `configs/`
+- **Scripts**: `scripts/`
+- **Docs**: `docs/` (User Guides), `.agent/` (AI Context)

@@ -1,17 +1,12 @@
 # AI Agent Index
 
-> **Rule**: Update immediately after changes. Do not describe history.
+The context for this project is maintained in the **[.agent/](.agent/)** directory.
 
 ## Playbooks
-- [SysAdmin](docs/agents/system-administrator.md): Container, Storage, Access.
-- [DevEnv](docs/agents/development-environment.md): Shell, Neovim, Tools.
-- [Security](docs/agents/security.md): Secrets, Hardening (port 2222).
-- [Docs](docs/agents/documentation.md): README=Truth.
-- [Build](docs/agents/build-automation.md): Makefile, CI/CD.
-- [Coding](docs/agents/coding.md): Comment rules ("Why vs What").
-
-## Persistent Volumes
-- **Data**: `workspace`, `*-cache`
-- **Config**: `aws-config`, `git-tools`, `docker-config`, `vscode-config`, `shell-history`
-- **Security**: `security-tools` (keys, GPG)
-- **AI**: `antigravity-cache`, `gemini-cache`
+- **Index**: [.agent/README.md](.agent/README.md)
+- **Coding Standards**: [.agent/coding.md](.agent/coding.md)
+- **System Administrator**: [.agent/system-administrator.md](.agent/system-administrator.md)
+- **Security**: [.agent/security.md](.agent/security.md)
+- **Development Environment**: [.agent/development-environment.md](.agent/development-environment.md)
+- **Build & Automation**: [.agent/build-automation.md](.agent/build-automation.md)
+- **Documentation**: [.agent/documentation.md](.agent/documentation.md)

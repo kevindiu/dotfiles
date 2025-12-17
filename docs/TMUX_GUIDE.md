@@ -11,13 +11,17 @@ Tmux lets you:
 - Organize work into different sessions and windows
 
 ## Quick Start
-
 ```bash
-tmux                 # Start new session
-tmux new -s work     # Start named session "work"
-tmux ls              # List sessions
-tmux attach -t work  # Attach to "work" session
+make shell           # Auto-starts tmux
+# or
+tmux attach          # Attach to last session
 ```
+
+## Plugin Manager (TPM)
+We use **TPM** to manage plugins.
+- **Install Plugins**: `Ctrl+a` + `I` (Capital i)
+- **Update Plugins**: `Ctrl+a` + `U`
+- **Clean Plugins**: `Ctrl+a` + `ALT` + `u`
 
 ## Key Concepts
 
@@ -200,10 +204,17 @@ Alt+Left/Right      # Quick window switching
 - Scroll to navigate history
 - Right-click for context menu
 
-### Persistent History
-- Command history saved to `/home/dev/.shell_history/tmux_history`
-- 10,000 lines of scrollback buffer
-- History persists across container restarts
+### Session Persistence (Resurrect)
+Your sessions are automatically saved every 15 minutes.
+- **Manual Save**: `Ctrl+a` + `Ctrl+s`
+- **Manual Restore**: `Ctrl+a` + `Ctrl+r`
+- **History**: Saved to persistent volume so it survives container rebuilds.
+
+### Visual Appearance
+We use the **Catppuccin (Mocha)** theme for a modern look.
+- **Left**: Session name
+- **Right**: Directory, User, Host
+- **Windows**: Numbered with icons
 
 ## Common Workflows
 
