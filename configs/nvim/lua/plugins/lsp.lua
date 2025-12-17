@@ -1,4 +1,16 @@
 return {
+  -- Lua Dev (Must be loaded before LSP config)
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
+      },
+    },
+  },
+
   -- Completion
   {
     "hrsh7th/nvim-cmp",

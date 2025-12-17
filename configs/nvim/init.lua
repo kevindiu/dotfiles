@@ -67,6 +67,24 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Configure lua_ls using native LSP
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'lua',
+  callback = function()
+    vim.lsp.start({
+      name = 'lua_ls',
+      cmd = {'lua-language-server'},
+      root_dir = vim.fs.root(0, {'.git', '.lazy.lua', 'init.lua'}),
+      settings = {
+        Lua = {
+          telemetry = { enable = false },
+          workspace = { checkThirdParty = false },
+        },
+      },
+    })
+  end,
+})
+
 -- Diagnostic config
 vim.diagnostic.config({
   virtual_text = true,

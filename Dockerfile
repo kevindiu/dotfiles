@@ -13,6 +13,8 @@ RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     --mount=type=cache,target=/tmp \
     sed -i 's/#ParallelDownloads = 5/ParallelDownloads = 20/' /etc/pacman.conf && \
     sed -i 's/#Color/Color/' /etc/pacman.conf && \
+    pacman-mirrors --api --set-branch unstable && \
+    pacman-mirrors --fasttrack 5 && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen && \
     pacman -Syyu --noconfirm && \

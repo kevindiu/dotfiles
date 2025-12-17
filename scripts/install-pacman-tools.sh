@@ -4,17 +4,16 @@ set -euo pipefail
 
 echo "📦 Installing pacman tools..."
 
-# Core tools from official repositories (stable, fast updates)
-# We prefer official packages over AUR where possible for build speed and reliability.
 tools=(
     "ripgrep"
     "fd"
     "bat"
     "ca-certificates"
-    "exa"
+    "eza"
     "fzf"
     "jq"
-    "yq"
+    "unzip"
+    "go-yq"
     "lazygit"
     "docker"
     "docker-compose"
