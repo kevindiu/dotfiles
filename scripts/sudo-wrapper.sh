@@ -7,4 +7,4 @@ if [ "$#" -eq 0 ]; then
 fi
 
 # Run requested command inside dev container as root via Docker CLI.
-docker exec -i -u root dev-environment "$@"
+docker exec -i -u root "${COMPOSE_PROJECT_NAME:-dotfiles}-dev-environment" "$@"

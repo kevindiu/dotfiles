@@ -4,7 +4,7 @@ set -euo pipefail
 
 echo "🚀 Starting SSH daemon..."
 
-SSH_KEYS_DIR="/home/dev/.security/ssh-host-keys"
+SSH_KEYS_DIR="$HOME/.security/ssh-host-keys"
 
 setup_ssh_directories() {
     echo "🔧 Setting up SSH runtime directories..."
@@ -27,9 +27,9 @@ run_dev_home_setup() {
 
     echo "🛠️  Refreshing dev home directories..."
     if [ "$(id -u)" -eq 0 ]; then
-        su - dev -c "HOME=/home/dev $setup_script"
+        su - "${DEV_USER:-dev}" -c "HOME=$HOME $setup_script"
     else
-        env HOME=/home/dev "$setup_script"
+        env HOME="$HOME" "$setup_script"
     fi
     echo "✅ Dev home directories refreshed"
 }
@@ -60,9 +60,9 @@ adjust_docker_permissions() {
         echo "✅ Docker group GID aligned with socket ($socket_gid)"
     fi
 
-    if ! id -nG dev 2>/dev/null | tr ' ' '\n' | grep -qx docker; then
-        usermod -aG docker dev
-        echo "✅ Added dev user to docker group"
+    if ! id -nG "${DEV_USER:-dev}" 2>/dev/null | tr ' ' '\n' | grep -qx docker; then
+        usermod -aG docker "${DEV_USER:-dev}"
+        echo "✅ Added ${DEV_USER:-dev} user to docker group"
     fi
 
     chgrp docker /var/run/docker.sock 2>/dev/null || true

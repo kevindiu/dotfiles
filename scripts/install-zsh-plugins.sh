@@ -28,13 +28,17 @@ install_plugin() {
     fi
 }
 
+declare -A plugins=(
+    ["zsh-autosuggestions"]="https://github.com/zsh-users/zsh-autosuggestions"
+    ["zsh-syntax-highlighting"]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    ["fzf-tab"]="https://github.com/Aloxaf/fzf-tab"
+)
+
 pids=()
-
-install_plugin "zsh-autosuggestions" "https://github.com/zsh-users/zsh-autosuggestions" &
-pids+=($!)
-
-install_plugin "zsh-syntax-highlighting" "https://github.com/zsh-users/zsh-syntax-highlighting.git" &
-pids+=($!)
+for name in "${!plugins[@]}"; do
+    install_plugin "$name" "${plugins[$name]}" &
+    pids+=($!)
+done
 
 failed=0
 for pid in "${pids[@]}"; do

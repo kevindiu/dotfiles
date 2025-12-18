@@ -84,7 +84,7 @@ init_volumes() {
 }
 
 init_files() {
-    echo "� initializing files..."
+    echo "📁 Initializing files..."
     
     # Git credentials file needs to be 600
     if [ ! -f /mnt/git-tools/git-credentials/credentials ]; then

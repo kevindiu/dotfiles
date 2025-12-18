@@ -11,9 +11,32 @@ plugins=(
     docker-compose
     zsh-autosuggestions
     zsh-syntax-highlighting
+    fzf-tab
 )
 
 source $ZSH/oh-my-zsh.sh
+
+# History Behavior (Preferences)
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_REDUCE_BLANKS
+
+# Source global profiles (DOCKER_HOST, history, etc.)
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r "$i" ]; then
+      . "$i"
+    fi
+  done
+  unset i
+fi
 
 # Initialize Starship prompt
 eval "$(starship init zsh)"
@@ -37,6 +60,7 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
 fi
 
 export LANG=en_US.UTF-8
+export GPG_TTY=$(tty)
 
 export GOROOT=/usr/lib/go
 export GOPATH=$HOME/go
@@ -70,6 +94,15 @@ alias ghpr='gh pr create'
 alias ghpv='gh pr view'
 alias ghpl='gh pr list'
 
+alias k='kubectl'
+alias kx='kubectx'
+alias kn='kubens'
+alias kgy='kubectl get -o yaml'
+alias kdp='kubectl describe pod'
+alias kdl='kubectl delete'
+alias kl='kubectl logs'
+alias ke='kubectl edit'
+
 alias dps='docker ps'
 alias dpa='docker ps -a'
 alias di='docker images'
@@ -79,7 +112,7 @@ mkcd() {
     mkdir -p "$@" && cd "$_";
 }
 
-if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]]; then 
+if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]]; then
     echo "🚀 Starting new tmux session"
     exec tmux new-session
 fi

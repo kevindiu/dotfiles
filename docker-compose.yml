@@ -70,7 +70,7 @@ services:
       start_period: 15s
       retries: 3
     labels:
-      - "com.docker.compose.project=dotfiles"
+      - "com.docker.compose.project=${COMPOSE_PROJECT_NAME:-dotfiles}"
       - "dev.environment.type=development"
     tmpfs:
       - /tmp:noexec,nosuid,nodev,size=500m

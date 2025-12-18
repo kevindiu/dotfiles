@@ -47,7 +47,9 @@ vim.opt.autoread = true
 
 -- Persistent undo
 vim.opt.undofile = true
-vim.opt.undodir = vim.fn.expand('~/.local/share/nvim/undo')
+vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
+vim.opt.backupdir = vim.fn.stdpath("data") .. "/backup"
+vim.opt.directory = vim.fn.stdpath("data") .. "/swap"
 
 -- Leader key (Must be set before lazy)
 vim.g.mapleader = ","

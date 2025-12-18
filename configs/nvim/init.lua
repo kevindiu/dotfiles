@@ -34,9 +34,27 @@ require("lazy").setup({
   lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json",
 })
 
+-- 3. Clipboard (OSC52 Fallback for SSH)
+if vim.fn.has('nvim-0.10') == 1 then
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+    },
+  }
+end
+
 -- 4. Native LSP Setup (Loaded after plugins)
--- Note: This is separate from plugin config but could be moved to plugins/lsp.lua 
--- if converted to a plugin spec.
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local has_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+if has_cmp then
+  capabilities = cmp_lsp.default_capabilities(capabilities)
+end
 
 -- Configure gopls using native LSP
 vim.api.nvim_create_autocmd('FileType', {
@@ -45,6 +63,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'gopls',
       cmd = {'gopls'},
+      capabilities = capabilities,
       root_dir = vim.fs.root(0, {'go.mod', '.git'}),
       settings = {
         gopls = {
@@ -77,6 +96,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'lua_ls',
       cmd = {'lua-language-server'},
+      capabilities = capabilities,
       root_dir = vim.fs.root(0, {'.git', '.lazy.lua', 'init.lua'}),
       settings = {
         Lua = {
