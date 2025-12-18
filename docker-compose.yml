@@ -79,7 +79,7 @@ services:
       - "3000:3000"
       - "9000:9000"
     volumes:
-      - ./workspace:/workspace
+      - ${HOST_WORKSPACE:-./workspace}:/workspace
       - ./configs/nvim:/home/dev/.config/nvim
       - ./configs/.zshrc:/home/dev/.zshrc:ro
       - ./configs/.tmux.conf:/home/dev/.tmux.conf:ro
