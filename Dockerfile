@@ -6,8 +6,8 @@ ENV LANG=en_US.UTF-8 \
     MAKEFLAGS=-j$(nproc)
 
 ARG USERNAME=dev
-ARG USER_UID=${DEV_USER_ID:-1001}
-ARG USER_GID=${DEV_GROUP_ID:-1001}
+ARG USER_UID=1001
+ARG USER_GID=1001
 
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     --mount=type=cache,target=/tmp \

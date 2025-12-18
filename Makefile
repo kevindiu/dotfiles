@@ -180,15 +180,10 @@ ssh-setup:
 	@echo "    User $(DEV_USER)" >> ~/.ssh/config
 	@echo "    IdentityFile ~/.ssh/$(CONTAINER_NAME)" >> ~/.ssh/config
 	@echo "    StrictHostKeyChecking accept-new" >> ~/.ssh/config
-	@echo " Checking SSH key installation..."
-	@if docker exec $(CONTAINER_NAME) test -f /home/$(DEV_USER)/.ssh/authorized_keys; then \
-		echo "✅ SSH key already installed in container"; \
-	else \
-		echo "📦 Installing SSH key to running container..."; \
-		docker exec $(CONTAINER_NAME) mkdir -p /home/$(DEV_USER)/.ssh; \
-		cat ~/.ssh/$(CONTAINER_NAME).pub | docker exec -i $(CONTAINER_NAME) sh -c 'cat > /home/$(DEV_USER)/.ssh/authorized_keys && chmod 700 /home/$(DEV_USER)/.ssh && chmod 600 /home/$(DEV_USER)/.ssh/authorized_keys'; \
-		echo "✅ SSH key installed"; \
-	fi
+	@echo "📦 Installing SSH key to running container..."
+	@docker exec $(CONTAINER_NAME) mkdir -p /home/$(DEV_USER)/.ssh
+	@cat ~/.ssh/$(CONTAINER_NAME).pub | docker exec -i $(CONTAINER_NAME) sh -c 'cat > /home/$(DEV_USER)/.ssh/authorized_keys && chmod 700 /home/$(DEV_USER)/.ssh && chmod 600 /home/$(DEV_USER)/.ssh/authorized_keys'
+	@echo "✅ SSH key installed"
 	@echo "🧪 Testing SSH key authentication..."
 	@sleep 2 && ssh $(CONTAINER_NAME) 'echo "✅ SSH key authentication successful!"' || echo "❌ SSH setup failed - try 'make restart' and test again"
 	@echo "$(GREEN)[SUCCESS]$(NC) SSH key authentication configured!"

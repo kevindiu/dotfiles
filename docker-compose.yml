@@ -55,6 +55,8 @@ services:
       args:
         - BUILD_DATE=${BUILD_DATE:-}
         - USERNAME=${DEV_USER:-dev}
+        - USER_UID=${DEV_USER_ID:-1001}
+        - USER_GID=${DEV_GROUP_ID:-1001}
     image: ${COMPOSE_PROJECT_NAME:-dotfiles}-dev-env
     container_name: ${COMPOSE_PROJECT_NAME:-dotfiles}-dev-environment
     env_file:

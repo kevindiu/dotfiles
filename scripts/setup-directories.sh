@@ -43,7 +43,8 @@ setup_directories() {
         "$HOME/.local/share/nvim" \
         "$HOME/.local/share/zoxide"
 
-    ensure_symlink "/workspace" "$HOME/go/src/github.com"
+    ensure_symlink "/workspace" "$HOME/workspace"
+    ensure_symlink "$HOME/workspace" "$HOME/go/src/github.com"
     ensure_symlink "$go_cache_root/pkg" "$HOME/go/pkg"
     ensure_symlink "$go_cache_root/build-cache" "$HOME/.cache/go-build"
 
