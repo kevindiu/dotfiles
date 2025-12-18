@@ -49,12 +49,14 @@ services:
     environment:
       - DOCKER_HOST=tcp://docker-proxy:2375
       - SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
+      - TZ=${TZ:-UTC}
     build:
       context: .
       args:
         - BUILD_DATE=${BUILD_DATE:-}
-    image: dotfiles-dev-env
-    container_name: dev-environment
+        - USERNAME=${DEV_USER:-dev}
+    image: ${COMPOSE_PROJECT_NAME:-dotfiles}-dev-env
+    container_name: ${COMPOSE_PROJECT_NAME:-dotfiles}-dev-environment
     env_file:
       - .env
     user: "${DEV_USER_ID:-1001}:${DEV_GROUP_ID:-1001}"
@@ -74,15 +76,15 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - "2222:2222"
-      - "8080:8080"
+      - "${HOST_SSH_PORT:-2222}:2222"
+      - "${HOST_WEB_PORT:-8080}:8080"
       - "3000:3000"
       - "9000:9000"
     volumes:
       - ${HOST_WORKSPACE:-./workspace}:/workspace
-      - ./configs/nvim:/home/dev/.config/nvim
-      - ./configs/.zshrc:/home/dev/.zshrc:ro
-      - ./configs/.tmux.conf:/home/dev/.tmux.conf:ro
+      - ./configs/nvim:/home/${DEV_USER:-dev}/.config/nvim
+      - ./configs/.zshrc:/home/${DEV_USER:-dev}/.zshrc:ro
+      - ./configs/.tmux.conf:/home/${DEV_USER:-dev}/.tmux.conf:ro
       - ./configs/linux/etc/ssh/sshd_config:/etc/ssh/sshd_config:ro
       - ./configs/linux/etc/sysctl.d/99-optimized.conf:/etc/sysctl.d/99-optimized.conf:ro
       - ./configs/linux/etc/profile.d:/etc/profile.d:ro
@@ -92,18 +94,18 @@ services:
 
       - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock # Forward SSH Agent
 
-      - security-tools:/home/dev/.security
-      - go-cache:/home/dev/.go-cache
-      - shell-history:/home/dev/.shell_history
-      - git-tools:/home/dev/.git_tools
-      - aws-config:/home/dev/.aws
-      - vscode-config:/home/dev/.vscode
-      - npm-cache:/home/dev/.npm
-      - nvim-cache:/home/dev/.local/share/nvim
-      - antigravity-cache:/home/dev/.antigravity
-      - gemini-cache:/home/dev/.gemini
+      - security-tools:/home/${DEV_USER:-dev}/.security
+      - go-cache:/home/${DEV_USER:-dev}/.go-cache
+      - shell-history:/home/${DEV_USER:-dev}/.shell_history
+      - git-tools:/home/${DEV_USER:-dev}/.git_tools
+      - aws-config:/home/${DEV_USER:-dev}/.aws
+      - vscode-config:/home/${DEV_USER:-dev}/.vscode
+      - npm-cache:/home/${DEV_USER:-dev}/.npm
+      - nvim-cache:/home/${DEV_USER:-dev}/.local/share/nvim
+      - antigravity-cache:/home/${DEV_USER:-dev}/.antigravity
+      - gemini-cache:/home/${DEV_USER:-dev}/.gemini
 
-      - docker-config:/home/dev/.docker
+      - docker-config:/home/${DEV_USER:-dev}/.docker
 
     stdin_open: true
     tty: true
@@ -135,4 +137,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: ${DOCKER_SUBNET:-172.20.0.0/16}

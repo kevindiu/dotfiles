@@ -69,7 +69,7 @@ setup_directories() {
 setup_symlinks() {
     echo "🔗 Setting up symlinks..."
     
-    local dev_home="/home/dev"
+    local dev_home="$HOME"
     local security_home="$dev_home/.security"
     local tools_home="$dev_home/.git_tools"
     

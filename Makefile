@@ -1,5 +1,21 @@
 .PHONY: help build rebuild start stop restart clean logs shell ssh status rm install uninstall scan update
 
+# Load environment variables from .env
+ifneq (,$(wildcard ./.env))
+    include .env
+    export $(shell sed 's/=.*//' .env)
+endif
+
+# Default values if not in .env
+COMPOSE_PROJECT_NAME ?= dotfiles
+DEV_USER ?= dev
+HOST_SSH_PORT ?= 2222
+HOST_WEB_PORT ?= 8080
+
+# Derived variables
+CONTAINER_NAME := $(COMPOSE_PROJECT_NAME)-dev-environment
+IMAGE_NAME := $(COMPOSE_PROJECT_NAME)-dev-env
+
 BLUE := \033[0;34m
 GREEN := \033[0;32m
 YELLOW := \033[1;33m
@@ -55,7 +71,7 @@ build:
 	@echo "$(GREEN)[BUILD SUCCESS]$(NC) Starting services..."
 	@$(MAKE) start
 	@echo "$(GREEN)[SUCCESS]$(NC) Environment ready!"
-	@echo "$(YELLOW)[NOTE]$(NC) SSH access: ssh dev@localhost -p 2222 (password: dev)"
+	@echo "$(YELLOW)[NOTE]$(NC) SSH access: ssh $(DEV_USER)@localhost -p $(HOST_SSH_PORT) (password: $(DEV_USER))"
 	@echo "$(YELLOW)[TIP]$(NC) Run 'make ssh-setup' for passwordless SSH access"
 
 start:
@@ -96,7 +112,7 @@ rm:
 shell:
 	@echo "$(BLUE)[SHELL]$(NC) Opening tmux session with zsh in container..."
 	@echo "$(YELLOW)[TIP]$(NC) Use 'exit' to return to host terminal"
-	@docker exec -it dev-environment tmux new-session
+	@docker exec -it $(CONTAINER_NAME) tmux new-session
 
 install:
 	@echo "$(BLUE)[INSTALL]$(NC) Setting up auto-shell..."
@@ -113,7 +129,7 @@ install:
 		echo "# Auto-enter dotfiles development container" >> "$$SHELL_CONFIG"; \
 		echo "if [[ -z \"\$$DOTFILES_AUTO_SHELL_DONE\" ]]; then" >> "$$SHELL_CONFIG"; \
 		echo "  export DOTFILES_AUTO_SHELL_DONE=1" >> "$$SHELL_CONFIG"; \
-		echo "  if docker ps | grep -q dev-environment; then" >> "$$SHELL_CONFIG"; \
+		echo "  if docker ps | grep -q $(CONTAINER_NAME); then" >> "$$SHELL_CONFIG"; \
 		echo "    echo \"🐳 Auto-entering development container...\"" >> "$$SHELL_CONFIG"; \
 		echo "    cd $(shell pwd) && make shell" >> "$$SHELL_CONFIG"; \
 		echo "  fi" >> "$$SHELL_CONFIG"; \
@@ -141,40 +157,40 @@ uninstall:
 
 ssh:
 	@echo "$(BLUE)[SSH]$(NC) Connecting via SSH..."
-	@ssh dev-environment || true
+	@ssh $(CONTAINER_NAME) || true
 
 ssh-setup:
 	@echo "$(BLUE)[SSH-SETUP]$(NC) Setting up SSH key authentication..."
 	@echo "🧹 Cleaning old host keys..."
-	@ssh-keygen -R "[localhost]:2222" 2>/dev/null || true
-	@if [ ! -f ~/.ssh/dev-environment ]; then \
+	@ssh-keygen -R "[localhost]:$(HOST_SSH_PORT)" 2>/dev/null || true
+	@if [ ! -f ~/.ssh/$(CONTAINER_NAME) ]; then \
 		echo "🔑 Generating SSH key pair..."; \
-		ssh-keygen -t ed25519 -f ~/.ssh/dev-environment -N '' -C "dev-environment-key"; \
+		ssh-keygen -t ed25519 -f ~/.ssh/$(CONTAINER_NAME) -N '' -C "$(CONTAINER_NAME)-key"; \
 	else \
 		echo "✅ SSH key already exists"; \
 	fi
 	@echo "⚙️  Updating SSH config..."
-	@if grep -q "^Host dev-environment" ~/.ssh/config 2>/dev/null; then \
-		sed -i '' '/^Host dev-environment$$/,/^$$/d' ~/.ssh/config; \
+	@if grep -q "^Host $(CONTAINER_NAME)" ~/.ssh/config 2>/dev/null; then \
+		sed -i '' '/^Host $(CONTAINER_NAME)$$/,/^$$/d' ~/.ssh/config; \
 	fi
 	@echo "" >> ~/.ssh/config
-	@echo "Host dev-environment" >> ~/.ssh/config
+	@echo "Host $(CONTAINER_NAME)" >> ~/.ssh/config
 	@echo "    HostName localhost" >> ~/.ssh/config
-	@echo "    Port 2222" >> ~/.ssh/config
-	@echo "    User dev" >> ~/.ssh/config
-	@echo "    IdentityFile ~/.ssh/dev-environment" >> ~/.ssh/config
+	@echo "    Port $(HOST_SSH_PORT)" >> ~/.ssh/config
+	@echo "    User $(DEV_USER)" >> ~/.ssh/config
+	@echo "    IdentityFile ~/.ssh/$(CONTAINER_NAME)" >> ~/.ssh/config
 	@echo "    StrictHostKeyChecking accept-new" >> ~/.ssh/config
-	@echo "� Checking SSH key installation..."
-	@if docker exec dev-environment test -f /home/dev/.ssh/authorized_keys; then \
+	@echo " Checking SSH key installation..."
+	@if docker exec $(CONTAINER_NAME) test -f /home/$(DEV_USER)/.ssh/authorized_keys; then \
 		echo "✅ SSH key already installed in container"; \
 	else \
 		echo "📦 Installing SSH key to running container..."; \
-		docker exec dev-environment mkdir -p /home/dev/.ssh; \
-		cat ~/.ssh/dev-environment.pub | docker exec -i dev-environment sh -c 'cat > /home/dev/.ssh/authorized_keys && chmod 700 /home/dev/.ssh && chmod 600 /home/dev/.ssh/authorized_keys'; \
+		docker exec $(CONTAINER_NAME) mkdir -p /home/$(DEV_USER)/.ssh; \
+		cat ~/.ssh/$(CONTAINER_NAME).pub | docker exec -i $(CONTAINER_NAME) sh -c 'cat > /home/$(DEV_USER)/.ssh/authorized_keys && chmod 700 /home/$(DEV_USER)/.ssh && chmod 600 /home/$(DEV_USER)/.ssh/authorized_keys'; \
 		echo "✅ SSH key installed"; \
 	fi
 	@echo "🧪 Testing SSH key authentication..."
-	@sleep 2 && ssh dev-environment 'echo "✅ SSH key authentication successful!"' || echo "❌ SSH setup failed - try 'make restart' and test again"
+	@sleep 2 && ssh $(CONTAINER_NAME) 'echo "✅ SSH key authentication successful!"' || echo "❌ SSH setup failed - try 'make restart' and test again"
 	@echo "$(GREEN)[SUCCESS]$(NC) SSH key authentication configured!"
 
 logs:
@@ -215,23 +231,23 @@ scan:
 	@docker run --rm \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $$HOME/.cache/trivy:/root/.cache \
-		aquasec/trivy:latest image dotfiles-dev-env
+		aquasec/trivy:latest image $(IMAGE_NAME)
 
 update:
 	@echo "$(BLUE)[UPDATE]$(NC) Ensuring development container is running..."
 	@docker-compose up -d dev-env >/dev/null
 	@echo "$(BLUE)[UPDATE]$(NC) Updating system packages via pacman..."
-	@docker exec -u root dev-environment bash -lc "pacman -Syyu --noconfirm"
+	@docker exec -u root $(CONTAINER_NAME) bash -lc "pacman -Syyu --noconfirm"
 	@echo "$(BLUE)[UPDATE]$(NC) Updating AUR packages via yay..."
-	@docker exec dev-environment bash -lc "yay -Sua --noconfirm --needed --answerdiff None --answerclean None"
+	@docker exec $(CONTAINER_NAME) bash -lc "yay -Sua --noconfirm --needed --answerdiff None --answerclean None"
 	@echo "$(BLUE)[UPDATE]$(NC) Cleaning package cache..."
-	@docker exec -u root dev-environment bash -lc "pacman -Scc --noconfirm || true"
+	@docker exec -u root $(CONTAINER_NAME) bash -lc "pacman -Scc --noconfirm || true"
 	@echo "$(GREEN)[SUCCESS]$(NC) Container packages updated. Restart with 'make restart' if needed."
 
 backup:
 	@echo "$(BLUE)[BACKUP]$(NC) Backing up environment..."
 	@mkdir -p backups
-	@docker run --rm --volumes-from dev-environment -v $$(pwd)/backups:/backup alpine tar czf /backup/backup-$$(date +%Y%m%d-%H%M%S).tar.gz /home/dev /workspace || echo "$(RED)[ERROR]$(NC) Backup failed. Is the container running?"
+	@docker run --rm --volumes-from $(CONTAINER_NAME) -v $$(pwd)/backups:/backup alpine tar czf /backup/backup-$$(date +%Y%m%d-%H%M%S).tar.gz /home/$(DEV_USER) /workspace || echo "$(RED)[ERROR]$(NC) Backup failed. Is the container running?"
 	@echo "$(GREEN)[SUCCESS]$(NC) Backup created in ./backups/"
 
 restore:
