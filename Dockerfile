@@ -73,7 +73,8 @@ RUN sed -i "s|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/
 
 # Embed sudo-wrapper for runtime updates (must do as root)
 COPY scripts/sudo-wrapper.sh /usr/local/bin/sudo-wrapper
-RUN chmod 755 /usr/local/bin/sudo-wrapper
+RUN chmod 755 /usr/local/bin/sudo-wrapper && \
+    ln -s /usr/local/bin/sudo-wrapper /usr/local/bin/sudo
 
 COPY scripts/start-sshd.sh /tmp/start-sshd.sh
 RUN echo "$USERNAME:$USERNAME" | chpasswd

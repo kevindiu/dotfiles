@@ -223,7 +223,7 @@ update:
 	@echo "$(BLUE)[UPDATE]$(NC) Updating system packages via pacman..."
 	@docker exec -u root dev-environment bash -lc "pacman -Syyu --noconfirm"
 	@echo "$(BLUE)[UPDATE]$(NC) Updating AUR packages via yay..."
-	@docker exec dev-environment bash -lc "YAY_SUDO=/usr/local/bin/sudo-wrapper yay -Sua --noconfirm --needed --answerdiff None --answerclean None"
+	@docker exec dev-environment bash -lc "yay -Sua --noconfirm --needed --answerdiff None --answerclean None"
 	@echo "$(BLUE)[UPDATE]$(NC) Cleaning package cache..."
 	@docker exec -u root dev-environment bash -lc "pacman -Scc --noconfirm || true"
 	@echo "$(GREEN)[SUCCESS]$(NC) Container packages updated. Restart with 'make restart' if needed."
