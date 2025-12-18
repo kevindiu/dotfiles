@@ -23,12 +23,15 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- 3. Load Plugins
 require("lazy").setup({
-  { import = "plugins.editor" },
-  { import = "plugins.coding" },
-  { import = "plugins.lsp" },
-  { import = "plugins.debug" },
+  spec = {
+    { import = "plugins.editor" },
+    { import = "plugins.coding" },
+    { import = "plugins.lsp" },
+    { import = "plugins.debug" },
+  },
+  -- Move lockfile out of the config directory so it doesn't appear on the host.
+  lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json",
 })
 
 -- 4. Native LSP Setup (Loaded after plugins)
