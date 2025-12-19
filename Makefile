@@ -15,6 +15,7 @@ HOST_WEB_PORT ?= 8080
 # Derived variables
 CONTAINER_NAME := $(COMPOSE_PROJECT_NAME)-dev-environment
 IMAGE_NAME := $(COMPOSE_PROJECT_NAME)-dev-env
+SSH_HOST_NAME ?= dev-environment
 
 BLUE := \033[0;34m
 GREEN := \033[0;32m
@@ -157,35 +158,35 @@ uninstall:
 
 ssh:
 	@echo "$(BLUE)[SSH]$(NC) Connecting via SSH..."
-	@ssh $(CONTAINER_NAME) || true
+	@ssh $(SSH_HOST_NAME) || true
 
 ssh-setup:
 	@echo "$(BLUE)[SSH-SETUP]$(NC) Setting up SSH key authentication..."
 	@echo "🧹 Cleaning old host keys..."
 	@ssh-keygen -R "[localhost]:$(HOST_SSH_PORT)" 2>/dev/null || true
-	@if [ ! -f ~/.ssh/$(CONTAINER_NAME) ]; then \
+	@if [ ! -f ~/.ssh/$(SSH_HOST_NAME) ]; then \
 		echo "🔑 Generating SSH key pair..."; \
-		ssh-keygen -t ed25519 -f ~/.ssh/$(CONTAINER_NAME) -N '' -C "$(CONTAINER_NAME)-key"; \
+		ssh-keygen -t ed25519 -f ~/.ssh/$(SSH_HOST_NAME) -N '' -C "$(SSH_HOST_NAME)-key"; \
 	else \
 		echo "✅ SSH key already exists"; \
 	fi
 	@echo "⚙️  Updating SSH config..."
-	@if grep -q "^Host $(CONTAINER_NAME)" ~/.ssh/config 2>/dev/null; then \
-		sed -i '' '/^Host $(CONTAINER_NAME)$$/,/^$$/d' ~/.ssh/config; \
+	@if grep -q "^Host $(SSH_HOST_NAME)" ~/.ssh/config 2>/dev/null; then \
+		sed -i '' '/^Host $(SSH_HOST_NAME)$$/,/^$$/d' ~/.ssh/config; \
 	fi
 	@echo "" >> ~/.ssh/config
-	@echo "Host $(CONTAINER_NAME)" >> ~/.ssh/config
+	@echo "Host $(SSH_HOST_NAME)" >> ~/.ssh/config
 	@echo "    HostName localhost" >> ~/.ssh/config
 	@echo "    Port $(HOST_SSH_PORT)" >> ~/.ssh/config
 	@echo "    User $(DEV_USER)" >> ~/.ssh/config
-	@echo "    IdentityFile ~/.ssh/$(CONTAINER_NAME)" >> ~/.ssh/config
+	@echo "    IdentityFile ~/.ssh/$(SSH_HOST_NAME)" >> ~/.ssh/config
 	@echo "    StrictHostKeyChecking accept-new" >> ~/.ssh/config
 	@echo "📦 Installing SSH key to running container..."
-	@docker exec $(CONTAINER_NAME) mkdir -p /home/$(DEV_USER)/.ssh
-	@cat ~/.ssh/$(CONTAINER_NAME).pub | docker exec -i $(CONTAINER_NAME) sh -c 'cat > /home/$(DEV_USER)/.ssh/authorized_keys && chmod 700 /home/$(DEV_USER)/.ssh && chmod 600 /home/$(DEV_USER)/.ssh/authorized_keys'
+	@PUB_KEY=$$(cat ~/.ssh/$(SSH_HOST_NAME).pub); \
+	 docker exec -i $(CONTAINER_NAME) sh -c "mkdir -p /home/$(DEV_USER)/.ssh && chmod 700 /home/$(DEV_USER)/.ssh && (grep -qF \"$$PUB_KEY\" /home/$(DEV_USER)/.ssh/authorized_keys 2>/dev/null || echo \"$$PUB_KEY\" >> /home/$(DEV_USER)/.ssh/authorized_keys) && chmod 600 /home/$(DEV_USER)/.ssh/authorized_keys"
 	@echo "✅ SSH key installed"
 	@echo "🧪 Testing SSH key authentication..."
-	@sleep 2 && ssh $(CONTAINER_NAME) 'echo "✅ SSH key authentication successful!"' || echo "❌ SSH setup failed - try 'make restart' and test again"
+	@sleep 2 && ssh $(SSH_HOST_NAME) 'echo "✅ SSH key authentication successful!"' || echo "❌ SSH setup failed - try 'make restart' and test again"
 	@echo "$(GREEN)[SUCCESS]$(NC) SSH key authentication configured!"
 
 logs:
