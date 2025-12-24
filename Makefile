@@ -12,6 +12,13 @@ DEV_USER ?= dev
 HOST_SSH_PORT ?= 2222
 HOST_WEB_PORT ?= 8080
 
+# Portability helper for sed -i
+ifeq ($(shell uname), Darwin)
+    SED_I := sed -i ''
+else
+    SED_I := sed -i
+endif
+
 # Derived variables
 CONTAINER_NAME := $(COMPOSE_PROJECT_NAME)-dev-environment
 IMAGE_NAME := $(COMPOSE_PROJECT_NAME)-dev-env
@@ -149,7 +156,7 @@ uninstall:
 	\
 	if grep -q "DOTFILES_AUTO_SHELL_DONE" "$$SHELL_CONFIG"; then \
 		echo "$(YELLOW)[REMOVING]$(NC) Removing from $$SHELL_CONFIG"; \
-		sed -i.bak '/# Auto-enter dotfiles development container/,/^fi$$/d' "$$SHELL_CONFIG"; \
+		$(SED_I) '/# Auto-enter dotfiles development container/,/^fi$$/d' "$$SHELL_CONFIG"; \
 		echo "$(GREEN)[REMOVED]$(NC) Auto-shell removed from $$SHELL_CONFIG"; \
 	else \
 		echo "$(YELLOW)[SKIP]$(NC) Auto-shell not found in $$SHELL_CONFIG"; \
@@ -170,9 +177,9 @@ ssh-setup:
 	else \
 		echo "✅ SSH key already exists"; \
 	fi
-	@echo "⚙️  Updating SSH config..."
-	@if grep -q "^Host $(SSH_HOST_NAME)" ~/.ssh/config 2>/dev/null; then \
-		sed -i '' '/^Host $(SSH_HOST_NAME)$$/,/^$$/d' ~/.ssh/config; \
+	@echo "⚙️  Updating SSH config..." \
+	if grep -q "^Host $(SSH_HOST_NAME)" ~/.ssh/config 2>/dev/null; then \
+		$(SED_I) '/^Host $(SSH_HOST_NAME)$$/,/^$$/d' ~/.ssh/config; \
 	fi
 	@echo "" >> ~/.ssh/config
 	@echo "Host $(SSH_HOST_NAME)" >> ~/.ssh/config
@@ -238,7 +245,13 @@ update:
 	@docker exec $(CONTAINER_NAME) bash -lc "yay -Sua --noconfirm --needed --answerdiff None --answerclean None"
 	@echo "$(BLUE)[UPDATE]$(NC) Cleaning package cache..."
 	@docker exec -u root $(CONTAINER_NAME) bash -lc "pacman -Scc --noconfirm || true"
-	@echo "$(GREEN)[SUCCESS]$(NC) Container packages updated. Restart with 'make restart' if needed."
+	@echo "$(BLUE)[UPDATE]$(NC) Updating Go tools..."
+	@docker exec -i $(CONTAINER_NAME) bash < scripts/install-go-tools.sh
+	@echo "$(BLUE)[UPDATE]$(NC) Updating Zsh plugins..."
+	@docker exec $(CONTAINER_NAME) bash -lc 'for d in /home/$(DEV_USER)/.oh-my-zsh/custom/plugins/*; do [ -d "$$d/.git" ] && (echo "🔄 Updating $$(basename $$d)..." && cd "$$d" && git pull --quiet); done'
+	@echo "$(BLUE)[UPDATE]$(NC) Updating Tmux plugins..."
+	@docker exec $(CONTAINER_NAME) bash -lc "/home/$(DEV_USER)/.tmux/plugins/tpm/bin/update_plugins all >/dev/null"
+	@echo "$(GREEN)[SUCCESS]$(NC) Container packages and tools updated. Restart with 'make restart' if needed."
 
 backup:
 	@echo "$(BLUE)[BACKUP]$(NC) Backing up environment..."
