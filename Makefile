@@ -177,7 +177,7 @@ ssh-setup:
 	else \
 		echo "✅ SSH key already exists"; \
 	fi
-	@echo "⚙️  Updating SSH config..." \
+	@echo "⚙️  Updating SSH config..."; \
 	if grep -q "^Host $(SSH_HOST_NAME)" ~/.ssh/config 2>/dev/null; then \
 		$(SED_I) '/^Host $(SSH_HOST_NAME)$$/,/^$$/d' ~/.ssh/config; \
 	fi

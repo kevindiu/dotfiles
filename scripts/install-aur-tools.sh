@@ -12,12 +12,8 @@ yay -Syyu --noconfirm --needed
 # - tfenv: manage multiple terraform versions
 aur_tools=(
     "neovim-nightly-bin"
-    "tfenv"
-    "aws-cli-bin"
     "lua-language-server"
-    "k9s"
     "oh-my-zsh-git"
-    "go-bin"
 )
 
 for tool in "${aur_tools[@]}"; do

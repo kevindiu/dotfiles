@@ -63,6 +63,13 @@ RUN chmod +x /tmp/install-tmux-plugins.sh && \
     /tmp/install-tmux-plugins.sh && \
     rm /tmp/install-tmux-plugins.sh
 
+COPY --chown=$USERNAME:$USERNAME scripts/install-extra-tools.sh /tmp/
+RUN --mount=type=cache,target=/home/$USERNAME/go,uid=$USER_UID,gid=$USER_GID \
+    --mount=type=cache,target=/home/$USERNAME/.cache/go-build,uid=$USER_UID,gid=$USER_GID \
+    chmod +x /tmp/install-extra-tools.sh && \
+    /tmp/install-extra-tools.sh && \
+    rm /tmp/install-extra-tools.sh
+
 FROM tools AS final
 
 COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /usr/local/bin/setup-directories.sh

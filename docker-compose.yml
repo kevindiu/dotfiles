@@ -5,17 +5,17 @@ services:
       - .env
     volumes:
       - ./scripts/init-volumes.sh:/init-volumes.sh:ro
-      - security-tools:/mnt/security-tools
-      - go-cache:/mnt/go-cache
-      - shell-history:/mnt/shell-history
-      - git-tools:/mnt/git-tools
-      - aws-config:/mnt/aws-config
-      - vscode-config:/mnt/vscode-config
-      - npm-cache:/mnt/npm-cache
-      - docker-config:/mnt/docker-config
-      - nvim-cache:/mnt/nvim-cache
-      - antigravity-cache:/mnt/antigravity-cache
-      - gemini-cache:/mnt/gemini-cache
+      - ./extra/mounts/security-tools:/mnt/security-tools
+      - ./extra/mounts/go-cache:/mnt/go-cache
+      - ./extra/mounts/shell-history:/mnt/shell-history
+      - ./extra/mounts/git-tools:/mnt/git-tools
+      - ./extra/mounts/aws-config:/mnt/aws-config
+      - ./extra/mounts/vscode-config:/mnt/vscode-config
+      - ./extra/mounts/npm-cache:/mnt/npm-cache
+      - ./extra/mounts/docker-config:/mnt/docker-config
+      - ./extra/mounts/nvim-cache:/mnt/nvim-cache
+      - ./extra/mounts/antigravity-cache:/mnt/antigravity-cache
+      - ./extra/mounts/gemini-cache:/mnt/gemini-cache
     command: [ "sh", "/init-volumes.sh" ]
 
   docker-proxy:
@@ -96,38 +96,24 @@ services:
 
       - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock # Forward SSH Agent
 
-      - security-tools:/home/${DEV_USER:-dev}/.security
-      - go-cache:/home/${DEV_USER:-dev}/.go-cache
-      - shell-history:/home/${DEV_USER:-dev}/.shell_history
-      - git-tools:/home/${DEV_USER:-dev}/.git_tools
-      - aws-config:/home/${DEV_USER:-dev}/.aws
-      - vscode-config:/home/${DEV_USER:-dev}/.vscode
-      - npm-cache:/home/${DEV_USER:-dev}/.npm
-      - nvim-cache:/home/${DEV_USER:-dev}/.local/share/nvim
-      - antigravity-cache:/home/${DEV_USER:-dev}/.antigravity
-      - gemini-cache:/home/${DEV_USER:-dev}/.gemini
+      - ./extra/mounts/security-tools:/home/${DEV_USER:-dev}/.security
+      - ./extra/mounts/go-cache:/home/${DEV_USER:-dev}/.go-cache
+      - ./extra/mounts/shell-history:/home/${DEV_USER:-dev}/.shell_history
+      - ./extra/mounts/git-tools:/home/${DEV_USER:-dev}/.git_tools
+      - ./extra/mounts/aws-config:/home/${DEV_USER:-dev}/.aws
+      - ./extra/mounts/vscode-config:/home/${DEV_USER:-dev}/.vscode
+      - ./extra/mounts/npm-cache:/home/${DEV_USER:-dev}/.npm
+      - ./extra/mounts/nvim-cache:/home/${DEV_USER:-dev}/.local/share/nvim
+      - ./extra/mounts/antigravity-cache:/home/${DEV_USER:-dev}/.antigravity
+      - ./extra/mounts/gemini-cache:/home/${DEV_USER:-dev}/.gemini
 
-      - docker-config:/home/${DEV_USER:-dev}/.docker
+      - ./extra/mounts/docker-config:/home/${DEV_USER:-dev}/.docker
 
     stdin_open: true
     tty: true
     restart: unless-stopped
     networks:
       - dev-network
-
-volumes:
-  go-cache:
-  shell-history:
-  git-tools:
-  security-tools:
-  aws-config:
-  vscode-config:
-  npm-cache:
-  docker-config:
-  nvim-cache:
-  antigravity-cache:
-  gemini-cache:
-
 
 networks:
   dev-network:
