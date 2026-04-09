@@ -8,7 +8,6 @@ aur_tools=(
     "aws-cli-bin"
     "tfenv"
     "k9s"
-    "go-bin"
 )
 
 pacman_tools=(

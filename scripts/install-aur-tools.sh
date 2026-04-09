@@ -14,6 +14,8 @@ aur_tools=(
     "neovim-nightly-bin"
     "lua-language-server"
     "oh-my-zsh-git"
+    "go-bin"
+
 )
 
 for tool in "${aur_tools[@]}"; do

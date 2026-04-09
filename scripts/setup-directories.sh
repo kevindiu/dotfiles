@@ -67,6 +67,18 @@ setup_directories() {
     ensure_symlink "$vscode_root" "$HOME/.vscode-remote"
 }
 
+cleanup_gpg_locks() {
+    local gnupg_dir="$HOME/.security/gnupg"
+
+    if [ ! -d "$gnupg_dir" ]; then
+        return
+    fi
+
+    echo "🔐 Cleaning stale GPG lock files..."
+    gpgconf --kill all >/dev/null 2>&1 || true
+    find "$gnupg_dir" -type f \( -name '*.lock' -o -name '.#lk*' \) -delete 2>/dev/null || true
+}
+
 setup_symlinks() {
     echo "🔗 Setting up symlinks..."
     
@@ -81,6 +93,7 @@ setup_symlinks() {
     ensure_symlink "$security_home/gnupg" "$dev_home/.gnupg"
     ensure_symlink "$tools_home/gh" "$dev_home/.config/gh"
 
+    cleanup_gpg_locks
     echo "✅ Symlinks setup completed"
 }
 
