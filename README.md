@@ -28,10 +28,22 @@ make shell
 |---------|-------------|
 | `make build` | Build and start the environment |
 | `make shell` | Enter container shell (tmux/zsh) |
+| `make start` | Start existing containers |
+| `make stop` | Stop containers |
+| `make restart` | Restart containers (stop + start) |
 | `make ssh-setup` | Configure passwordless SSH access |
 | `make ssh` | Connect via SSH |
 | `make update` | Update system packages (via safe `sudo` shim) |
+| `make rebuild` | Rebuild image with fresh dependencies (`--no-cache`) |
 | `make clean` | Remove temporary build artifacts |
+| `make rm` | Remove everything including volumes |
+| `make logs` | Show container logs |
+| `make status` | Show container and volume status |
+| `make build-info` | Show build cache information |
+| `make scan` | Scan container image with Trivy |
+| `make backup` | Backup workspace and persistent volumes |
+| `make install` | Install auto-shell to host shell config |
+| `make uninstall` | Remove auto-shell from host shell config |
 
 ## SSH & Remote Access
 
@@ -51,6 +63,9 @@ This environment runs as user `dev` (UID 1001). If your host files (e.g., `works
 ## Configuration
 
 - **Zsh**: `configs/.zshrc`
-- **Configs**: `configs/`
+- **Tmux**: `configs/.tmux.conf`
+- **Neovim**: `configs/nvim/`
+- **SSH**: `configs/linux/etc/ssh/sshd_config`
+- **System Tuning**: `configs/linux/etc/`
 - **Scripts**: `scripts/`
 - **Docs**: `docs/` (User Guides), `.agent/` (AI Context)

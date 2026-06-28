@@ -6,16 +6,12 @@ echo "📦 Installing AUR tools..."
 
 yay -Syyu --noconfirm --needed
 
-# Tools requiring AUR (Arch User Repository)
-# - neovim-nightly: We need 0.10+ features not in stable yet
-# - aws-cli-bin: Official binary is faster/easier than building from source
-# - tfenv: manage multiple terraform versions
+# Core AUR tools for development environment
 aur_tools=(
     "neovim-nightly-bin"
     "lua-language-server"
     "oh-my-zsh-git"
     "go-bin"
-
 )
 
 for tool in "${aur_tools[@]}"; do

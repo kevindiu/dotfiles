@@ -205,9 +205,10 @@ Alt+Left/Right      # Quick window switching
 - Right-click for context menu
 
 ### Session Persistence (Resurrect)
-Your sessions are automatically saved every 15 minutes.
-- **Manual Save**: `Ctrl+a` + `Ctrl+s`
-- **Manual Restore**: `Ctrl+a` + `Ctrl+r`
+Sessions are saved and restored manually (auto-save requires `tmux-continuum`, which is not installed).
+- **Save Session**: `Ctrl+a` + `Ctrl+s`
+- **Restore Session**: `Ctrl+a` + `Ctrl+r`
+- **Storage**: Pane contents are captured (`@resurrect-capture-pane-contents on`).
 - **History**: Saved to persistent volume so it survives container rebuilds.
 
 ### Visual Appearance
