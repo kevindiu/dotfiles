@@ -68,27 +68,28 @@ export GOBIN=$HOME/go/bin
 export PATH=$PATH:$GOBIN
 export GOTMPDIR=$HOME/.go-tmp
 
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+alias ls='eza --icons --group-directories-first'
+alias ll='eza -alF --icons --group-directories-first'
+alias la='eza -a --icons --group-directories-first'
+alias l='eza -1 --icons'
+alias lt='eza --tree --level=2 --icons --group-directories-first'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
+# bat as cat/pager replacement
+alias cat='bat --paging=never'
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
 alias vi='nvim'
 alias vim='nvim'
 
-alias gs='git status'
-alias ga='git add'
+# Git aliases (supplements oh-my-zsh git plugin; gc overridden for GPG signing)
 alias gc='git commit -S'
-alias gp='git push'
 alias gl='git log --oneline'
 alias gd='git diff'
-alias gco='git checkout'
-alias gb='git branch'
-alias gm='git merge'
 
 alias ghpr='gh pr create'
 alias ghpv='gh pr view'

@@ -108,6 +108,77 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Configure yamlls for Kubernetes/Docker Compose/CI manifests
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'yaml',
+  callback = function()
+    local cmd = vim.fn.exepath('yaml-language-server')
+    if cmd == '' then return end
+    vim.lsp.start({
+      name = 'yamlls',
+      cmd = {'yaml-language-server', '--stdio'},
+      capabilities = capabilities,
+      root_dir = vim.fs.root(0, {'.git'}),
+      settings = {
+        yaml = {
+          schemas = {
+            ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+            ['https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json'] = 'docker-compose*.yml',
+          },
+          validate = true,
+          completion = true,
+          hover = true,
+        },
+      },
+    })
+  end,
+})
+
+-- Configure bashls for shell scripts
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = {'sh', 'bash', 'zsh'},
+  callback = function()
+    local cmd = vim.fn.exepath('bash-language-server')
+    if cmd == '' then return end
+    vim.lsp.start({
+      name = 'bashls',
+      cmd = {'bash-language-server', 'start'},
+      capabilities = capabilities,
+      root_dir = vim.fs.root(0, {'.git'}),
+    })
+  end,
+})
+
+-- Configure dockerls for Dockerfiles
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'dockerfile',
+  callback = function()
+    local cmd = vim.fn.exepath('docker-langserver')
+    if cmd == '' then return end
+    vim.lsp.start({
+      name = 'dockerls',
+      cmd = {'docker-langserver', '--stdio'},
+      capabilities = capabilities,
+      root_dir = vim.fs.root(0, {'Dockerfile', '.git'}),
+    })
+  end,
+})
+
+-- Configure ts_ls for TypeScript/JavaScript
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = {'typescript', 'typescriptreact', 'javascript', 'javascriptreact'},
+  callback = function()
+    local cmd = vim.fn.exepath('typescript-language-server')
+    if cmd == '' then return end
+    vim.lsp.start({
+      name = 'ts_ls',
+      cmd = {'typescript-language-server', '--stdio'},
+      capabilities = capabilities,
+      root_dir = vim.fs.root(0, {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'}),
+    })
+  end,
+})
+
 -- Diagnostic config
 vim.diagnostic.config({
   virtual_text = true,

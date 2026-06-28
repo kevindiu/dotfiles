@@ -21,7 +21,6 @@ services:
   docker-proxy:
     image: tecnativa/docker-socket-proxy:latest
     container_name: docker-proxy
-    privileged: true
     environment:
       - CONTAINERS=1
       - IMAGES=1
@@ -48,7 +47,7 @@ services:
         condition: service_started
     environment:
       - DOCKER_HOST=tcp://docker-proxy:2375
-      - SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
+      - SSH_AUTH_SOCK=${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}
       - TZ=${TZ:-UTC}
     build:
       context: .
@@ -87,6 +86,7 @@ services:
       - ./configs/nvim:/home/${DEV_USER:-dev}/.config/nvim
       - ./configs/.zshrc:/home/${DEV_USER:-dev}/.zshrc:ro
       - ./configs/.tmux.conf:/home/${DEV_USER:-dev}/.tmux.conf:ro
+      - ./configs/starship.toml:/home/${DEV_USER:-dev}/.config/starship.toml:ro
       - ./configs/linux/etc/ssh/sshd_config:/etc/ssh/sshd_config:ro
       - ./configs/linux/etc/sysctl.d/99-optimized.conf:/etc/sysctl.d/99-optimized.conf:ro
       - ./configs/linux/etc/profile.d:/etc/profile.d:ro
@@ -94,7 +94,7 @@ services:
       - ./configs/linux/etc/timezone:/etc/timezone:ro
       - ./configs/linux/etc/security:/etc/security:ro
 
-      - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock # Forward SSH Agent
+      - ${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock} # Forward SSH Agent (macOS + Linux)
 
       - ./extra/mounts/security-tools:/home/${DEV_USER:-dev}/.security
       - ./extra/mounts/go-cache:/home/${DEV_USER:-dev}/.go-cache

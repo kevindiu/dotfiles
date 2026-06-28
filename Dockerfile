@@ -2,8 +2,7 @@ FROM manjarolinux/base:latest AS base-system
 ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     SHELL=/bin/zsh \
-    TERM=xterm-256color \
-    MAKEFLAGS=-j$(nproc)
+    TERM=xterm-256color
 
 ARG USERNAME=dev
 ARG USER_UID=1001
@@ -84,7 +83,8 @@ RUN chmod 755 /usr/local/bin/sudo-wrapper && \
     ln -s /usr/local/bin/sudo-wrapper /usr/local/bin/sudo
 
 COPY scripts/start-sshd.sh /tmp/start-sshd.sh
-RUN echo "$USERNAME:$USERNAME" | chpasswd
+# Lock the user password — all access is via SSH key authentication
+RUN usermod -L $USERNAME
 RUN install -o root -g root -m 755 /tmp/start-sshd.sh /usr/local/bin/start-sshd.sh && \
     rm /tmp/start-sshd.sh
 

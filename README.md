@@ -5,6 +5,7 @@ A consistent, containerized development environment for Go, Cloud Native, and AI
 ## Quick Start
 
 ```bash
+cp .env.example .env  # customize if needed
 make build
 make shell
 ```
@@ -31,8 +32,9 @@ make shell
 | `make start` | Start existing containers |
 | `make stop` | Stop containers |
 | `make restart` | Restart containers (stop + start) |
-| `make ssh-setup` | Configure passwordless SSH access |
+| `make ssh-setup` | Configure SSH key authentication |
 | `make ssh` | Connect via SSH |
+| `make test` | Run smoke tests on the container |
 | `make update` | Update system packages (via safe `sudo` shim) |
 | `make rebuild` | Rebuild image with fresh dependencies (`--no-cache`) |
 | `make clean` | Remove temporary build artifacts |
@@ -42,6 +44,7 @@ make shell
 | `make build-info` | Show build cache information |
 | `make scan` | Scan container image with Trivy |
 | `make backup` | Backup workspace and persistent volumes |
+| `make restore` | Restore from a backup (`BACKUP=path/to/file.tar.gz`) |
 | `make install` | Install auto-shell to host shell config |
 | `make uninstall` | Remove auto-shell from host shell config |
 
@@ -64,8 +67,11 @@ This environment runs as user `dev` (UID 1001). If your host files (e.g., `works
 
 - **Zsh**: `configs/.zshrc`
 - **Tmux**: `configs/.tmux.conf`
+- **Starship Prompt**: `configs/starship.toml`
 - **Neovim**: `configs/nvim/`
 - **SSH**: `configs/linux/etc/ssh/sshd_config`
 - **System Tuning**: `configs/linux/etc/`
+- **Environment**: `.env.example` (copy to `.env` to customize)
 - **Scripts**: `scripts/`
 - **Docs**: `docs/` (User Guides), `.agent/` (AI Context)
+- **CI**: `.github/workflows/ci.yml` (Hadolint + ShellCheck + Build)
