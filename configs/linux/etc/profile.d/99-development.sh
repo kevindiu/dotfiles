@@ -24,3 +24,6 @@ export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
 
 # Timezone for consistent development
 export TZ=${TZ:-UTC}
+
+# Pi coding agent configuration
+export RPIV_LANES_HOTKEY=alt+l

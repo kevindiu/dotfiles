@@ -50,6 +50,7 @@ services:
       - DOCKER_HOST=tcp://docker-proxy:2375
       - SSH_AUTH_SOCK=${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}
       - TZ=${TZ:-UTC}
+      - RPIV_LANES_HOTKEY=alt+l
     build:
       context: .
       args:
