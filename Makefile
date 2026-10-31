@@ -105,14 +105,11 @@ clean:
 	@echo "$(GREEN)[SUCCESS]$(NC) Cache cleanup complete!"
 
 rm:
-	@echo "$(RED)[WARNING]$(NC) This will remove ALL data including Git credentials, GPG keys, etc."
+	@echo "$(RED)[WARNING]$(NC) This will remove containers, images, and volumes for $(COMPOSE_PROJECT_NAME)."
 	@read -p "Are you sure? [y/N] " -n 1 -r; echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		echo "$(YELLOW)[RM]$(NC) Removing everything..."; \
-		docker compose down -v --remove-orphans; \
-		docker system prune -af; \
-		docker builder prune -af; \
-		docker volume prune -f; \
+		echo "$(YELLOW)[RM]$(NC) Removing project environment and volumes..."; \
+		docker compose down -v --rmi local --remove-orphans; \
 		echo "$(GREEN)[SUCCESS]$(NC) Everything removed!"; \
 	else \
 		echo "$(BLUE)[CANCELLED]$(NC) Operation cancelled."; \

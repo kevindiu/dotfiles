@@ -114,8 +114,8 @@ mkcd() {
 }
 
 if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]]; then
-    echo "🚀 Starting new tmux session"
-    exec tmux new-session
+    echo "🚀 Attaching to or starting tmux session 'main'..."
+    exec tmux new-session -A -s main
 fi
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"

@@ -101,6 +101,14 @@ run_dev_home_setup
 
 adjust_docker_permissions
 
-echo "🌐 Starting SSH daemon on port 2222..."
+# Prepare runtime SSH configuration adapting to configured DEV_USER
+TARGET_USER="${DEV_USER:-dev}"
+USER_HOME="/home/${TARGET_USER}"
+RUNTIME_SSHD_CONF="/var/run/sshd/sshd_config"
+mkdir -p /var/run/sshd
+sed -e "s|/home/dev|${USER_HOME}|g" \
+    -e "s|AllowUsers dev|AllowUsers ${TARGET_USER}|g" \
+    /etc/ssh/sshd_config > "$RUNTIME_SSHD_CONF"
 
-exec /usr/sbin/sshd -D
+echo "🌐 Starting SSH daemon on port 2222..."
+exec /usr/sbin/sshd -D -f "$RUNTIME_SSHD_CONF"
