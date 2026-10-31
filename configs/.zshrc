@@ -6,7 +6,6 @@ ZSH_THEME=""
 plugins=(
     git
     golang
-    tmux
     docker
     docker-compose
     fzf-tab
@@ -67,6 +66,37 @@ export GOBIN=$HOME/go/bin
 export PATH=$HOME/.local/bin:$PATH:$GOBIN
 export GOTMPDIR=$HOME/.go-tmp
 
+# Smart tmux wrapper: handles inside-tmux calls gracefully without nesting errors
+unalias tmux 2>/dev/null
+tmux() {
+    if [ "$#" -eq 0 ] && [ -n "$TMUX" ]; then
+        if [ -x /usr/local/bin/tmux-select.sh ]; then
+            /usr/local/bin/tmux-select.sh
+        else
+            command tmux
+        fi
+    elif [ "$#" -ge 1 ] && [ "$1" = "new" -o "$1" = "new-session" ] && [ -n "$TMUX" ]; then
+        shift
+        local sname=""
+        if [ "$#" -ge 2 ] && [ "$1" = "-s" ]; then
+            sname="$2"
+            shift 2
+        elif [ "$#" -ge 1 ] && [[ "$1" != -* ]]; then
+            sname="$1"
+            shift
+        fi
+        if [ -n "$sname" ]; then
+            command tmux new-session -d -s "$sname" "$@" && command tmux switch-client -t "$sname"
+        else
+            local created
+            created=$(command tmux new-session -d -P -F "#{session_name}" "$@")
+            command tmux switch-client -t "$created"
+        fi
+    else
+        command tmux "$@"
+    fi
+}
+
 alias ls='eza --icons --group-directories-first'
 alias ll='eza -alF --icons --group-directories-first'
 alias la='eza -a --icons --group-directories-first'
@@ -114,7 +144,11 @@ mkcd() {
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 
-if [[ "$TERM_PROGRAM" != "vscode" ]] && [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]]; then
-    echo "🚀 Attaching to or starting tmux session 'main'..."
-    exec tmux new-session -A -s main
+if [[ "$TERM_PROGRAM" != "vscode" ]] && [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]] && [[ "${NO_AUTO_TMUX:-0}" != "1" ]]; then
+    if [ -x /usr/local/bin/tmux-select.sh ]; then
+        exec /usr/local/bin/tmux-select.sh
+    else
+        echo "🚀 Attaching to or starting tmux session 'main'..."
+        exec tmux new-session -A -s main
+    fi
 fi

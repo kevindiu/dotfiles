@@ -50,6 +50,12 @@ configs/.gitconfig.personal
 .env.production.local
 extra/
 
-# Pi Coding Agent session history and credentials
+# Pi Coding Agent runtime, sessions, credentials and package caches
 configs/pi/auth.json
+configs/pi/antigravity-accounts.json
+configs/pi/telegram.json
+configs/pi/models-store.json
 configs/pi/sessions/
+configs/pi/npm/
+configs/pi/git/
+configs/pi/tmp/

@@ -7,14 +7,68 @@ if [ ! -t 0 ] || [ ! -t 1 ]; then
     exec /bin/zsh "$@"
 fi
 
+in_active_tmux() {
+    [ -n "${TMUX:-}" ] && tmux display-message -p "#{client_name}" >/dev/null 2>&1
+}
+
+if ! in_active_tmux; then
+    unset TMUX
+fi
+
+attach_to_session() {
+    local target="$1"
+    if in_active_tmux; then
+        echo "🔄 Switching to session '$target'..."
+        tmux switch-client -t "$target"
+    else
+        unset TMUX
+        echo "🚀 Attaching to session '$target'..."
+        exec tmux attach-session -t "$target"
+    fi
+}
+
+create_session() {
+    local name="${1:-}"
+    if in_active_tmux; then
+        if [ -n "$name" ]; then
+            echo "🚀 Creating and switching to session '$name'..."
+            tmux new-session -d -s "$name"
+            tmux switch-client -t "$name"
+        else
+            local created
+            created=$(tmux new-session -d -P -F "#{session_name}")
+            echo "🚀 Creating and switching to session '$created'..."
+            tmux switch-client -t "$created"
+        fi
+    else
+        unset TMUX
+        if [ -n "$name" ]; then
+            echo "🚀 Starting new tmux session '$name'..."
+            exec tmux new-session -s "$name"
+        else
+            echo "🚀 Starting new tmux session..."
+            exec tmux new-session
+        fi
+    fi
+}
+
 # If a specific session is explicitly requested, attach/create directly
 if [ -n "${SESSION:-}" ]; then
-    exec tmux new-session -A -s "$SESSION"
+    if in_active_tmux; then
+        if ! tmux has-session -t "$SESSION" 2>/dev/null; then
+            tmux new-session -d -s "$SESSION"
+        fi
+        exec tmux switch-client -t "$SESSION"
+    else
+        unset TMUX
+        exec tmux new-session -A -s "$SESSION"
+    fi
 fi
 
 # If explicit NEW=1 is passed, create a fresh unnamed session directly
 if [ "${NEW:-0}" = "1" ]; then
-    exec tmux new-session
+    create_session ""
+    exit 0
 fi
 
 # Check for existing tmux sessions
@@ -25,8 +79,8 @@ done < <(tmux list-sessions -F "#{session_name}" 2>/dev/null || true)
 
 # If no sessions exist, automatically start 'main'
 if [ "${#session_names[@]}" -eq 0 ]; then
-    echo "🚀 Starting new tmux session 'main'..."
-    exec tmux new-session -s main
+    create_session "main"
+    exit 0
 fi
 
 # Gather session details for display
@@ -54,21 +108,18 @@ while true; do
     case "$choice" in
         [nN])
             read -r -p "Session name (leave blank for auto): " new_name
-            if [ -n "$new_name" ]; then
-                exec tmux new-session -s "$new_name"
-            else
-                exec tmux new-session
-            fi
+            create_session "$new_name"
+            exit 0
             ;;
         [sS])
             echo "🐚 Opening plain zsh..."
-            exec /bin/zsh
+            exec env NO_AUTO_TMUX=1 /bin/zsh
             ;;
         *)
             if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#session_names[@]}" ]; then
                 selected="${session_names[$((choice - 1))]}"
-                echo "🚀 Attaching to session '$selected'..."
-                exec tmux attach-session -t "$selected"
+                attach_to_session "$selected"
+                exit 0
             else
                 echo "⚠️  Invalid selection. Please choose 1-${#session_names[@]}, 'n', or 's'."
             fi
