@@ -13,7 +13,12 @@
     "npm:@juicesharp/rpiv-workflow",
     "npm:@reedchan/statusline",
     "npm:pi-ui-extension",
-    "git:https://github.com/NelsonBrandao/pi-agent-extensions",
+    {
+      "source": "git:https://github.com/NelsonBrandao/pi-agent-extensions",
+      "extensions": [
+        "-extensions/todos.ts"
+      ]
+    },
     "npm:@narumitw/pi-worktree"
   ],
   "defaultTools": [
