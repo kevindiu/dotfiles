@@ -102,13 +102,16 @@ printf "  \033[0;33m[s]\033[0m Plain shell (no tmux)\n"
 echo "--------------------------------------------------"
 
 while true; do
-    read -r -p "Select option [1-${#session_names[@]}, n, s] (default: 1): " choice
+    if ! read -r -p "Select option [1-${#session_names[@]}, n, s] (default: 1): " choice; then
+        echo ""
+        exit 0
+    fi
     choice="${choice:-1}"
 
     case "$choice" in
         [nN])
-            read -r -p "Session name (leave blank for auto): " new_name
-            create_session "$new_name"
+            read -r -p "Session name (leave blank for auto): " new_name || true
+            create_session "${new_name:-}"
             exit 0
             ;;
         [sS])

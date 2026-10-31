@@ -36,24 +36,30 @@ require("lazy").setup({
 
 -- 3. Clipboard (OSC52 Fallback for SSH)
 if vim.fn.has('nvim-0.10') == 1 then
-  vim.g.clipboard = {
-    name = 'OSC 52',
-    copy = {
-      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-    },
-    paste = {
-      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-    },
-  }
+  local ok, osc52 = pcall(require, 'vim.ui.clipboard.osc52')
+  if ok then
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = osc52.copy('+'),
+        ['*'] = osc52.copy('*'),
+      },
+      paste = {
+        ['+'] = osc52.paste('+'),
+        ['*'] = osc52.paste('*'),
+      },
+    }
+  end
 end
 
--- 4. Native LSP Setup (Loaded after plugins)
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local has_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-if has_cmp then
-  capabilities = cmp_lsp.default_capabilities(capabilities)
+-- 4. Native LSP Setup (Loaded dynamically on file open)
+local function get_capabilities()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+  if ok then
+    return cmp_lsp.default_capabilities(capabilities)
+  end
+  return capabilities
 end
 
 -- Configure gopls using native LSP
@@ -63,7 +69,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'gopls',
       cmd = {'gopls'},
-      capabilities = capabilities,
+      capabilities = get_capabilities(),
       root_dir = vim.fs.root(0, {'go.mod', '.git'}) or vim.uv.cwd(),
       settings = {
         gopls = {
@@ -99,7 +105,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'lua_ls',
       cmd = {'lua-language-server'},
-      capabilities = capabilities,
+      capabilities = get_capabilities(),
       root_dir = vim.fs.root(0, {'.git', '.lazy.lua', 'init.lua'}),
       settings = {
         Lua = {
@@ -120,7 +126,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'yamlls',
       cmd = {'yaml-language-server', '--stdio'},
-      capabilities = capabilities,
+      capabilities = get_capabilities(),
       root_dir = vim.fs.root(0, {'.git'}),
       settings = {
         yaml = {
@@ -146,7 +152,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'bashls',
       cmd = {'bash-language-server', 'start'},
-      capabilities = capabilities,
+      capabilities = get_capabilities(),
       root_dir = vim.fs.root(0, {'.git'}),
     })
   end,
@@ -161,7 +167,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'dockerls',
       cmd = {'docker-langserver', '--stdio'},
-      capabilities = capabilities,
+      capabilities = get_capabilities(),
       root_dir = vim.fs.root(0, {'Dockerfile', '.git'}),
     })
   end,
@@ -176,7 +182,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'ts_ls',
       cmd = {'typescript-language-server', '--stdio'},
-      capabilities = capabilities,
+      capabilities = get_capabilities(),
       root_dir = vim.fs.root(0, {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'}),
     })
   end,

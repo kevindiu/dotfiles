@@ -12,4 +12,6 @@ elif [ -n "$BASH_VERSION" ]; then
 fi
 
 # Ensure directory exists (just in case)
-mkdir -p "$(dirname "$HISTFILE")"
+if [ -n "${HISTFILE:-}" ]; then
+    mkdir -p "$(dirname "$HISTFILE")"
+fi

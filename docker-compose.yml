@@ -2,7 +2,8 @@ services:
   volume-init:
     image: manjarolinux/base:latest
     env_file:
-      - .env
+      - path: .env
+        required: false
     volumes:
       - ./scripts/init-volumes.sh:/init-volumes.sh:ro
       - ./extra/mounts/security-tools:/mnt/security-tools
@@ -17,7 +18,7 @@ services:
       - ./extra/mounts/antigravity-cache:/mnt/antigravity-cache
       - ./extra/mounts/gemini-cache:/mnt/gemini-cache
       - ./configs/pi:/mnt/pi-config
-    command: [ "sh", "/init-volumes.sh" ]
+    command: [ "bash", "/init-volumes.sh" ]
 
   docker-proxy:
     image: tecnativa/docker-socket-proxy:latest
@@ -61,7 +62,8 @@ services:
     image: ${COMPOSE_PROJECT_NAME:-dotfiles}-dev-env
     container_name: ${COMPOSE_PROJECT_NAME:-dotfiles}-dev-environment
     env_file:
-      - .env
+      - path: .env
+        required: false
     user: "${DEV_USER_ID:-1001}:${DEV_GROUP_ID:-1001}"
     init: true
     healthcheck:

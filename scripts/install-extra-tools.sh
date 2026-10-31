@@ -27,7 +27,7 @@ done
 echo "✅ Extra AUR tools installation completed!"
 
 echo "🔄 Installing ${#pacman_tools[@]} pacman tools..."
-sudo pacman -Sy --noconfirm --needed "${pacman_tools[@]}"
+sudo pacman -S --noconfirm --needed "${pacman_tools[@]}"
 
 install_gradle() {
     echo "📦 Checking and installing Gradle..."
@@ -38,18 +38,14 @@ install_gradle() {
         local gradle_ver="8.10.2"
         local install_dir="$HOME/.local/share/gradle"
         local bin_dir="$HOME/.local/bin"
-        mkdir -p "$install_dir" "$bin_dir" "$HOME/go/bin"
+        mkdir -p "$install_dir" "$bin_dir"
         curl -fsSL "https://services.gradle.org/distributions/gradle-${gradle_ver}-bin.zip" -o /tmp/gradle.zip
         unzip -qo /tmp/gradle.zip -d "$install_dir"
         ln -sfn "$install_dir/gradle-${gradle_ver}/bin/gradle" "$bin_dir/gradle"
-        ln -sfn "$install_dir/gradle-${gradle_ver}/bin/gradle" "$HOME/go/bin/gradle"
         rm -f /tmp/gradle.zip
         echo "✅ Gradle ${gradle_ver} installed"
     fi
 }
 install_gradle
-
-echo "🧹 Cleaning package cache..."
-sudo pacman -Scc --noconfirm || true
 
 echo "✅ Extra Pacman tools installation completed!"

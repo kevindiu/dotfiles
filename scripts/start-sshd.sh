@@ -27,7 +27,11 @@ run_dev_home_setup() {
 
     echo "🛠️  Refreshing dev home directories..."
     if [ "$(id -u)" -eq 0 ]; then
-        su - "${DEV_USER:-dev}" -c "HOME=$HOME $setup_script"
+        if command -v runuser >/dev/null 2>&1; then
+            runuser -u "${DEV_USER:-dev}" -- env HOME="/home/${DEV_USER:-dev}" "$setup_script"
+        else
+            su -s /bin/bash "${DEV_USER:-dev}" -c "HOME=/home/${DEV_USER:-dev} $setup_script"
+        fi
     else
         env HOME="$HOME" "$setup_script"
     fi

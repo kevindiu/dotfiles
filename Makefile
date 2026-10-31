@@ -133,6 +133,7 @@ install:
 		echo "$(YELLOW)[SKIP]$(NC) Already installed in $$SHELL_CONFIG"; \
 	else \
 		echo "" >> "$$SHELL_CONFIG"; \
+		echo "# >>> dotfiles-container-auto-shell >>>" >> "$$SHELL_CONFIG"; \
 		echo "# Auto-enter dotfiles development container" >> "$$SHELL_CONFIG"; \
 		echo "if [[ -z \"\$$DOTFILES_AUTO_SHELL_DONE\" ]]; then" >> "$$SHELL_CONFIG"; \
 		echo "  export DOTFILES_AUTO_SHELL_DONE=1" >> "$$SHELL_CONFIG"; \
@@ -141,6 +142,7 @@ install:
 		echo "    cd $(shell pwd) && make shell" >> "$$SHELL_CONFIG"; \
 		echo "  fi" >> "$$SHELL_CONFIG"; \
 		echo "fi" >> "$$SHELL_CONFIG"; \
+		echo "# <<< dotfiles-container-auto-shell <<<" >> "$$SHELL_CONFIG"; \
 		echo "$(GREEN)[INSTALLED]$(NC) Added to $$SHELL_CONFIG"; \
 	fi
 	@echo "$(YELLOW)[NOTE]$(NC) Open a new terminal to auto-enter the container"
@@ -155,7 +157,11 @@ uninstall:
 	\
 	if grep -q "DOTFILES_AUTO_SHELL_DONE" "$$SHELL_CONFIG"; then \
 		echo "$(YELLOW)[REMOVING]$(NC) Removing from $$SHELL_CONFIG"; \
-		$(SED_I) '/# Auto-enter dotfiles development container/,/^fi$$/d' "$$SHELL_CONFIG"; \
+		if grep -q "# >>> dotfiles-container-auto-shell >>>" "$$SHELL_CONFIG"; then \
+			$(SED_I) '/# >>> dotfiles-container-auto-shell >>>/,/# <<< dotfiles-container-auto-shell <<</d' "$$SHELL_CONFIG"; \
+		else \
+			$(SED_I) '/# Auto-enter dotfiles development container/,/fi$$/d' "$$SHELL_CONFIG"; \
+		fi; \
 		echo "$(GREEN)[REMOVED]$(NC) Auto-shell removed from $$SHELL_CONFIG"; \
 	else \
 		echo "$(YELLOW)[SKIP]$(NC) Auto-shell not found in $$SHELL_CONFIG"; \
@@ -211,8 +217,8 @@ status:
 	@echo "$(BLUE)[STATUS]$(NC) Container status:"
 	@docker compose ps
 	@echo ""
-	@echo "$(BLUE)[VOLUMES]$(NC) Persistent volumes:"
-	@docker volume ls | grep dotfiles || echo "No dotfiles volumes found"
+	@echo "$(BLUE)[MOUNTS]$(NC) Persistent host mounts:"
+	@ls -d extra/mounts/* 2>/dev/null | sed 's/^/  • /' || echo "  No persistent mounts found"
 
 rebuild:
 	@echo "$(BLUE)[REBUILD]$(NC) Rebuilding environment with fresh dependencies..."

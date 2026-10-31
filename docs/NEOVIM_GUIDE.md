@@ -27,8 +27,8 @@
 | Delete Buffer | `,bd` |
 | New Tab | `,tn` |
 | Close Tab | `,tc` |
-| Next Tab | `Tab` |
-| Previous Tab | `Shift+Tab` |
+| Next Tab | `gt` / `:tabnext` |
+| Previous Tab | `Shift+Tab` / `gT` |
 
 ## Split Management
 | Action | Keybinding |
