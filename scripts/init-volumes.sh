@@ -51,6 +51,10 @@ declare -A volume_config=(
 
     ["/mnt/antigravity-cache"]="755:$DEV_UID:$DEV_GID"
     ["/mnt/gemini-cache"]="755:$DEV_UID:$DEV_GID"
+
+    ["/mnt/pi-config"]="755:$DEV_UID:$DEV_GID"
+    ["/mnt/pi-config/sessions"]="755:$DEV_UID:$DEV_GID"
+    ["/mnt/pi-config/agents"]="755:$DEV_UID:$DEV_GID"
 )
 
 init_volumes() {

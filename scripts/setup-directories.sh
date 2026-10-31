@@ -42,7 +42,9 @@ setup_directories() {
         "$HOME/.go-tmp" \
         "$HOME/.local/bin" \
         "$HOME/.local/share/nvim" \
-        "$HOME/.local/share/zoxide"
+        "$HOME/.local/share/zoxide" \
+        "$HOME/.pi/agent/sessions" \
+        "$HOME/.pi/agent/agents"
 
     mkdir -p "$HOME/.cache/cargo-target"
 

@@ -1,4 +1,4 @@
-.PHONY: help build rebuild start stop restart clean logs shell ssh status rm install uninstall scan update test
+.PHONY: help build rebuild start stop restart clean logs shell ssh status rm install uninstall scan update test add-ssh-key
 
 # Load environment variables from .env (fallback to .env.example)
 ifneq (,$(wildcard ./.env))
@@ -58,6 +58,7 @@ help:
 	@printf "  \033[0;34muninstall\033[0m  Remove auto-shell from host shell config\n"
 	@printf "  \033[0;34mssh\033[0m        Connect via SSH\n"
 	@printf "  \033[0;34mssh-setup\033[0m  Set up SSH key authentication (no password)\n"
+	@printf "  \033[0;34madd-ssh-key\033[0m Add an external SSH public key (KEY=\"ssh-...\")\n"
 	@printf "  \033[0;34mlogs\033[0m       Show container logs\n"
 	@printf "  \033[0;34mstatus\033[0m     Show container status\n"
 	@printf "  \033[0;34mbuild-info\033[0m Show build cache information\n"
@@ -194,6 +195,15 @@ ssh-setup:
 	@sleep 2 && ssh $(SSH_HOST_NAME) 'echo "✅ SSH key authentication successful!"' || echo "❌ SSH setup failed - try 'make restart' and test again"
 	@echo "$(GREEN)[SUCCESS]$(NC) SSH key authentication configured!"
 
+add-ssh-key:
+	@if [ -z "$(KEY)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Usage: make add-ssh-key KEY=\"ssh-ed25519 AAAA...\""; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)[SSH-KEY]$(NC) Adding public key to container..."
+	@docker exec -i $(CONTAINER_NAME) sh -c "mkdir -p /home/$(DEV_USER)/.ssh && chmod 700 /home/$(DEV_USER)/.ssh && echo '$(KEY)' >> /home/$(DEV_USER)/.ssh/authorized_keys && chmod 600 /home/$(DEV_USER)/.ssh/authorized_keys"
+	@echo "$(GREEN)[SUCCESS]$(NC) Public key added successfully!"
+
 logs:
 	@docker compose logs -f
 
@@ -303,6 +313,7 @@ test:
 	run_test "Starship prompt" "starship --version"; \
 	run_test "ripgrep available" "rg --version"; \
 	run_test "fzf available" "fzf --version"; \
+	run_test "Pi coding agent" "pi --version"; \
 	run_test "Workspace symlink" "test -L /home/$(DEV_USER)/workspace"; \
 	run_test "Go bin symlink" "test -L /home/$(DEV_USER)/go/bin"; \
 	run_test "SSH dir symlink" "test -L /home/$(DEV_USER)/.ssh"; \

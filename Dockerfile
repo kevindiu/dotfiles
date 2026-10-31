@@ -90,6 +90,9 @@ COPY scripts/sudo-wrapper.sh /usr/local/bin/sudo-wrapper
 RUN chmod 755 /usr/local/bin/sudo-wrapper && \
     ln -sfn /usr/local/bin/sudo-wrapper /usr/local/bin/sudo
 
+# Install Pi coding agent CLI globally
+RUN npm install -g @earendil-works/pi-coding-agent
+
 COPY scripts/tmux-select.sh /usr/local/bin/tmux-select.sh
 RUN chmod 755 /usr/local/bin/tmux-select.sh
 

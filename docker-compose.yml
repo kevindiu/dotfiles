@@ -16,6 +16,7 @@ services:
       - ./extra/mounts/nvim-cache:/mnt/nvim-cache
       - ./extra/mounts/antigravity-cache:/mnt/antigravity-cache
       - ./extra/mounts/gemini-cache:/mnt/gemini-cache
+      - ./configs/pi:/mnt/pi-config
     command: [ "sh", "/init-volumes.sh" ]
 
   docker-proxy:
@@ -112,6 +113,7 @@ services:
       - ./extra/mounts/gemini-cache:/home/${DEV_USER:-dev}/.gemini
 
       - ./extra/mounts/docker-config:/home/${DEV_USER:-dev}/.docker
+      - ./configs/pi:/home/${DEV_USER:-dev}/.pi/agent
 
     stdin_open: true
     tty: true

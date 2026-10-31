@@ -19,7 +19,7 @@ make shell
 - **Data Persistence**:
   - Source code (`/workspace`)
   - Shell history & Configs
-  - **AI Agent Context** (`~/.antigravity`, `~/.gemini`)
+  - **AI Agent Context** (`~/.antigravity`, `~/.gemini`, `~/.pi/agent`)
 - **Transport**: SSH Server with Docker socket forwarding
 - **Security**: Hardened with `no-new-privileges` and a `sudo-wrapper` shim for safe updates.
 
@@ -69,6 +69,7 @@ This environment runs as user `dev` (UID 1001). If your host files (e.g., `works
 - **Tmux**: `configs/.tmux.conf`
 - **Starship Prompt**: `configs/starship.toml`
 - **Neovim**: `configs/nvim/`
+- **Pi Coding Agent**: `configs/pi/`
 - **SSH**: `configs/linux/etc/ssh/sshd_config`
 - **System Tuning**: `configs/linux/etc/`
 - **Environment**: `.env.example` (copy to `.env` to customize)

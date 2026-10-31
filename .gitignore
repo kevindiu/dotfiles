@@ -49,3 +49,7 @@ configs/.gitconfig.personal
 .env.test.local
 .env.production.local
 extra/
+
+# Pi Coding Agent session history and credentials
+configs/pi/auth.json
+configs/pi/sessions/
