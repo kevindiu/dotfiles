@@ -19,7 +19,9 @@ jobs:
           dockerfile: Dockerfile
           # DL3059: Multiple consecutive RUNs (intentional for cache layers)
           # DL3008/DL3013: Version pinning (rolling-release distro)
-          ignore: DL3059,DL3008,DL3013,DL3007,DL3018
+          # DL3064: False positive on USERNAME
+          # DL3066: Non-numeric user-id ARG resolution
+          ignore: DL3059,DL3008,DL3013,DL3007,DL3018,DL3064,DL3066
 
       - name: Lint shell scripts with ShellCheck
         uses: ludeeus/action-shellcheck@master

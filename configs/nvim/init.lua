@@ -64,7 +64,7 @@ vim.api.nvim_create_autocmd('FileType', {
       name = 'gopls',
       cmd = {'gopls'},
       capabilities = capabilities,
-      root_dir = vim.fs.root(0, {'go.mod', '.git'}),
+      root_dir = vim.fs.root(0, {'go.mod', '.git'}) or vim.uv.cwd(),
       settings = {
         gopls = {
           completeUnimported = true,
@@ -80,7 +80,10 @@ vim.api.nvim_create_autocmd('FileType', {
     })
     
     -- Auto-format on save
+    local format_group = vim.api.nvim_create_augroup("GoFormatOnSave", { clear = false })
+    vim.api.nvim_clear_autocmds({ group = format_group, buffer = 0 })
     vim.api.nvim_create_autocmd('BufWritePre', {
+      group = format_group,
       buffer = 0,
       callback = function()
         vim.lsp.buf.format({ async = false })
@@ -182,18 +185,18 @@ vim.api.nvim_create_autocmd('FileType', {
 -- Diagnostic config
 vim.diagnostic.config({
   virtual_text = true,
-  signs = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "✗",
+      [vim.diagnostic.severity.WARN]  = "⚠",
+      [vim.diagnostic.severity.HINT]  = "💡",
+      [vim.diagnostic.severity.INFO]  = "ℹ",
+    },
+  },
   underline = true,
   update_in_insert = false,
   severity_sort = true,
 })
-
--- Diagnostic signs
-local signs = { Error = "✗", Warn = "⚠", Hint = "💡", Info = "ℹ" }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
 
 -- LSP Keybindings (Dynamic attach)
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -203,7 +206,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     
     -- Docs & Nav
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-    vim.keymap.set('n', '<leader>gd', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', '<leader>ds', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', '<leader>gr', '<cmd>Telescope lsp_references<cr>', opts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)

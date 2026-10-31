@@ -86,6 +86,8 @@ services:
       - "9000:9000"
     volumes:
       - ${HOST_WORKSPACE:-./workspace}:/workspace
+      - ./scripts/start-sshd.sh:/usr/local/bin/start-sshd.sh:ro
+      - ./scripts/tmux-select.sh:/usr/local/bin/tmux-select.sh:ro
       - ./configs/nvim:/home/${DEV_USER:-dev}/.config/nvim
       - ./configs/.zshrc:/home/${DEV_USER:-dev}/.zshrc:ro
       - ./configs/.tmux.conf:/home/${DEV_USER:-dev}/.tmux.conf:ro

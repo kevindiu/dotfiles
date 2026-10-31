@@ -81,10 +81,11 @@ disabled = false
 symbol = "☸ "
 style = "bold blue"
 format = "[$symbol$context(/$namespace)]($style) "
+detect_files = ["k8s", "kube", "values.yaml"]
 
 [aws]
 symbol = "☁️  "
-style = "bold orange"
+style = "bold 208"
 format = "[$symbol($profile)(\\($region\\))]($style) "
 
 [docker_context]

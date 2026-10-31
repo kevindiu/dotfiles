@@ -53,7 +53,7 @@ help:
 	@printf "  \033[0;34mrm\033[0m             Remove everything including volumes\n"
 	@echo ""
 	@printf "\033[1;33mAccess:\033[0m\n"
-	@printf "  \033[0;34mshell\033[0m      Open tmux session with zsh in container\n"
+	@printf "  \033[0;34mshell\033[0m      Open or select tmux session in container (SESSION=name, NEW=1)\n"
 	@printf "  \033[0;34minstall\033[0m    Install auto-shell to host shell config\n"
 	@printf "  \033[0;34muninstall\033[0m  Remove auto-shell from host shell config\n"
 	@printf "  \033[0;34mssh\033[0m        Connect via SSH\n"
@@ -116,9 +116,9 @@ rm:
 	fi
 
 shell:
-	@echo "$(BLUE)[SHELL]$(NC) Opening tmux session with zsh in container..."
+	@echo "$(BLUE)[SHELL]$(NC) Opening session in container..."
 	@echo "$(YELLOW)[TIP]$(NC) Use 'exit' to return to host terminal"
-	@docker exec -it $(CONTAINER_NAME) tmux new-session
+	@docker exec -it -e SESSION="$(SESSION)" -e NEW="$(NEW)" $(CONTAINER_NAME) /usr/local/bin/tmux-select.sh
 
 install:
 	@echo "$(BLUE)[INSTALL]$(NC) Setting up auto-shell..."

@@ -9,9 +9,9 @@ plugins=(
     tmux
     docker
     docker-compose
+    fzf-tab
     zsh-autosuggestions
     zsh-syntax-highlighting
-    fzf-tab
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -30,7 +30,7 @@ setopt HIST_REDUCE_BLANKS
 
 # Source global profiles (DOCKER_HOST, history, etc.)
 if [ -d /etc/profile.d ]; then
-  for i in /etc/profile.d/*.sh; do
+  for i in /etc/profile.d/*.sh(N); do
     if [ -r "$i" ]; then
       . "$i"
     fi
@@ -44,12 +44,11 @@ eval "$(starship init zsh)"
 # Initialize Zoxide (smart cd)
 eval "$(zoxide init zsh)"
 
-# GitHub CLI completion
 # GitHub CLI completion (Cached for speed)
 GH_COMPLETION="$HOME/.cache/gh-completion.zsh"
-if command -v gh &> /dev/null; then
-    if [ ! -f "$GH_COMPLETION" ] || [ $(date +%s -r "$GH_COMPLETION") -lt $(date +%s -r $(which gh)) ]; then
-        mkdir -p "$(dirname "$GH_COMPLETION")"
+if (( $+commands[gh] )); then
+    if [[ ! -f "$GH_COMPLETION" || "$GH_COMPLETION" -ot "$commands[gh]" ]]; then
+        mkdir -p "${GH_COMPLETION:h}"
         gh completion -s zsh > "$GH_COMPLETION" 2>/dev/null
     fi
     source "$GH_COMPLETION"
@@ -65,7 +64,7 @@ export GPG_TTY=$(tty)
 export GOROOT=/usr/lib/go
 export GOPATH=$HOME/go
 export GOBIN=$HOME/go/bin
-export PATH=$PATH:$GOBIN
+export PATH=$HOME/.local/bin:$PATH:$GOBIN
 export GOTMPDIR=$HOME/.go-tmp
 
 alias ls='eza --icons --group-directories-first'
@@ -113,9 +112,9 @@ mkcd() {
     mkdir -p "$@" && cd "$_";
 }
 
-if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]]; then
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
+if [[ "$TERM_PROGRAM" != "vscode" ]] && [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]]; then
     echo "🚀 Attaching to or starting tmux session 'main'..."
     exec tmux new-session -A -s main
 fi
-
-[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"

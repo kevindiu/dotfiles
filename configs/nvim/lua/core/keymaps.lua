@@ -45,7 +45,7 @@ vim.keymap.set('n', '<C-l>', '<C-w>l')
 -- Tab Management
 vim.keymap.set('n', '<leader>tn', ':tabnew<CR>')
 vim.keymap.set('n', '<leader>tc', ':tabclose<CR>')
-vim.keymap.set('n', '<Tab>', ':tabnext<CR>')
+-- vim.keymap.set('n', '<Tab>', ':tabnext<CR>') -- Disabled: clobbers <C-i> jump list navigation
 vim.keymap.set('n', '<S-Tab>', ':tabprev<CR>')
 
 -- Git shortcuts

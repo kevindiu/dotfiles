@@ -4,6 +4,7 @@
 
 # Default editors and pagers
 export EDITOR=nvim
+export VISUAL=nvim
 export PAGER=less
 export LESSHISTFILE=-
 
@@ -14,7 +15,7 @@ export NPM_CONFIG_AUDIT=false
 export NPM_CONFIG_FUND=false
 
 # Rust optimizations
-export CARGO_TARGET_DIR=/tmp/cargo-target
+export CARGO_TARGET_DIR=$HOME/.cache/cargo-target
 export CARGO_NET_GIT_FETCH_WITH_CLI=true
 
 # Development tools optimization
