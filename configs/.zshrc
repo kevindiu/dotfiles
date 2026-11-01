@@ -53,12 +53,12 @@ if (( $+commands[gh] )); then
     source "$GH_COMPLETION"
 fi
 
-if [ -z "$SSH_AUTH_SOCK" ]; then
+if [ -z "$SSH_AUTH_SOCK" ] && ! pgrep -u "$USER" ssh-agent >/dev/null 2>&1; then
     eval "$(ssh-agent -s)" > /dev/null 2>&1
 fi
 
 export LANG=en_US.UTF-8
-export GPG_TTY=$(tty)
+[ -t 0 ] && export GPG_TTY=$(tty 2>/dev/null)
 
 export RPIV_LANES_HOTKEY=alt+l
 
@@ -146,7 +146,7 @@ mkcd() {
     mkdir -p "$@" && cd "$_";
 }
 
-[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+(( $+commands[code] )) && [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 
 if [[ "$TERM_PROGRAM" != "vscode" ]] && [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 0 ]] && [[ ! -f "$HOME/.no_auto_tmux" ]] && [[ "${NO_AUTO_TMUX:-0}" != "1" ]]; then
     if [ -x /usr/local/bin/tmux-select.sh ]; then

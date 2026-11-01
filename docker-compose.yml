@@ -84,10 +84,10 @@ services:
       net.core.somaxconn: 65535
       net.ipv4.ip_local_port_range: "1024 65535"
     ports:
-      - "${HOST_SSH_PORT:-2222}:2222"
-      - "${HOST_WEB_PORT:-8080}:8080"
-      - "3000:3000"
-      - "9000:9000"
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_SSH_PORT:-2222}:2222"
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_WEB_PORT:-8080}:8080"
+      - "${HOST_BIND_IP:-127.0.0.1}:3000:3000"
+      - "${HOST_BIND_IP:-127.0.0.1}:9000:9000"
     volumes:
       - ${HOST_WORKSPACE:-./workspace}:/workspace
       - ./scripts/start-sshd.sh:/usr/local/bin/start-sshd.sh:ro
@@ -130,7 +130,7 @@ networks:
     driver_opts:
       com.docker.network.bridge.enable_icc: "true"
       com.docker.network.bridge.enable_ip_masquerade: "true"
-      com.docker.network.bridge.host_binding_ipv4: "0.0.0.0"
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
     ipam:
       driver: default
       config:
