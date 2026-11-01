@@ -27,7 +27,11 @@ run_dev_home_setup() {
 
     echo "🛠️  Refreshing dev home directories..."
     if [ "$(id -u)" -eq 0 ]; then
-        su - "${DEV_USER:-dev}" -c "HOME=$HOME $setup_script"
+        if command -v runuser >/dev/null 2>&1; then
+            runuser -u "${DEV_USER:-dev}" -- env HOME="/home/${DEV_USER:-dev}" "$setup_script"
+        else
+            su -s /bin/bash "${DEV_USER:-dev}" -c "HOME=/home/${DEV_USER:-dev} $setup_script"
+        fi
     else
         env HOME="$HOME" "$setup_script"
     fi
@@ -35,15 +39,13 @@ run_dev_home_setup() {
 }
 
 adjust_docker_permissions() {
-    if [ "$(id -u)" -ne 0 ]; then
-        echo "⚠️  Cannot adjust Docker permissions without root privileges"
+    # If using TCP docker host (like docker-proxy) or socket isn't mounted, skip
+    if [ -n "${DOCKER_HOST:-}" ] || [ ! -S /var/run/docker.sock ]; then
         return
     fi
 
-    # If the socket isn't mounted, we can't do anything.
-    # This happens during build time or if the user forgot the volume mount.
-    if [ ! -S /var/run/docker.sock ]; then
-        echo "ℹ️  Docker socket not mounted; skipping permission fix"
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "⚠️  Cannot adjust Docker permissions without root privileges"
         return
     fi
 
@@ -101,6 +103,18 @@ run_dev_home_setup
 
 adjust_docker_permissions
 
-echo "🌐 Starting SSH daemon on port 2222..."
+# Prepare runtime SSH configuration adapting to configured DEV_USER
+TARGET_USER="${DEV_USER:-dev}"
+USER_HOME="/home/${TARGET_USER}"
+RUNTIME_SSHD_CONF="/tmp/sshd_config"
 
-exec /usr/sbin/sshd -D
+sed -e "s|/home/dev|${USER_HOME}|g" \
+    -e "s|AllowUsers dev|AllowUsers ${TARGET_USER}|g" \
+    /etc/ssh/sshd_config > "$RUNTIME_SSHD_CONF"
+
+if ! grep -q "^PidFile" "$RUNTIME_SSHD_CONF"; then
+    echo "PidFile /tmp/sshd.pid" >> "$RUNTIME_SSHD_CONF"
+fi
+
+echo "🌐 Starting SSH daemon on port 2222..."
+exec /usr/sbin/sshd -D -f "$RUNTIME_SSHD_CONF"

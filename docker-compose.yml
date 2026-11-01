@@ -2,7 +2,8 @@ services:
   volume-init:
     image: manjarolinux/base:latest
     env_file:
-      - .env
+      - path: .env
+        required: false
     volumes:
       - ./scripts/init-volumes.sh:/init-volumes.sh:ro
       - ./extra/mounts/security-tools:/mnt/security-tools
@@ -16,12 +17,12 @@ services:
       - ./extra/mounts/nvim-cache:/mnt/nvim-cache
       - ./extra/mounts/antigravity-cache:/mnt/antigravity-cache
       - ./extra/mounts/gemini-cache:/mnt/gemini-cache
-    command: [ "sh", "/init-volumes.sh" ]
+      - ./configs/pi:/mnt/pi-config
+    command: [ "bash", "/init-volumes.sh" ]
 
   docker-proxy:
     image: tecnativa/docker-socket-proxy:latest
     container_name: docker-proxy
-    privileged: true
     environment:
       - CONTAINERS=1
       - IMAGES=1
@@ -48,8 +49,9 @@ services:
         condition: service_started
     environment:
       - DOCKER_HOST=tcp://docker-proxy:2375
-      - SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
+      - SSH_AUTH_SOCK=${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}
       - TZ=${TZ:-UTC}
+      - RPIV_LANES_HOTKEY=alt+l
     build:
       context: .
       args:
@@ -60,7 +62,8 @@ services:
     image: ${COMPOSE_PROJECT_NAME:-dotfiles}-dev-env
     container_name: ${COMPOSE_PROJECT_NAME:-dotfiles}-dev-environment
     env_file:
-      - .env
+      - path: .env
+        required: false
     user: "${DEV_USER_ID:-1001}:${DEV_GROUP_ID:-1001}"
     init: true
     healthcheck:
@@ -77,24 +80,29 @@ services:
       - /run:noexec,nosuid,nodev,size=100m
     security_opt:
       - no-new-privileges:true
+    sysctls:
+      net.core.somaxconn: 65535
+      net.ipv4.ip_local_port_range: "1024 65535"
     ports:
-      - "${HOST_SSH_PORT:-2222}:2222"
-      - "${HOST_WEB_PORT:-8080}:8080"
-      - "3000:3000"
-      - "9000:9000"
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_SSH_PORT:-2222}:2222"
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_WEB_PORT:-8080}:8080"
+      - "${HOST_BIND_IP:-127.0.0.1}:3000:3000"
+      - "${HOST_BIND_IP:-127.0.0.1}:9000:9000"
     volumes:
       - ${HOST_WORKSPACE:-./workspace}:/workspace
+      - ./scripts/start-sshd.sh:/usr/local/bin/start-sshd.sh:ro
+      - ./scripts/tmux-select.sh:/usr/local/bin/tmux-select.sh:ro
       - ./configs/nvim:/home/${DEV_USER:-dev}/.config/nvim
       - ./configs/.zshrc:/home/${DEV_USER:-dev}/.zshrc:ro
       - ./configs/.tmux.conf:/home/${DEV_USER:-dev}/.tmux.conf:ro
+      - ./configs/starship.toml:/home/${DEV_USER:-dev}/.config/starship.toml:ro
       - ./configs/linux/etc/ssh/sshd_config:/etc/ssh/sshd_config:ro
-      - ./configs/linux/etc/sysctl.d/99-optimized.conf:/etc/sysctl.d/99-optimized.conf:ro
       - ./configs/linux/etc/profile.d:/etc/profile.d:ro
       - ./configs/linux/etc/locale.conf:/etc/locale.conf:ro
       - ./configs/linux/etc/timezone:/etc/timezone:ro
       - ./configs/linux/etc/security:/etc/security:ro
 
-      - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock # Forward SSH Agent
+      - ${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock} # Forward SSH Agent (macOS + Linux)
 
       - ./extra/mounts/security-tools:/home/${DEV_USER:-dev}/.security
       - ./extra/mounts/go-cache:/home/${DEV_USER:-dev}/.go-cache
@@ -108,6 +116,7 @@ services:
       - ./extra/mounts/gemini-cache:/home/${DEV_USER:-dev}/.gemini
 
       - ./extra/mounts/docker-config:/home/${DEV_USER:-dev}/.docker
+      - ./configs/pi:/home/${DEV_USER:-dev}/.pi/agent
 
     stdin_open: true
     tty: true
@@ -121,7 +130,7 @@ networks:
     driver_opts:
       com.docker.network.bridge.enable_icc: "true"
       com.docker.network.bridge.enable_ip_masquerade: "true"
-      com.docker.network.bridge.host_binding_ipv4: "0.0.0.0"
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
     ipam:
       driver: default
       config:

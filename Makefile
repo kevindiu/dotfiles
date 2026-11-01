@@ -1,9 +1,12 @@
-.PHONY: help build rebuild start stop restart clean logs shell ssh status rm install uninstall scan update
+.PHONY: help build rebuild start stop restart clean logs shell ssh status rm install uninstall scan update test add-ssh-key
 
-# Load environment variables from .env
+# Load environment variables from .env (fallback to .env.example)
 ifneq (,$(wildcard ./.env))
     include .env
     export $(shell sed 's/=.*//' .env)
+else ifneq (,$(wildcard ./.env.example))
+    include .env.example
+    export $(shell sed 's/=.*//' .env.example)
 endif
 
 # Default values if not in .env
@@ -50,45 +53,44 @@ help:
 	@printf "  \033[0;34mrm\033[0m             Remove everything including volumes\n"
 	@echo ""
 	@printf "\033[1;33mAccess:\033[0m\n"
-	@printf "  \033[0;34mshell\033[0m      Open tmux session with zsh in container\n"
+	@printf "  \033[0;34mshell\033[0m      Open or select tmux session in container (SESSION=name, NEW=1)\n"
 	@printf "  \033[0;34minstall\033[0m    Install auto-shell to host shell config\n"
 	@printf "  \033[0;34muninstall\033[0m  Remove auto-shell from host shell config\n"
 	@printf "  \033[0;34mssh\033[0m        Connect via SSH\n"
 	@printf "  \033[0;34mssh-setup\033[0m  Set up SSH key authentication (no password)\n"
+	@printf "  \033[0;34madd-ssh-key\033[0m Add an external SSH public key (KEY=\"ssh-...\")\n"
 	@printf "  \033[0;34mlogs\033[0m       Show container logs\n"
 	@printf "  \033[0;34mstatus\033[0m     Show container status\n"
 	@printf "  \033[0;34mbuild-info\033[0m Show build cache information\n"
 	@printf "  \033[0;34mscan\033[0m       Scan container image with Trivy\n"
-	@echo ""
+	@printf "  \033[0;34mtest\033[0m       Smoke-test the running container\n"
 	@echo ""
 	@printf "\033[1;33mBackup/Restore:\033[0m\n"
 	@printf "  \033[0;34mbackup\033[0m     Backup workspace and persistent volumes to ./backups\n"
-	@printf "  \033[0;34mrestore\033[0m    Restore from a backup file\n"
+	@printf "  \033[0;34mrestore\033[0m    Restore from a backup (BACKUP=path/to/file.tar.gz)\n"
 	@echo ""
 
-build:
 build:
 	@echo "$(BLUE)[BUILD]$(NC) Building development environment..."
 	@echo "$(YELLOW)[INFO]$(NC) Using BuildKit for optimized builds..."
 	@export DOCKER_BUILDKIT=1 && \
 	 export BUILDKIT_PROGRESS=plain && \
-	 docker-compose build --parallel || { \
+	 docker compose build --parallel || { \
 		echo "$(RED)[ERROR]$(NC) Build failed. Check logs above."; \
 		exit 1; \
 	}
 	@echo "$(GREEN)[BUILD SUCCESS]$(NC) Starting services..."
 	@$(MAKE) start
 	@echo "$(GREEN)[SUCCESS]$(NC) Environment ready!"
-	@echo "$(YELLOW)[NOTE]$(NC) SSH access: ssh $(DEV_USER)@localhost -p $(HOST_SSH_PORT) (password: $(DEV_USER))"
-	@echo "$(YELLOW)[TIP]$(NC) Run 'make ssh-setup' for passwordless SSH access"
+	@echo "$(YELLOW)[TIP]$(NC) Run 'make ssh-setup' to configure SSH key authentication"
 
 start:
 	@echo "$(BLUE)[START]$(NC) Starting containers..."
-	@docker-compose up -d
+	@docker compose up -d
 
 stop:
 	@echo "$(BLUE)[STOP]$(NC) Stopping containers..."
-	@docker-compose down
+	@docker compose down
 
 restart:
 	@echo "$(BLUE)[RESTART]$(NC) Restarting containers..."
@@ -98,29 +100,26 @@ restart:
 
 clean:
 	@echo "$(YELLOW)[CLEAN]$(NC) Cleaning cache and temporary data..."
-	@docker-compose down --remove-orphans
+	@docker compose down --remove-orphans
 	@docker system prune -f
 	@docker builder prune -f
 	@echo "$(GREEN)[SUCCESS]$(NC) Cache cleanup complete!"
 
 rm:
-	@echo "$(RED)[WARNING]$(NC) This will remove ALL data including Git credentials, GPG keys, etc."
+	@echo "$(RED)[WARNING]$(NC) This will remove containers, images, and volumes for $(COMPOSE_PROJECT_NAME)."
 	@read -p "Are you sure? [y/N] " -n 1 -r; echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		echo "$(YELLOW)[RM]$(NC) Removing everything..."; \
-		docker-compose down -v --remove-orphans; \
-		docker system prune -af; \
-		docker builder prune -af; \
-		docker volume prune -f; \
+		echo "$(YELLOW)[RM]$(NC) Removing project environment and volumes..."; \
+		docker compose down -v --rmi local --remove-orphans; \
 		echo "$(GREEN)[SUCCESS]$(NC) Everything removed!"; \
 	else \
 		echo "$(BLUE)[CANCELLED]$(NC) Operation cancelled."; \
 	fi
 
 shell:
-	@echo "$(BLUE)[SHELL]$(NC) Opening tmux session with zsh in container..."
+	@echo "$(BLUE)[SHELL]$(NC) Opening session in container..."
 	@echo "$(YELLOW)[TIP]$(NC) Use 'exit' to return to host terminal"
-	@docker exec -it $(CONTAINER_NAME) tmux new-session
+	@docker exec -it -e SESSION="$(SESSION)" -e NEW="$(NEW)" $(CONTAINER_NAME) /usr/local/bin/tmux-select.sh
 
 install:
 	@echo "$(BLUE)[INSTALL]$(NC) Setting up auto-shell..."
@@ -134,6 +133,7 @@ install:
 		echo "$(YELLOW)[SKIP]$(NC) Already installed in $$SHELL_CONFIG"; \
 	else \
 		echo "" >> "$$SHELL_CONFIG"; \
+		echo "# >>> dotfiles-container-auto-shell >>>" >> "$$SHELL_CONFIG"; \
 		echo "# Auto-enter dotfiles development container" >> "$$SHELL_CONFIG"; \
 		echo "if [[ -z \"\$$DOTFILES_AUTO_SHELL_DONE\" ]]; then" >> "$$SHELL_CONFIG"; \
 		echo "  export DOTFILES_AUTO_SHELL_DONE=1" >> "$$SHELL_CONFIG"; \
@@ -142,6 +142,7 @@ install:
 		echo "    cd $(shell pwd) && make shell" >> "$$SHELL_CONFIG"; \
 		echo "  fi" >> "$$SHELL_CONFIG"; \
 		echo "fi" >> "$$SHELL_CONFIG"; \
+		echo "# <<< dotfiles-container-auto-shell <<<" >> "$$SHELL_CONFIG"; \
 		echo "$(GREEN)[INSTALLED]$(NC) Added to $$SHELL_CONFIG"; \
 	fi
 	@echo "$(YELLOW)[NOTE]$(NC) Open a new terminal to auto-enter the container"
@@ -156,7 +157,11 @@ uninstall:
 	\
 	if grep -q "DOTFILES_AUTO_SHELL_DONE" "$$SHELL_CONFIG"; then \
 		echo "$(YELLOW)[REMOVING]$(NC) Removing from $$SHELL_CONFIG"; \
-		$(SED_I) '/# Auto-enter dotfiles development container/,/^fi$$/d' "$$SHELL_CONFIG"; \
+		if grep -q "# >>> dotfiles-container-auto-shell >>>" "$$SHELL_CONFIG"; then \
+			$(SED_I) '/# >>> dotfiles-container-auto-shell >>>/,/# <<< dotfiles-container-auto-shell <<</d' "$$SHELL_CONFIG"; \
+		else \
+			$(SED_I) '/# Auto-enter dotfiles development container/,/fi$$/d' "$$SHELL_CONFIG"; \
+		fi; \
 		echo "$(GREEN)[REMOVED]$(NC) Auto-shell removed from $$SHELL_CONFIG"; \
 	else \
 		echo "$(YELLOW)[SKIP]$(NC) Auto-shell not found in $$SHELL_CONFIG"; \
@@ -196,21 +201,30 @@ ssh-setup:
 	@sleep 2 && ssh $(SSH_HOST_NAME) 'echo "✅ SSH key authentication successful!"' || echo "❌ SSH setup failed - try 'make restart' and test again"
 	@echo "$(GREEN)[SUCCESS]$(NC) SSH key authentication configured!"
 
+add-ssh-key:
+	@if [ -z "$(KEY)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Usage: make add-ssh-key KEY=\"ssh-ed25519 AAAA...\""; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)[SSH-KEY]$(NC) Adding public key to container..."
+	@docker exec -i $(CONTAINER_NAME) sh -c "mkdir -p /home/$(DEV_USER)/.ssh && chmod 700 /home/$(DEV_USER)/.ssh && echo '$(KEY)' >> /home/$(DEV_USER)/.ssh/authorized_keys && chmod 600 /home/$(DEV_USER)/.ssh/authorized_keys"
+	@echo "$(GREEN)[SUCCESS]$(NC) Public key added successfully!"
+
 logs:
-	@docker-compose logs -f
+	@docker compose logs -f
 
 status:
 	@echo "$(BLUE)[STATUS]$(NC) Container status:"
-	@docker-compose ps
+	@docker compose ps
 	@echo ""
-	@echo "$(BLUE)[VOLUMES]$(NC) Persistent volumes:"
-	@docker volume ls | grep dotfiles || echo "No dotfiles volumes found"
+	@echo "$(BLUE)[MOUNTS]$(NC) Persistent host mounts:"
+	@ls -d extra/mounts/* 2>/dev/null | sed 's/^/  • /' || echo "  No persistent mounts found"
 
 rebuild:
 	@echo "$(BLUE)[REBUILD]$(NC) Rebuilding environment with fresh dependencies..."
 	@export DOCKER_BUILDKIT=1 && \
 	 export BUILDKIT_PROGRESS=plain && \
-	 docker-compose build --pull --no-cache || { \
+	 docker compose build --pull --no-cache || { \
 		echo "$(RED)[ERROR]$(NC) Rebuild failed. Check logs above."; \
 		exit 1; \
 	}
@@ -238,7 +252,7 @@ scan:
 
 update:
 	@echo "$(BLUE)[UPDATE]$(NC) Ensuring development container is running..."
-	@docker-compose up -d dev-env >/dev/null
+	@docker compose up -d dev-env >/dev/null
 	@echo "$(BLUE)[UPDATE]$(NC) Updating system packages via pacman..."
 	@docker exec -u root $(CONTAINER_NAME) bash -lc "pacman -Syyu --noconfirm"
 	@echo "$(BLUE)[UPDATE]$(NC) Updating AUR packages via yay..."
@@ -260,4 +274,55 @@ backup:
 	@echo "$(GREEN)[SUCCESS]$(NC) Backup created in ./backups/"
 
 restore:
-	@echo "$(RED)[WARNING]$(NC) Restore functionality is a placeholder. Manually extract the tarball to restore."
+	@if [ -z "$(BACKUP)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Usage: make restore BACKUP=backups/backup-YYYYMMDD-HHMMSS.tar.gz"; \
+		echo ""; \
+		echo "$(YELLOW)[AVAILABLE BACKUPS]$(NC)"; \
+		ls -lt backups/*.tar.gz 2>/dev/null || echo "  No backups found in ./backups/"; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(BACKUP)" ]; then \
+		echo "$(RED)[ERROR]$(NC) Backup file not found: $(BACKUP)"; \
+		exit 1; \
+	fi
+	@echo "$(RED)[WARNING]$(NC) This will overwrite current data in the container with the backup."
+	@read -p "Are you sure? [y/N] " -n 1 -r; echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		echo "$(BLUE)[RESTORE]$(NC) Restoring from $(BACKUP)..."; \
+		docker run --rm --volumes-from $(CONTAINER_NAME) -v $$(pwd)/$(BACKUP):/backup/restore.tar.gz:ro alpine sh -c "cd / && tar xzf /backup/restore.tar.gz"; \
+		echo "$(GREEN)[SUCCESS]$(NC) Restore complete! Run 'make restart' to apply."; \
+	else \
+		echo "$(BLUE)[CANCELLED]$(NC) Restore cancelled."; \
+	fi
+
+test:
+	@echo "$(BLUE)[TEST]$(NC) Running smoke tests on container..."
+	@PASS=0; FAIL=0; \
+	run_test() { \
+		local name="$$1"; shift; \
+		if docker exec $(CONTAINER_NAME) sh -c "$$*" >/dev/null 2>&1; then \
+			echo "  ✅ $$name"; \
+			PASS=$$((PASS + 1)); \
+		else \
+			echo "  ❌ $$name"; \
+			FAIL=$$((FAIL + 1)); \
+		fi; \
+	}; \
+	echo ""; \
+	run_test "SSH daemon running" "pgrep sshd"; \
+	run_test "Go toolchain" "go version"; \
+	run_test "Neovim loads" "nvim --headless +qa"; \
+	run_test "Zsh available" "zsh --version"; \
+	run_test "Tmux available" "tmux -V"; \
+	run_test "Git available" "git --version"; \
+	run_test "Node.js available" "node --version"; \
+	run_test "Starship prompt" "starship --version"; \
+	run_test "ripgrep available" "rg --version"; \
+	run_test "fzf available" "fzf --version"; \
+	run_test "Pi coding agent" "pi --version"; \
+	run_test "Workspace symlink" "test -L /home/$(DEV_USER)/workspace"; \
+	run_test "Go bin symlink" "test -L /home/$(DEV_USER)/go/bin"; \
+	run_test "SSH dir symlink" "test -L /home/$(DEV_USER)/.ssh"; \
+	echo ""; \
+	echo "$(GREEN)[RESULTS]$(NC) $$PASS passed, $$FAIL failed"; \
+	if [ $$FAIL -gt 0 ]; then exit 1; fi

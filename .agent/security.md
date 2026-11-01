@@ -10,5 +10,5 @@
 
 ## Privilege Model
 - **Sudo**: Minimal (`pacman`, `yay` only).
-- **Docker-Root**: User `dev` has `docker.sock` access, effectively granting root on the **container** (but not host).
+- **Docker-Root**: User dev has docker.sock access via docker-proxy. Note that container creation privileges on Docker socket effectively allow full host access; this setup is intended for a full-trust local development workstation.
 - **Updates**: `yay` updates use `scripts/sudo-wrapper.sh` to leverage this Docker-Root access for package installation without password prompts.

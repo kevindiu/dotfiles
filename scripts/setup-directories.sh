@@ -40,8 +40,13 @@ setup_directories() {
         "$vscode_root/extensions" "$vscode_root/bin" \
         "$vscode_data_root/User" "$vscode_data_root/Machine" \
         "$HOME/.go-tmp" \
+        "$HOME/.local/bin" \
         "$HOME/.local/share/nvim" \
-        "$HOME/.local/share/zoxide"
+        "$HOME/.local/share/zoxide" \
+        "$HOME/.pi/agent/sessions" \
+        "$HOME/.pi/agent/agents"
+
+    mkdir -p "$HOME/.cache/cargo-target"
 
     ensure_symlink "/workspace" "$HOME/workspace"
     ensure_symlink "$HOME/workspace" "$HOME/go/src/github.com"
@@ -89,6 +94,7 @@ setup_symlinks() {
     ensure_symlink "$tools_home/git-credentials/credentials" "$dev_home/.git-credentials"
     ensure_symlink "$tools_home/git-config/.gitconfig" "$dev_home/.gitconfig"
     ensure_symlink "$dev_home/.shell_history/bash_history" "$dev_home/.bash_history"
+    ensure_symlink "$dev_home/.shell_history/zsh_history" "$dev_home/.zsh_history"
     ensure_symlink "$security_home/ssh" "$dev_home/.ssh"
     ensure_symlink "$security_home/gnupg" "$dev_home/.gnupg"
     ensure_symlink "$tools_home/gh" "$dev_home/.config/gh"

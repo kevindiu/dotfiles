@@ -43,8 +43,20 @@ configs/.gitconfig.personal
 *.old
 
 # Local development files
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 extra/
+
+# Pi Coding Agent runtime, sessions, credentials and package caches
+configs/pi/auth.json
+configs/pi/antigravity-accounts.json
+configs/pi/telegram.json
+configs/pi/models-store.json
+configs/pi/sessions/
+configs/pi/npm/
+configs/pi/git/
+configs/pi/tmp/
+configs/pi/pi-ui-extension/

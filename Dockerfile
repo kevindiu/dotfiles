@@ -1,13 +1,16 @@
+ARG USERNAME=dev
+ARG USER_UID=1001
+ARG USER_GID=1001
+
 FROM manjarolinux/base:latest AS base-system
 ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     SHELL=/bin/zsh \
-    TERM=xterm-256color \
-    MAKEFLAGS=-j$(nproc)
+    TERM=xterm-256color
 
-ARG USERNAME=dev
-ARG USER_UID=1001
-ARG USER_GID=1001
+ARG USERNAME
+ARG USER_UID
+ARG USER_GID
 
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
     --mount=type=cache,target=/tmp \
@@ -32,6 +35,9 @@ USER $USERNAME
 WORKDIR /home/$USERNAME
 
 FROM base-system AS tools
+ARG USERNAME
+ARG USER_UID
+ARG USER_GID
 
 COPY --chown=$USERNAME:$USERNAME scripts/install-pacman-tools.sh /tmp/
 RUN --mount=type=cache,target=/var/cache/pacman/pkg \
@@ -71,6 +77,7 @@ RUN --mount=type=cache,target=/home/$USERNAME/go,uid=$USER_UID,gid=$USER_GID \
     rm /tmp/install-extra-tools.sh
 
 FROM tools AS final
+ARG USERNAME
 
 COPY --chown=$USERNAME:$USERNAME scripts/setup-directories.sh /usr/local/bin/setup-directories.sh
 RUN chmod +x /usr/local/bin/setup-directories.sh && /usr/local/bin/setup-directories.sh
@@ -81,18 +88,27 @@ RUN sed -i "s|$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/pacman, /usr/bin/yay, /usr/
 # Embed sudo-wrapper for runtime updates (must do as root)
 COPY scripts/sudo-wrapper.sh /usr/local/bin/sudo-wrapper
 RUN chmod 755 /usr/local/bin/sudo-wrapper && \
-    ln -s /usr/local/bin/sudo-wrapper /usr/local/bin/sudo
+    ln -sfn /usr/local/bin/sudo-wrapper /usr/local/bin/sudo
+
+# Install Pi coding agent CLI globally
+RUN npm install -g @earendil-works/pi-coding-agent
+
+COPY scripts/tmux-select.sh /usr/local/bin/tmux-select.sh
+RUN chmod 755 /usr/local/bin/tmux-select.sh
 
 COPY scripts/start-sshd.sh /tmp/start-sshd.sh
-RUN echo "$USERNAME:$USERNAME" | chpasswd
+# Lock the user password — all access is via SSH key authentication
+RUN usermod -L $USERNAME
 RUN install -o root -g root -m 755 /tmp/start-sshd.sh /usr/local/bin/start-sshd.sh && \
     rm /tmp/start-sshd.sh
+
+USER $USERNAME
 
 EXPOSE 2222
 WORKDIR /workspace
 CMD ["/usr/local/bin/start-sshd.sh"]
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-    CMD pgrep sshd || exit 1
+    CMD ["pgrep", "sshd"]
 
 

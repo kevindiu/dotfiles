@@ -2,10 +2,11 @@ return {
   -- Syntax highlighting (TreeSitter)
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "master",
     build = ":TSUpdate",
     config = function()
-      require('nvim-treesitter.config').setup({
-        ensure_installed = { "go", "gomod", "gosum", "yaml", "json", "bash", "lua", "markdown", "dockerfile" },
+      require('nvim-treesitter.configs').setup({
+        ensure_installed = { "go", "gomod", "gosum", "yaml", "json", "bash", "lua", "markdown", "markdown_inline", "dockerfile" },
         highlight = { 
           enable = true,
           additional_vim_regex_highlighting = false,
@@ -15,7 +16,7 @@ return {
           enable = true,
           keymaps = {
             init_selection = "gnn",
-            node_incremental = "grn",
+            node_incremental = "<C-space>",
             scope_incremental = "grc",
             node_decremental = "grm",
           },

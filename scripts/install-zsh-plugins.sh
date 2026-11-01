@@ -43,7 +43,7 @@ done
 failed=0
 for pid in "${pids[@]}"; do
     if ! wait "$pid"; then
-        ((failed++))
+        ((failed+=1))
     fi
 done
 

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "packages": [
+    "npm:pi-antigravity",
+    "npm:@juicesharp/rpiv-pi",
+    "npm:@tintinweb/pi-subagents",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:@juicesharp/rpiv-advisor",
+    "npm:@juicesharp/rpiv-i18n",
+    "npm:@juicesharp/rpiv-web-tools",
+    "npm:@juicesharp/rpiv-args",
+    "npm:@juicesharp/rpiv-workflow",
+    "npm:@reedchan/statusline",
+    "npm:pi-ui-extension",
+    {
+      "source": "git:https://github.com/NelsonBrandao/pi-agent-extensions",
+      "extensions": [
+        "-extensions/todos.ts"
+      ]
+    },
+    "npm:@narumitw/pi-worktree"
+  ],
+  "defaultTools": [
+    "+grep",
+    "+find",
+    "+ls",
+    "+codemode"
+  ],
+  "lastChangelogVersion": "1.4.0",
+  "theme": "system",
+  "defaultProvider": "antigravity",
+  "defaultModel": "gemini-3.8-flash",
+  "defaultThinkingLevel": "medium"
+}

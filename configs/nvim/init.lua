@@ -36,24 +36,30 @@ require("lazy").setup({
 
 -- 3. Clipboard (OSC52 Fallback for SSH)
 if vim.fn.has('nvim-0.10') == 1 then
-  vim.g.clipboard = {
-    name = 'OSC 52',
-    copy = {
-      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-    },
-    paste = {
-      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-    },
-  }
+  local ok, osc52 = pcall(require, 'vim.ui.clipboard.osc52')
+  if ok then
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = osc52.copy('+'),
+        ['*'] = osc52.copy('*'),
+      },
+      paste = {
+        ['+'] = osc52.paste('+'),
+        ['*'] = osc52.paste('*'),
+      },
+    }
+  end
 end
 
--- 4. Native LSP Setup (Loaded after plugins)
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local has_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-if has_cmp then
-  capabilities = cmp_lsp.default_capabilities(capabilities)
+-- 4. Native LSP Setup (Loaded dynamically on file open)
+local function get_capabilities()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+  if ok then
+    return cmp_lsp.default_capabilities(capabilities)
+  end
+  return capabilities
 end
 
 -- Configure gopls using native LSP
@@ -63,8 +69,8 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'gopls',
       cmd = {'gopls'},
-      capabilities = capabilities,
-      root_dir = vim.fs.root(0, {'go.mod', '.git'}),
+      capabilities = get_capabilities(),
+      root_dir = vim.fs.root(0, {'go.mod', '.git'}) or vim.uv.cwd(),
       settings = {
         gopls = {
           completeUnimported = true,
@@ -80,7 +86,10 @@ vim.api.nvim_create_autocmd('FileType', {
     })
     
     -- Auto-format on save
+    local format_group = vim.api.nvim_create_augroup("GoFormatOnSave", { clear = false })
+    vim.api.nvim_clear_autocmds({ group = format_group, buffer = 0 })
     vim.api.nvim_create_autocmd('BufWritePre', {
+      group = format_group,
       buffer = 0,
       callback = function()
         vim.lsp.buf.format({ async = false })
@@ -96,7 +105,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start({
       name = 'lua_ls',
       cmd = {'lua-language-server'},
-      capabilities = capabilities,
+      capabilities = get_capabilities(),
       root_dir = vim.fs.root(0, {'.git', '.lazy.lua', 'init.lua'}),
       settings = {
         Lua = {
@@ -108,21 +117,92 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Configure yamlls for Kubernetes/Docker Compose/CI manifests
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'yaml',
+  callback = function()
+    local cmd = vim.fn.exepath('yaml-language-server')
+    if cmd == '' then return end
+    vim.lsp.start({
+      name = 'yamlls',
+      cmd = {'yaml-language-server', '--stdio'},
+      capabilities = get_capabilities(),
+      root_dir = vim.fs.root(0, {'.git'}),
+      settings = {
+        yaml = {
+          schemas = {
+            ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+            ['https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json'] = 'docker-compose*.yml',
+          },
+          validate = true,
+          completion = true,
+          hover = true,
+        },
+      },
+    })
+  end,
+})
+
+-- Configure bashls for shell scripts
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = {'sh', 'bash', 'zsh'},
+  callback = function()
+    local cmd = vim.fn.exepath('bash-language-server')
+    if cmd == '' then return end
+    vim.lsp.start({
+      name = 'bashls',
+      cmd = {'bash-language-server', 'start'},
+      capabilities = get_capabilities(),
+      root_dir = vim.fs.root(0, {'.git'}),
+    })
+  end,
+})
+
+-- Configure dockerls for Dockerfiles
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'dockerfile',
+  callback = function()
+    local cmd = vim.fn.exepath('docker-langserver')
+    if cmd == '' then return end
+    vim.lsp.start({
+      name = 'dockerls',
+      cmd = {'docker-langserver', '--stdio'},
+      capabilities = get_capabilities(),
+      root_dir = vim.fs.root(0, {'Dockerfile', '.git'}),
+    })
+  end,
+})
+
+-- Configure ts_ls for TypeScript/JavaScript
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = {'typescript', 'typescriptreact', 'javascript', 'javascriptreact'},
+  callback = function()
+    local cmd = vim.fn.exepath('typescript-language-server')
+    if cmd == '' then return end
+    vim.lsp.start({
+      name = 'ts_ls',
+      cmd = {'typescript-language-server', '--stdio'},
+      capabilities = get_capabilities(),
+      root_dir = vim.fs.root(0, {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'}),
+    })
+  end,
+})
+
 -- Diagnostic config
 vim.diagnostic.config({
   virtual_text = true,
-  signs = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "✗",
+      [vim.diagnostic.severity.WARN]  = "⚠",
+      [vim.diagnostic.severity.HINT]  = "💡",
+      [vim.diagnostic.severity.INFO]  = "ℹ",
+    },
+  },
   underline = true,
   update_in_insert = false,
   severity_sort = true,
 })
-
--- Diagnostic signs
-local signs = { Error = "✗", Warn = "⚠", Hint = "💡", Info = "ℹ" }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
 
 -- LSP Keybindings (Dynamic attach)
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -132,7 +212,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     
     -- Docs & Nav
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-    vim.keymap.set('n', '<leader>gd', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', '<leader>ds', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', '<leader>gr', '<cmd>Telescope lsp_references<cr>', opts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)

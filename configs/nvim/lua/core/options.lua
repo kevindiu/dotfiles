@@ -28,7 +28,6 @@ vim.opt.showmatch = true
 -- Interface & Behavior
 vim.opt.mouse = 'a'
 vim.opt.clipboard = 'unnamedplus'
-vim.opt.encoding = 'utf-8'
 vim.opt.backspace = {'indent', 'eol', 'start'}
 vim.opt.splitbelow = true
 vim.opt.splitright = true

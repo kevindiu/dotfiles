@@ -15,4 +15,4 @@ This is a **Containerized Development Environment** built on Manjaro Linux (Arch
 - **Data**: `workspace`, `*-cache`
 - **Config**: `aws-config`, `git-tools`, `docker-config`, `vscode-config`, `shell-history`
 - **Security**: `security-tools` (keys, GPG)
-- **AI**: `antigravity-cache`, `gemini-cache`
+- **AI**: `antigravity-cache`, `gemini-cache`, `pi` (`configs/pi`)

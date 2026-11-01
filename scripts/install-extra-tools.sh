@@ -3,11 +3,8 @@
 set -euo pipefail
 
 aur_tools=(
-    "gradle"
-    "github-copilot-cli"
     "aws-cli-bin"
     "tfenv"
-    "k9s"
 )
 
 pacman_tools=(
@@ -16,6 +13,7 @@ pacman_tools=(
     "helm"
     "kubectx"
     "stern"
+    "k9s"
 )
 
 echo "📦 Installing AUR tools..."
@@ -31,7 +29,23 @@ echo "✅ Extra AUR tools installation completed!"
 echo "🔄 Installing ${#pacman_tools[@]} pacman tools..."
 sudo pacman -S --noconfirm --needed "${pacman_tools[@]}"
 
-echo "🧹 Cleaning package cache..."
-sudo pacman -Scc --noconfirm || true
+install_gradle() {
+    echo "📦 Checking and installing Gradle..."
+    if sudo pacman -S --noconfirm --needed gradle 2>/dev/null; then
+        echo "✅ Gradle installed via pacman"
+    else
+        echo "⬇️  Downloading Gradle standalone binary..."
+        local gradle_ver="8.10.2"
+        local install_dir="$HOME/.local/share/gradle"
+        local bin_dir="$HOME/.local/bin"
+        mkdir -p "$install_dir" "$bin_dir"
+        curl -fsSL "https://services.gradle.org/distributions/gradle-${gradle_ver}-bin.zip" -o /tmp/gradle.zip
+        unzip -qo /tmp/gradle.zip -d "$install_dir"
+        ln -sfn "$install_dir/gradle-${gradle_ver}/bin/gradle" "$bin_dir/gradle"
+        rm -f /tmp/gradle.zip
+        echo "✅ Gradle ${gradle_ver} installed"
+    fi
+}
+install_gradle
 
 echo "✅ Extra Pacman tools installation completed!"

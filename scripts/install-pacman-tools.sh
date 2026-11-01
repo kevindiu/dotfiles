@@ -25,15 +25,16 @@ tools=(
     "yamllint"
     "tmux"
     "zsh"
+    "curl"
     "wget"
     "starship"
     "zoxide"
+    "neovim"
+    "lua-language-server"
+    "go"
 )
 
 echo "🔄 Installing ${#tools[@]} pacman tools..."
 sudo pacman -S --noconfirm --needed "${tools[@]}"
-
-echo "🧹 Cleaning package cache..."
-sudo pacman -Scc --noconfirm || true
 
 echo "✅ Pacman tools installation completed!"

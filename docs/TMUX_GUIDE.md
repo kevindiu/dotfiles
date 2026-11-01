@@ -204,10 +204,12 @@ Alt+Left/Right      # Quick window switching
 - Scroll to navigate history
 - Right-click for context menu
 
-### Session Persistence (Resurrect)
-Sessions are saved and restored manually (auto-save requires `tmux-continuum`, which is not installed).
-- **Save Session**: `Ctrl+a` + `Ctrl+s`
-- **Restore Session**: `Ctrl+a` + `Ctrl+r`
+### Session Persistence (Resurrect & Continuum)
+`tmux-continuum` is installed and active with auto-save and auto-restore enabled. Manual save and restore are also supported via `tmux-resurrect`.
+- **Auto-Save**: Saved automatically every 15 minutes (`@continuum-save-interval '15'`)
+- **Auto-Restore**: Restored automatically on tmux startup (`@continuum-restore 'on'`)
+- **Save Session (Manual)**: `Ctrl+a` + `Ctrl+s`
+- **Restore Session (Manual)**: `Ctrl+a` + `Ctrl+r`
 - **Storage**: Pane contents are captured (`@resurrect-capture-pane-contents on`).
 - **History**: Saved to persistent volume so it survives container rebuilds.
 
